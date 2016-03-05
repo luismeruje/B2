@@ -93,14 +93,15 @@ void imprime_carta(char *path, int x, int y, long long int ESTADO, int naipe, in
 }
 
 void distribui (int jogador[4/*ndojog*/][14/*numerodacarta+1*/][2/*naipeouvalor*/]){ //exeção, jogador[x][13][0] tem o número de cartas já atribuidas ao jogador x
-    int valor = 0, naipe,jog;
+    int valor, naipe,jog;
     jogador[0][13][0] = 0;
     jogador[1][13][0] = 0;
     jogador[2][13][0] = 0;
     jogador[3][13][0] = 0;
-    for (naipe = 0; naipe<4; naipe++)
+    naipe = 0;
+    while (naipe<4){
+        valor = 0;
         while (valor<13){
-            srand(time(NULL));
             jog= rand() % 4;
             if(jogador[jog][13][0]<13){ //jasus, até mete as cartas certinhas no sítio, so proud, valor vale como valor da carta no loop e como numero da carta no array do jogador
                 jogador[jog][jogador[jog][13][0]][0] = naipe; //usar antes indice da carta para poupar memória?
@@ -109,8 +110,8 @@ void distribui (int jogador[4/*ndojog*/][14/*numerodacarta+1*/][2/*naipeouvalor*
                 valor++;
             }
         }
-            
-        
+        naipe++;
+    }
 }
 
 /** \brief Imprime o estado
@@ -126,6 +127,7 @@ void imprime(char *path, long long int ESTADO) {
 
 	printf("<svg height = \"800\" width = \"800\">\n");
 	printf("<rect x = \"0\" y = \"0\" height = \"800\" width = \"800\" style = \"fill:#007700\"/>\n");
+    srand(time(NULL));
     distribui(jogador);
 	for(y = 10, n = 0; n < 4; n++, y += 120) {//nao esquecer x+= 20 no segundo for
         for(x = 10, v = 0; v < 13; v++){
