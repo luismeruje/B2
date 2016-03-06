@@ -129,11 +129,17 @@ void imprime(char *path, long long int ESTADO) {
 	printf("<rect x = \"0\" y = \"0\" height = \"800\" width = \"800\" style = \"fill:#007700\"/>\n");
     srand(time(NULL));
     distribui(jogador);
-	for(y = 10, n = 0; n < 4; n++, y += 120) {//nao esquecer x+= 20 no segundo for
-        for(x = 10, v = 0; v < 13; v++){
-            imprime_carta(path, x, y, ESTADO, jogador[n][v][0], jogador[n][v][1]);
-            x += 20;
-        }
+    for(y = 10, n = 0; n < 2; n++, y += 420) {
+        for(x = 100, v = 0; v < 13; v++){
+            imprime_carta(path,x,y,ESTADO,jogador[n][v][0],jogador[n][v][1]);
+            x+=20;
+            }
+    }
+    for(x = 10, n = 0; n < 2; n++, x += 460) {
+        for(y = 60, v = 0; v < 13; v++){
+            imprime_carta(path,x,y,ESTADO, jogador[n][v][0],jogador[n][v][1]);
+            y += 20;
+            }
     }
 	printf("</svg>\n");
 }
