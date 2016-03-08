@@ -127,15 +127,14 @@ void imprime(char *path, long long int ESTADO) {
 
 	printf("<svg height = \"800\" width = \"800\">\n");
 	printf("<rect x = \"0\" y = \"0\" height = \"800\" width = \"800\" style = \"fill:#007700\"/>\n");
-    srand(time(NULL));
-    distribui(jogador);
+    distribui(jogador); //TODO: está a baralhar sempre que clico numa carta em vez de a tirar, só fazer quando estado = 1111111111.. e verificar se existe.
     for(y = 10, n = 0; n < 2; n++, y += 420) {
         for(x = 100, v = 0; v < 13; v++){
             imprime_carta(path,x,y,ESTADO,jogador[n][v][0],jogador[n][v][1]);
             x+=20;
             }
     }
-    for(x = 10, n = 0; n < 2; n++, x += 460) {
+    for(x = 10, n = 2; n < 4; n++, x += 460) {
         for(y = 60, v = 0; v < 13; v++){
             imprime_carta(path,x,y,ESTADO, jogador[n][v][0],jogador[n][v][1]);
             y += 20;
@@ -173,11 +172,13 @@ int main() {
 	printf("Content-Type: text/html; charset=utf-8\n\n");
 	printf("<header><title>Exemplo</title></header>\n");
 	printf("<body>\n");
-
+    srand(time(NULL));
 	printf("<h1>Exemplo de utilização</h1>\n");
 
 /*
  * Ler os valores passados à cgi que estão na variável ambiente e passá-los ao programa
+ * O programa é executado de cada vez que se clica no ecrã? Se sim, como é que guarda o estado de umas vezes para as outras, no environment?
+ * Como é que o input do utilizador é descodificado?
  */
 	parse(getenv("QUERY_STRING"));
 
