@@ -94,7 +94,7 @@ void DATA2STR(char *script, database data, int n, int v){
 database STR2DATA(char * query){
     database data;
     database other = {{0},0};
-    if(sscanf(query, "?q=%lld_%lld_%lld_%lld_%lld",&data->mao[0],&data->mao[1],&data->mao[2],&data->mao[3],data.selected)==5) return data;
+    if(sscanf(query, "?q=%lld_%lld_%lld_%lld_%lld",&data.mao[0],&data.mao[1],&data.mao[2],&data.mao[3],&data.selected)==5) return data;
     else
         return other;//é só para testar, não está a dar direito
 }
