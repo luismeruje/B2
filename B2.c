@@ -43,7 +43,7 @@ int indice(int naipe, int valor) {
     return naipe * 13 + valor;
 }
 
-/** \brief Adiciona uma carta ao estado
+/** \brief Adiciona uma carta a um dos estados
  
  @param ESTADO	O estado atual
  @param naipe	O naipe da carta (inteiro entre 0 e 3)
@@ -55,7 +55,7 @@ long long int add_carta(long long int ESTADO, int naipe, int valor) {
     return ESTADO | ((long long int) 1 << idx);
 }
 
-/** \brief Remove uma carta do estado
+/** \brief Remove uma carta a um dos estados
  
  @param ESTADO	O estado atual
  @param naipe	O naipe da carta (inteiro entre 0 e 3)
@@ -67,7 +67,7 @@ long long int rem_carta(long long int ESTADO, int naipe, int valor) {
     return ESTADO & ~((long long int) 1 << idx);
 }
 
-/** \brief Verifica se uma carta pertence ao estado
+/** \brief Verifica se uma carta pertence a um dos estados
  
  @param ESTADO	O estado atual
  @param naipe	O naipe da carta (inteiro entre 0 e 3)
@@ -79,15 +79,33 @@ int carta_existe(long long int ESTADO, int naipe, int valor) {
     return (ESTADO >> idx) & 1;
 }
 
+/** \brief Verifica se uma carta existe num dos estados a partir do seu indice
+ 
+*/
+
 int carta_existe2 (long long int mao,int idx){
     return (mao >> idx) & 1;
 }
 
-/** \brief Distribui as cartas pelas mãos de cada um dos jogadores
+
+void DATA2STR(char *script, database data, int n, int v){
+    sprintf(script,"%s?q=%lld_%lld_%lld_%lld_%lld",SCRIPT,data.mao[0],data.mao[1],data.mao[2],data.mao[3],add_carta(data.selected,n,v));//TODO: a string com os lld's acho que dá para subsituir por uma palavra com um define no topo
+}
+database STR2DATA(char * query){
+    database data;
+    database other = {{0},0};
+    if(sscanf(query, "?q=%lld_%lld_%lld_%lld_%lld",&data->mao[0],&data->mao[1],&data->mao[2],&data->mao[3],data.selected)==5) return data;
+    else
+        return other;//é só para testar, não está a dar direito
+}
+
+
+/** \brief Distribui as cartas pelas mãos de cada um dos jogadores, e põe o estado das cartas selecionadas tudo a 0's
+ @return   Estrutura com as cartas distribuídas pelos jogadores
 */
 database distribui(){
     int maoCount[4]={0};
-    database data={{0x0000000000000},0x0000000000000};
+    database data={{0},0};
     int n,v,j;
     for(n=0;n<4;n++){
         v = 0;
@@ -112,11 +130,11 @@ database distribui(){
  @param naipe	O naipe da carta (inteiro entre 0 e 3)
  @param valor	O valor da carta (inteiro entre 0 e 12)
  */
-void imprime_carta(char *path, int x, int y, long long int ESTADO, int naipe, int valor) {
+void imprime_carta(char *path, int x, int y, database data, int naipe, int valor) {
     char *suit = NAIPES;
     char *rank = VALORES;
-    char script[10240];
-    sprintf(script, "%s?q=%lld", SCRIPT, rem_carta(ESTADO, naipe, valor));
+    char script[51068]; // n sei quanto precisamos.
+    DATA2STR(script, data,naipe,valor);
     printf("<a xlink:href = \"%s\"><image x = \"%d\" y = \"%d\" height = \"110\" width = \"80\" xlink:href = \"%s/%c%c.svg\" /></a>\n", script, x, y, path, rank[valor], suit[naipe]);
 }
 
@@ -134,21 +152,20 @@ void imprime(char *path, database data) {
     printf("<rect x = \"0\" y = \"0\" height = \"800\" width = \"800\" style = \"fill:#007700\"/>\n");
     
     for(y = 10, p = 0; p < 2; p++, y += 420) {
-        for(x = 100, ind = 0; ind < 52; ind++){
+        for(x = 100, ind = 0; ind < 52; ind++)
             if(carta_existe2(data.mao[p],ind)){
                 n = ind/13;
                 v = ind%13;
-                imprime_carta(path,x,y,data.mao[p],n,v);
-                x+=20;
+                imprime_carta(path,x,y,data,n,v);
+                x += 20;
             }
-        }
     }
     for(x = 10, p = 2; p < 4; p++, x += 460) {
         for(y = 60, ind = 0; ind < 52; ind++){
             if(carta_existe2(data.mao[p],ind)){
                 n = ind/13;
                 v = ind%13;
-                imprime_carta(path,x,y,data.mao[p], n,v);
+                imprime_carta(path,x,y,data, n,v);
                 y += 20;
             }
         }
@@ -164,13 +181,12 @@ void imprime(char *path, database data) {
  Caso não seja passado nada à cgi-bin, ela assume que todas as cartas estão presentes.
  @param query A query que é passada à cgi-bin
  */
-void parse(){//char *query) {
+void parse (char * query) {
     database data;
-    //if(query!=NULL && strlen(query) != 0) { //onde tinha %qlld subsitui por %s; n sei para q é preciso a primeira condição...
-    //    data = STR2ESTADO(query);
-    //} else {
+    if(query!=NULL && strlen(query) != 0) //n sei para q é preciso a primeira condição...
+        data = STR2DATA(query);
+    else
         data = distribui();
-   // }
     imprime(BARALHO, data);
 }
 
@@ -194,8 +210,7 @@ int main() {
      * Ler os valores passados à cgi que estão na variável ambiente e passá-los ao programa
      */
     srand(time(NULL));
-    //parse(getenv("QUERY_STRING"));
-    parse();
+    parse(getenv("QUERY_STRING"));
     printf("</body>\n");
     return 0;
 }
