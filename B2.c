@@ -91,12 +91,9 @@ int carta_existe2 (long long int mao,int idx){
 void DATA2STR(char *script, database data, int n, int v){
     sprintf(script,"%s?q=%lld_%lld_%lld_%lld_%lld",SCRIPT,data.mao[0],data.mao[1],data.mao[2],data.mao[3],add_carta(data.selected,n,v));//TODO: a string com os lld's acho que dá para subsituir por uma palavra com um define no topo
 }
-database STR2DATA(char * query){
-    database data;
+void STR2DATA(char * query, database * data){
     database other = {{0},0};
-    if(sscanf(query, "?q=%lld_%lld_%lld_%lld_%lld",&data.mao[0],&data.mao[1],&data.mao[2],&data.mao[3],&data.selected)==5) return data;
-    else
-        return other;//é só para testar, não está a dar direito
+    sscanf(query, "%s?q=%lld_%lld_%lld_%lld_%lld",stuff,&(data.mao[0]),&(data.mao[1]),&(data.mao[2]),&(data.mao[3]),&(data.selected)) //acho que a falha está aqui ou na imprime
 }
 
 
@@ -182,11 +179,11 @@ void imprime(char *path, database data) {
  @param query A query que é passada à cgi-bin
  */
 void parse (char * query) {
-    database data;
+    database * data;
     if(query!=NULL && strlen(query) != 0) //n sei para q é preciso a primeira condição...
-        data = STR2DATA(query);
+        STR2DATA(query,data);
     else
-        data = distribui();
+        *data = distribui();
     imprime(BARALHO, data);
 }
 
