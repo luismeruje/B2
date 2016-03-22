@@ -22,12 +22,12 @@
 #define VALORES		"3456789TJQKA2"
 
 //#define ESTADO "%lld" //basicamente é uma string, só está aqui para diferenciar o estado
-
-typedef struct {
-    long long int mao[4];
-    long long int selected;
-} database;
-
+typedef long long int MAO;
+struct database{
+    MAO mao[4];
+    MAO selected;
+};
+typedef struct database DATABASE;
 
 //database STR2ESTADO (char *query){
 //    database data = {{1},0};
@@ -50,7 +50,7 @@ int indice(int naipe, int valor) {
  @param valor	O valor da carta (inteiro entre 0 e 12)
  @return		O novo estado
  */
-long long int add_carta(long long int ESTADO, int naipe, int valor) {
+long long int add_carta(MAO ESTADO, int naipe, int valor) {
     int idx = indice(naipe, valor);
     return ESTADO | ((long long int) 1 << idx);
 }
@@ -62,7 +62,7 @@ long long int add_carta(long long int ESTADO, int naipe, int valor) {
  @param valor	O valor da carta (inteiro entre 0 e 12)
  @return		O novo estado
  */
-long long int rem_carta(long long int ESTADO, int naipe, int valor) {
+long long int rem_carta(MAO ESTADO, int naipe, int valor) {
     int idx = indice(naipe, valor);
     return ESTADO & ~((long long int) 1 << idx);
 }
@@ -74,7 +74,7 @@ long long int rem_carta(long long int ESTADO, int naipe, int valor) {
  @param valor	O valor da carta (inteiro entre 0 e 12)
  @return		1 se a carta existe e 0 caso contrário
  */
-int carta_existe(long long int ESTADO, int naipe, int valor) {
+int carta_existe(MAO ESTADO, int naipe, int valor) {
     int idx = indice(naipe, valor);
     return (ESTADO >> idx) & 1;
 }
@@ -83,25 +83,27 @@ int carta_existe(long long int ESTADO, int naipe, int valor) {
  
 */
 
-int carta_existe2 (long long int mao,int idx){
+int carta_existe2 (MAO mao,int idx){
     return (mao >> idx) & 1;
 }
 
 
-void DATA2STR(char *script, database data, int n, int v){
-    sprintf(script,"%s?q=%lld_%lld_%lld_%lld_%lld",SCRIPT,data.mao[0],data.mao[1],data.mao[2],data.mao[3],add_carta(data.selected,n,v));//TODO: a string com os lld's acho que dá para subsituir por uma palavra com um "define" no topo
+void DATA2STR(char * str,DATABASE data, int n, int v){
+    sprintf(str,"%lld_%lld_%lld_%lld_%lld",data.mao[0],data.mao[1],data.mao[2],data.mao[3],add_carta(data.selected,n,v));//TODO: a string com os lld's acho que dá para subsituir por uma palavra com um "define" no topo
 }
-void STR2DATA(char * query, database data){
-    sscanf(query, "?q=%lld_%lld_%lld_%lld_%lld",&(data.mao[0]),&(data.mao[1]),&(data.mao[2]),&(data.mao[3]),&(data.selected)); //acho que a falha está aqui ou na imprime
+DATABASE STR2DATA(char * str){
+    DATABASE data;
+    sscanf(str, "%lld_%lld_%lld_%lld_%lld",&(data.mao[0]),&(data.mao[1]),&(data.mao[2]),&(data.mao[3]),&(data.selected)); //acho que a falha está aqui ou na imprime
+    return data;
 }
 
 
 /** \brief Distribui as cartas pelas mãos de cada um dos jogadores, e põe o estado das cartas selecionadas tudo a 0's
  @return   Estrutura com as cartas distribuídas pelos jogadores
 */
-database distribui(){
+DATABASE distribui(){
     int maoCount[4]={0};
-    database data={{0},0};
+    DATABASE data={{0},0};
     int n,v,j;
     for(n=0;n<4;n++){
         v = 0;
@@ -126,12 +128,12 @@ database distribui(){
  @param naipe	O naipe da carta (inteiro entre 0 e 3)
  @param valor	O valor da carta (inteiro entre 0 e 12)
  */
-void imprime_carta(char *path, int x, int y, database data, int naipe, int valor) {
+void imprime_carta(char *path, int x, int y, DATABASE data, int naipe, int valor) {
     char *suit = NAIPES;
     char *rank = VALORES;
-    char script[51068]; // n sei quanto precisamos.
-    DATA2STR(script, data,naipe,valor);
-    printf("<a xlink:href = \"%s\"><image x = \"%d\" y = \"%d\" height = \"110\" width = \"80\" xlink:href = \"%s/%c%c.svg\" /></a>\n", script, x, y, path, rank[valor], suit[naipe]);
+    char script[52000]; // n sei quanto precisamos.
+    DATA2STR(script,data,naipe,valor);
+    printf("<a xlink:href = \"cartas?%s\"><image x = \"%d\" y = \"%d\" height = \"110\" width = \"80\" xlink:href = \"%s/%c%c.svg\" /></a>\n", script, x, y, path, rank[valor], suit[naipe]);
 }
 
 /** \brief Imprime o estado
@@ -140,7 +142,7 @@ void imprime_carta(char *path, int x, int y, database data, int naipe, int valor
  @param path	o URL correspondente à pasta que contém todas as cartas
  @param data	O estado atual
  */
-void imprime(char *path, database data) {
+void imprime(char *path, DATABASE data) {
     int n, v, p;
     int x, y,ind;
     
@@ -148,21 +150,46 @@ void imprime(char *path, database data) {
     printf("<rect x = \"0\" y = \"0\" height = \"800\" width = \"800\" style = \"fill:#007700\"/>\n");
     
     for(y = 10, p = 0; p < 2; p++, y += 420) {
-        for(x = 100, ind = 0; ind < 52; ind++)
+        for(x = 100, ind = 0; ind < 52; ind++){
+            if(carta_existe2(data.selected,ind)){
+                if(p==0)
+                    y += 20;
+                else
+                    y -= 20;
+            }
             if(carta_existe2(data.mao[p],ind)){
                 n = ind/13;
                 v = ind%13;
                 imprime_carta(path,x,y,data,n,v);
                 x += 20;
             }
+            if(carta_existe2(data.selected,ind)){
+                if(p==0)
+                    y -= 20;
+                else
+                    y += 20;
+            }
+        }
     }
     for(x = 10, p = 2; p < 4; p++, x += 460) {
         for(y = 60, ind = 0; ind < 52; ind++){
+            if(carta_existe2(data.selected,ind)){
+                if(p==2)
+                    x += 20;
+                else
+                    x -= 20;
+            }
             if(carta_existe2(data.mao[p],ind)){
                 n = ind/13;
                 v = ind%13;
                 imprime_carta(path,x,y,data, n,v);
                 y += 20;
+            }
+            if(carta_existe2(data.selected,ind)){
+                if(p==2)
+                    x -= 20;
+                else
+                    x += 20;
             }
         }
     }
@@ -178,9 +205,9 @@ void imprime(char *path, database data) {
  @param query A query que é passada à cgi-bin
  */
 void parse (char * query) {
-    database data = {{0},0};
+    DATABASE data = {{0},0};
     if(query!=NULL && strlen(query) != 0) //n sei para q é preciso a primeira condição...
-        STR2DATA(query,data);
+        data = STR2DATA(query);
     else
         data = distribui();
     imprime(BARALHO, data);
