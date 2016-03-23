@@ -158,11 +158,19 @@ void imprime_carta(char *path, int x, int y, DATABASE data, int naipe, int valor
     printf("<a xlink:href = \"cartas?%s\"><image x = \"%d\" y = \"%d\" height = \"110\" width = \"80\" xlink:href = \"%s/%c%c.svg\" /></a>\n", script, x, y, path, rank[valor], suit[naipe]);
 }
 
-void imprime_botao (char * path, DATABASE data){//meter para if combinação válida imprimir este link, senão meter só uma imagem do botão "desvanecido"
+//temos que meter os botões num ficheiro para os stores
+void imprime_play (char * path, DATABASE data){//meter para if combinação válida imprimir este link, senão meter só uma imagem do botão "desvanecido"
     //WARNING: não sei se no futuro, alterar data aqui não altera data na função imprim_carta, mas como está de ambas as maneiras é igual.
     char script [52000];
     DATA2STR_botao(script,data);
-    printf("<a xlink:href = \"cartas?%s\"><image x = \"300\" y = \"300\" height = \"60\" width = \"90\" xlink:href = \"%s/botao.svg\" /></a>\n", script, path);
+    printf("<a xlink:href = \"cartas?%s\"><image x = \"600\" y = \"450\" height = \"60\" width = \"30\" xlink:href = \"%s/botao.svg\" /></a>\n", script, path);
+}
+
+void imprime_passar (char * path, DATABASE data){
+    char script[52000];
+    data.selected = 0;
+    sprintf(script,"%lld_%lld_%lld_%lld_%lld",data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected);
+    printf("<a xlink:href = \"cartas?%s\"><image x = \"650\" y = \"450\" height = \"60\" width = \"30\" xlink:href = \"%s/botao.svg\" /></a>\n", script, path);
 }
 
 /** \brief Imprime o estado
@@ -179,7 +187,7 @@ void imprime(char *path, DATABASE data) {
     printf("<rect x = \"0\" y = \"0\" height = \"800\" width = \"800\" style = \"fill:#007700\"/>\n");
     
     for(y = 10, p = 0; p < 2; p++, y += 420) {
-        for(x = 100, ind = 0; ind < 52; ind++){
+        for(x = 200, ind = 0; ind < 52; ind++){
             if(carta_existe2(data.selected,ind)){
                 if(p==0)
                     y += 20;
@@ -200,7 +208,7 @@ void imprime(char *path, DATABASE data) {
             }
         }
     }
-    for(x = 10, p = 2; p < 4; p++, x += 460) {
+    for(x = 10, p = 2; p < 4; p++, x += 600) {
         for(y = 60, ind = 0; ind < 52; ind++){
             if(carta_existe2(data.selected,ind)){
                 if(p==2)
@@ -222,7 +230,8 @@ void imprime(char *path, DATABASE data) {
             }
         }
     }
-    imprime_botao(path,data);
+    imprime_play(path,data);
+    imprime_passar(path,data);
     printf("</svg>\n");
 }
 
