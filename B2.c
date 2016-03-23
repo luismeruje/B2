@@ -89,7 +89,12 @@ int carta_existe2 (MAO mao,int idx){
 
 
 void DATA2STR(char * str,DATABASE data, int n, int v){
-    sprintf(str,"%lld_%lld_%lld_%lld_%lld",data.mao[0],data.mao[1],data.mao[2],data.mao[3],add_carta(data.selected,n,v));//TODO: a string com os lld's acho que dá para subsituir por uma palavra com um "define" no topo
+    long long int i;
+    if(carta_existe (data.selected, n,v)==0)
+        i = add_carta(data.selected,n,v);
+    else
+        i = rem_carta(data.selected,n,v);
+    sprintf(str,"%lld_%lld_%lld_%lld_%lld",data.mao[0],data.mao[1],data.mao[2],data.mao[3],i);//TODO: a string com os lld's acho que dá para subsituir por uma palavra com um "define" no topo
 }
 DATABASE STR2DATA(char * str){
     DATABASE data;
