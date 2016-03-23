@@ -96,6 +96,23 @@ void DATA2STR(char * str,DATABASE data, int n, int v){
         i = rem_carta(data.selected,n,v);
     sprintf(str,"%lld_%lld_%lld_%lld_%lld",data.mao[0],data.mao[1],data.mao[2],data.mao[3],i);//TODO: a string com os lld's acho que dá para subsituir por uma palavra com um "define" no topo
 }
+
+void DATA2STR_botao(char * str, DATABASE data){
+    int ind,n,v,i;
+    for(ind=0;ind<52;ind++)
+        if(carta_existe2(data.selected,ind)){
+            for(i=0;i<4;i++){
+                n = ind/13;
+                v = ind%13;
+                if(carta_existe2(data.mao[i],ind))
+                    data.mao[i]=rem_carta(data.mao[i],n,v);
+            }
+        }
+    data.selected = 0;
+    sprintf(str,"%lld_%lld_%lld_%lld_%lld",data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected);
+}
+
+
 DATABASE STR2DATA(char * str){
     DATABASE data;
     sscanf(str, "%lld_%lld_%lld_%lld_%lld",&(data.mao[0]),&(data.mao[1]),&(data.mao[2]),&(data.mao[3]),&(data.selected)); //acho que a falha está aqui ou na imprime
@@ -139,6 +156,13 @@ void imprime_carta(char *path, int x, int y, DATABASE data, int naipe, int valor
     char script[52000]; // n sei quanto precisamos.
     DATA2STR(script,data,naipe,valor);
     printf("<a xlink:href = \"cartas?%s\"><image x = \"%d\" y = \"%d\" height = \"110\" width = \"80\" xlink:href = \"%s/%c%c.svg\" /></a>\n", script, x, y, path, rank[valor], suit[naipe]);
+}
+
+void imprime_botao (char * path, DATABASE data){//meter para if combinação válida imprimir este link, senão meter só uma imagem do botão "desvanecido"
+    //WARNING: não sei se no futuro, alterar data aqui não altera data na função imprim_carta, mas como está de ambas as maneiras é igual.
+    char script [52000];
+    DATA2STR_botao(script,data);
+    printf("<a xlink:href = \"cartas?%s\"><image x = \"300\" y = \"300\" height = \"60\" width = \"90\" xlink:href = \"%s/botao.svg\" /></a>\n", script, path);
 }
 
 /** \brief Imprime o estado
@@ -198,6 +222,7 @@ void imprime(char *path, DATABASE data) {
             }
         }
     }
+    imprime_botao(path,data);
     printf("</svg>\n");
 }
 
