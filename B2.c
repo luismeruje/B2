@@ -21,7 +21,6 @@
  */
 #define VALORES		"3456789TJQKA2"
 
-//#define ESTADO "%lld" //basicamente é uma string, só está aqui para diferenciar o estado
 typedef long long int MAO;
 struct database{
     MAO mao[4];
@@ -84,11 +83,12 @@ int carta_existe(MAO ESTADO, int naipe, int valor) {
  
 */
 
+//Faz o mesmo que carta existe, mas usa o índice da carta em vez do naipe e do valor
 int carta_existe2 (MAO mao,int idx){
     return (mao >> idx) & 1;
 }
 
-
+//Dá as strings que ficam nos links das nossas cartas
 void DATA2STR(char * str,DATABASE data, int n, int v){
     long long int i;
     if(carta_existe (data.selected, n,v)==0)
@@ -98,6 +98,7 @@ void DATA2STR(char * str,DATABASE data, int n, int v){
     sprintf(str,"%lld_%lld_%lld_%lld_%lld",data.mao[0],data.mao[1],data.mao[2],data.mao[3],i);//TODO: a string com os lld's acho que dá para subsituir por uma palavra com um "define" no topo
 }
 
+//Dá a string que fica no link do botao play
 void DATA2STR_botao(char * str, DATABASE data){
     int ind,n,v,i;
     for(ind=0;ind<52;ind++)
@@ -115,7 +116,7 @@ void DATA2STR_botao(char * str, DATABASE data){
     sprintf(str,"%lld_%lld_%lld_%lld_%lld",data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected);
 }
 
-
+//Passa a string que recebemos do browser para a nossa estrutura
 DATABASE STR2DATA(char * str){
     DATABASE data;
     sscanf(str, "%lld_%lld_%lld_%lld_%lld",&(data.mao[0]),&(data.mao[1]),&(data.mao[2]),&(data.mao[3]),&(data.selected)); //acho que a falha está aqui ou na imprime
@@ -161,6 +162,7 @@ void imprime_carta(char *path, int x, int y, DATABASE data, int naipe, int valor
     printf("<a xlink:href = \"cartas?%s\"><image x = \"%d\" y = \"%d\" height = \"110\" width = \"80\" xlink:href = \"%s/%c%c.svg\" /></a>\n", script, x, y, path, rank[valor], suit[naipe]);
 }
 
+//Faz o mesmo que o imprime carta, mas só imprime uma imagem, em vez de um link com uma imagem
 void imprime_carta_bot(char * path, int x, int y, int naipe, int valor){
     char *suit = NAIPES;
     char *rank = VALORES;
@@ -169,6 +171,7 @@ void imprime_carta_bot(char * path, int x, int y, int naipe, int valor){
 
 
 //temos que meter os botões num ficheiro para os stores
+//Imprime o botão play, que para já só apaga as cartas selecionadas das respetivas mãos
 void imprime_play (char * path, DATABASE data){//meter para if combinação válida imprimir este link, senão meter só uma imagem do botão "desvanecido"
     //WARNING: não sei se no futuro, alterar data aqui não altera data na função imprim_carta, mas como está de ambas as maneiras é igual.
     char script [52000];
@@ -176,6 +179,7 @@ void imprime_play (char * path, DATABASE data){//meter para if combinação vál
     printf("<a xlink:href = \"cartas?%s\"><image x = \"600\" y = \"450\" height = \"60\" width = \"30\" xlink:href = \"%s/botao.svg\" /></a>\n", script, path);
 }
 
+//Imprime o botão passar, que para já só mete as cartas seleecionadas a 0.
 void imprime_passar (char * path, DATABASE data){
     char script[52000];
     data.selected = 0;
@@ -200,7 +204,7 @@ void imprime(char *path, DATABASE data) {
     for(y = 10, p = 0; p < 2; p++, y += 420) {
         for(x = 200, ind = 0; ind < 52; ind++){
             if(p==1){
-                if(carta_existe2(data.selected,ind))
+                if(carta_existe2(data.selected,ind))//desvio das cartas selecionadas
                     y -= 20;
                 if(carta_existe2(data.mao[1],ind)){
                     n = ind/13;
@@ -208,7 +212,7 @@ void imprime(char *path, DATABASE data) {
                     imprime_carta(path,x,y,data,n,v);
                     x += 20;
                 }
-                if(carta_existe2(data.selected,ind))
+                if(carta_existe2(data.selected,ind))//anula o desvio, para n ficarem todas levantadas
                     y += 20;
             }
             else
