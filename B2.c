@@ -234,7 +234,7 @@ void imprime(char *path, DATABASE data) {
             }
         }
     }
-    for(x=200,y=200,ind=0;ind<52;ind++){
+    for(x=280,y=200,ind=0;ind<52;ind++){
         if(carta_existe2(data.jogadas,ind)){
                 n = ind/13;
                 v = ind%13;
@@ -242,9 +242,10 @@ void imprime(char *path, DATABASE data) {
                 x +=20;
         }
     }
+    data.jogadas = 0;
     imprime_play(path,data);
     imprime_passar(path,data);
-    printf("</svg>\n");
+    printf("</svg>\n");    
 }
 
 /** \brief Trata os argumentos da CGI
