@@ -90,12 +90,11 @@ int carta_existe2 (MAO mao,int idx){
 
 //Dá as strings que ficam nos links das nossas cartas
 void DATA2STR(char * str,DATABASE data, int n, int v){
-    long long int i;
     if(carta_existe (data.selected, n,v)==0)
-        i = add_carta(data.selected,n,v);
+        data.selected = add_carta(data.selected,n,v);
     else
-        i = rem_carta(data.selected,n,v);
-    sprintf(str,"%lld_%lld_%lld_%lld_%lld",data.mao[0],data.mao[1],data.mao[2],data.mao[3],i);//TODO: a string com os lld's acho que dá para subsituir por uma palavra com um "define" no topo
+        data.selected = rem_carta(data.selected,n,v);
+    sprintf(str,"%lld_%lld_%lld_%lld_%lld_%lld",data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas);//TODO: a string com os lld's acho que dá para subsituir por uma palavra com um "define" no topo
 }
 
 //Dá a string que fica no link do botao play
@@ -119,7 +118,7 @@ void DATA2STR_botao(char * str, DATABASE data){
 //Passa a string que recebemos do browser para a nossa estrutura
 DATABASE STR2DATA(char * str){
     DATABASE data;
-    sscanf(str, "%lld_%lld_%lld_%lld_%lld_%lld",&(data.mao[0]),&(data.mao[1]),&(data.mao[2]),&(data.mao[3]),&(data.selected),&(data.jogadas)); //acho que a falha está aqui ou na imprime
+    sscanf(str, "%lld_%lld_%lld_%lld_%lld_%lld",&(data.mao[0]),&(data.mao[1]),&(data.mao[2]),&(data.mao[3]),&(data.selected),&(data.jogadas));
     return data;
 }
 
