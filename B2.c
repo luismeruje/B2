@@ -25,7 +25,7 @@ typedef long long int MAO;
 struct database{
     MAO mao[4];
     MAO selected;
-    //MAO jogadas;
+    MAO jogadas;
 };
 typedef struct database DATABASE;
 
@@ -100,7 +100,7 @@ void DATA2STR(char * str,DATABASE data, int n, int v){
 
 //Dá a string que fica no link do botao play
 void DATA2STR_botao(char * str, DATABASE data){
-    int ind,n,v,i;
+    int ind,n,v,i,x,y;
     for(ind=0;ind<52;ind++)
         if(carta_existe2(data.selected,ind)){
             for(i=0;i<4;i++){
@@ -108,7 +108,7 @@ void DATA2STR_botao(char * str, DATABASE data){
                 v = ind%13;
                 if(carta_existe2(data.mao[i],ind)){
                     data.mao[i]=rem_carta(data.mao[i],n,v);
-                    //data.jogadas = add_carta(data.jogadas,n,v);
+                    data.jogadas = add_carta(data.jogadas,n,v);
                 }
             }
         }
@@ -235,6 +235,14 @@ void imprime(char *path, DATABASE data) {
             }
         }
     }
+    for(x=200,y=200,ind=0;ind<52;ind++){
+        if(carta_existe2(data.jogadas,ind)){
+                n = ind/13;
+                v = ind%13;
+                imprime_carta_bot(path,x,y,n,v);
+                x +=20;
+        }
+    }
     imprime_play(path,data);
     imprime_passar(path,data);
     printf("</svg>\n");
@@ -249,7 +257,7 @@ void imprime(char *path, DATABASE data) {
  @param query A query que é passada à cgi-bin
  */
 void parse (char * query) {
-    DATABASE data = {{0},0};//,0};
+    DATABASE data = {{0},0,0};
     if(query!=NULL && strlen(query) != 0) //n sei para q é preciso a primeira condição...
         data = STR2DATA(query);
     else
