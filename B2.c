@@ -26,6 +26,7 @@ typedef long long int MAO;
 struct database{
     MAO mao[4];
     MAO selected;
+    //MAO jogadas;
 };
 typedef struct database DATABASE;
 
@@ -104,8 +105,10 @@ void DATA2STR_botao(char * str, DATABASE data){
             for(i=0;i<4;i++){
                 n = ind/13;
                 v = ind%13;
-                if(carta_existe2(data.mao[i],ind))
+                if(carta_existe2(data.mao[i],ind)){
                     data.mao[i]=rem_carta(data.mao[i],n,v);
+                    //data.jogadas = add_carta(data.jogadas,n,v);
+                }
             }
         }
     data.selected = 0;
@@ -192,7 +195,8 @@ void imprime(char *path, DATABASE data) {
     
     printf("<svg height = \"800\" width = \"800\">\n");
     printf("<rect x = \"0\" y = \"0\" height = \"800\" width = \"800\" style = \"fill:#007700\"/>\n");
-    
+    //if(data.jogadas != 0)
+    //    joga_bots;
     for(y = 10, p = 0; p < 2; p++, y += 420) {
         for(x = 200, ind = 0; ind < 52; ind++){
             if(p==1){
@@ -241,7 +245,7 @@ void imprime(char *path, DATABASE data) {
  @param query A query que é passada à cgi-bin
  */
 void parse (char * query) {
-    DATABASE data = {{0},0};
+    DATABASE data = {{0},0};//,0};
     if(query!=NULL && strlen(query) != 0) //n sei para q é preciso a primeira condição...
         data = STR2DATA(query);
     else
@@ -262,8 +266,6 @@ int main() {
     printf("Content-Type: text/html; charset=utf-8\n\n");
     printf("<header><title>Exemplo</title></header>\n");
     printf("<body>\n");
-    
-    printf("<h1>Exemplo de utilização</h1>\n");
     
     /*
      * Ler os valores passados à cgi que estão na variável ambiente e passá-los ao programa
