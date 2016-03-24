@@ -158,6 +158,13 @@ void imprime_carta(char *path, int x, int y, DATABASE data, int naipe, int valor
     printf("<a xlink:href = \"cartas?%s\"><image x = \"%d\" y = \"%d\" height = \"110\" width = \"80\" xlink:href = \"%s/%c%c.svg\" /></a>\n", script, x, y, path, rank[valor], suit[naipe]);
 }
 
+void imprime_carta_bot(char * path, int x, int y, int naipe, int valor){
+    char *suit = NAIPES;
+    char *rank = VALORES;
+    printf("<image x = \"%d\" y = \"%d\" height = \"110\" width = \"80\" xlink:href = \"%s/%c%c.svg\" />\n", x, y, path, rank[valor], suit[naipe]);
+}
+
+
 //temos que meter os botões num ficheiro para os stores
 void imprime_play (char * path, DATABASE data){//meter para if combinação válida imprimir este link, senão meter só uma imagem do botão "desvanecido"
     //WARNING: não sei se no futuro, alterar data aqui não altera data na função imprim_carta, mas como está de ambas as maneiras é igual.
@@ -188,45 +195,35 @@ void imprime(char *path, DATABASE data) {
     
     for(y = 10, p = 0; p < 2; p++, y += 420) {
         for(x = 200, ind = 0; ind < 52; ind++){
-            if(carta_existe2(data.selected,ind)){
-                if(p==0)
-                    y += 20;
-                else
+            if(p==1){
+                if(carta_existe2(data.selected,ind))
                     y -= 20;
-            }
-            if(carta_existe2(data.mao[p],ind)){
-                n = ind/13;
-                v = ind%13;
-                imprime_carta(path,x,y,data,n,v);
-                x += 20;
-            }
-            if(carta_existe2(data.selected,ind)){
-                if(p==0)
-                    y -= 20;
-                else
+                if(carta_existe2(data.mao[1],ind)){
+                    n = ind/13;
+                    v = ind%13;
+                    imprime_carta(path,x,y,data,n,v);
+                    x += 20;
+                }
+                if(carta_existe2(data.selected,ind))
                     y += 20;
             }
+            else
+                if(carta_existe2(data.mao[p],ind)){
+                    n = ind/13;
+                    v = ind%13;
+                    imprime_carta_bot(path,x,y,n,v);
+                    x += 20;
+                }
+                
         }
     }
     for(x = 10, p = 2; p < 4; p++, x += 600) {
         for(y = 60, ind = 0; ind < 52; ind++){
-            if(carta_existe2(data.selected,ind)){
-                if(p==2)
-                    x += 20;
-                else
-                    x -= 20;
-            }
             if(carta_existe2(data.mao[p],ind)){
                 n = ind/13;
                 v = ind%13;
-                imprime_carta(path,x,y,data, n,v);
+                imprime_carta_bot(path,x,y,n,v);
                 y += 20;
-            }
-            if(carta_existe2(data.selected,ind)){
-                if(p==2)
-                    x -= 20;
-                else
-                    x += 20;
             }
         }
     }
