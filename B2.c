@@ -113,13 +113,13 @@ void DATA2STR_botao(char * str, DATABASE data){
             }
         }
     data.selected = 0;
-    sprintf(str,"%lld_%lld_%lld_%lld_%lld",data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected);
+    sprintf(str,"%lld_%lld_%lld_%lld_%lld_%lld",data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas);
 }
 
 //Passa a string que recebemos do browser para a nossa estrutura
 DATABASE STR2DATA(char * str){
     DATABASE data;
-    sscanf(str, "%lld_%lld_%lld_%lld_%lld",&(data.mao[0]),&(data.mao[1]),&(data.mao[2]),&(data.mao[3]),&(data.selected)); //acho que a falha está aqui ou na imprime
+    sscanf(str, "%lld_%lld_%lld_%lld_%lld_%lld",&(data.mao[0]),&(data.mao[1]),&(data.mao[2]),&(data.mao[3]),&(data.selected),&(data.jogadas)); //acho que a falha está aqui ou na imprime
     return data;
 }
 
@@ -183,7 +183,7 @@ void imprime_play (char * path, DATABASE data){//meter para if combinação vál
 void imprime_passar (char * path, DATABASE data){
     char script[52000];
     data.selected = 0;
-    sprintf(script,"%lld_%lld_%lld_%lld_%lld",data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected);
+    sprintf(script,"%lld_%lld_%lld_%lld_%lld_%lld",data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas);
     printf("<a xlink:href = \"cartas?%s\"><image x = \"650\" y = \"450\" height = \"60\" width = \"30\" xlink:href = \"%s/botao.svg\" /></a>\n", script, path);
 }
 
@@ -257,7 +257,7 @@ void imprime(char *path, DATABASE data) {
  @param query A query que é passada à cgi-bin
  */
 void parse (char * query) {
-    DATABASE data = {{0},0,0};
+    DATABASE data = {{0},007700,0};
     if(query!=NULL && strlen(query) != 0) //n sei para q é preciso a primeira condição...
         data = STR2DATA(query);
     else
