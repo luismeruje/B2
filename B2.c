@@ -21,7 +21,7 @@
  */
 #define VALORES		"3456789TJQKA2"
 
-#define DATA "%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%d"
+#define DATA "%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%d_%d"
 
 typedef long long int MAO;
 struct database{
@@ -29,7 +29,7 @@ struct database{
     MAO selected;
     MAO jogadas[4];
     int play;
-    //int passou[3]; tentar não usar isto, simplesmente pôr a 0's as cartas.jogadas quando passarem os bots todos
+    int nc; //número de cartas a serem jogadas por cada jogador
 };
 typedef struct database DATABASE;
 
@@ -99,10 +99,11 @@ void DATA2STR(char * str,DATABASE data, int n, int v){
     else
         data.selected = rem_carta(data.selected,n,v);
     data.play = 0;
-    sprintf(str,"%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%d",data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play);//TODO: a string com os lld's acho que dá para subsituir por uma palavra com um "define" no topo
+    sprintf(str,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc);//TODO: a string com os lld's acho que dá para subsituir por uma palavra com um "define" no topo
 }
 
 //Dá a string que fica no link do botao play
+//TODO:fazer com que determine o data.nc
 void DATA2STR_botao(char * str, DATABASE data){
     int ind,n,v;
     for(ind=0;ind<52;ind++)
@@ -114,13 +115,13 @@ void DATA2STR_botao(char * str, DATABASE data){
         }
     data.selected = 0;
     data.play = 1;
-    sprintf(str,"%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%d",data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play);
+    sprintf(str,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc);
 }
 
 //Passa a string que recebemos do browser para a nossa estrutura
 DATABASE STR2DATA(char * str){
     DATABASE data;
-    sscanf(str, "%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%d",&(data.mao[0]),&(data.mao[1]),&(data.mao[2]),&(data.mao[3]),&(data.selected),&(data.jogadas[0]),&(data.jogadas[1]),&(data.jogadas[2]),&(data.jogadas[3]),&data.play);
+    sscanf(str, DATA,&(data.mao[0]),&(data.mao[1]),&(data.mao[2]),&(data.mao[3]),&(data.selected),&(data.jogadas[0]),&(data.jogadas[1]),&(data.jogadas[2]),&(data.jogadas[3]),&data.play,&data.nc);
     return data;
 }
 
@@ -177,6 +178,7 @@ void imprime_play (char * path, DATABASE data){//TODO:meter para if combinação
     //if(selecionadas são válidas para jogar)
     char script [52000];
     int i;
+    data.jogadas[0]=0;
     DATA2STR_botao(script,data);
     printf("<a xlink:href = \"cartas?%s\"><image x = \"600\" y = \"450\" height = \"60\" width = \"30\" xlink:href = \"%s/botao.svg\" /></a>\n", script, path);
     //else
@@ -190,31 +192,41 @@ void imprime_passar (char * path, DATABASE data){
     data.selected = 0;
     data.jogadas[0]=0;
     data.play = 1;
-    sprintf(script,"%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%d",data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play);
+    sprintf(script,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc);
     printf("<a xlink:href = \"cartas?%s\"><image x = \"650\" y = \"450\" height = \"60\" width = \"30\" xlink:href = \"%s/botao.svg\" /></a>\n", script, path);
 }
 
+
 int maior_jogadas(MAO jogadas){
-    int i, max=-1;
+    int i, max=-1,n,v;
     for(i=0;i<52;i++)
-        if(carta_existe2(jogadas,i))
-            max = i;
+        if(carta_existe2(jogadas,i)){
+            v=i%13;
+            n=i/13;
+            if(v>max%13||(v==max%13&&n>max/13))
+                max = i;
+        }
     return max;
 }
 
 DATABASE joga_bots(DATABASE data,int m){
+       //TODO: tem que testar, se os outros data.jogadas forem 0, pode jogar o que quiser, senão, faz o que está aqui em baixo, tem que se acrescentar à estrutura número da cartas a ser usado nesta jogada
+    //retirar o break para dar com mais do que uma carta por jogador;
     int max,n,i,v;
     for(i=0;i<4;i++){
-        if(maior_jogadas(data.jogadas[i])>max)
+        n=maior_jogadas(data.jogadas[i])/13;
+        v=maior_jogadas(data.jogadas[i])%13;
+        if(v>max%13||(v==max%13&&n>max/13))
             max = maior_jogadas(data.jogadas[i]);
     }
     data.jogadas[m]=0;
     //TODO: tem que testar, se os outros data.jogadas forem 0, pode jogar o que quiser, senão, faz o que está aqui em baixo, tem que se acrescentar à estrutura número da cartas a ser usado nesta jogada
     //retirar o break para dar com mais do que uma carta por jogador;
-    for(i=max+1;i<52;i++){
+    for(i=0;i<52;i++){
         n=i/13;
         v=i%13;
-        if(carta_existe2(data.mao[m],i)==1){
+        if(carta_existe2(data.mao[m],i)==1)
+            if(v>max%13||(v==max%13&&n>max/13)){
             data.jogadas[m] = add_carta(data.jogadas[m],n,v);
             data.mao[m] = rem_carta(data.mao[m],n,v);
             break;
@@ -298,7 +310,7 @@ void imprime(char *path, DATABASE data) {
  @param query A query que é passada à cgi-bin
  */
 void parse (char * query) {
-    DATABASE data = {{0},0,{0},0};
+    DATABASE data = {{0},0,{0},0,0};
     if(query!=NULL && strlen(query) != 0) //n sei para q é preciso a primeira condição...
         data = STR2DATA(query);
     else
