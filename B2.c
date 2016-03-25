@@ -21,11 +21,15 @@
  */
 #define VALORES		"3456789TJQKA2"
 
+#define DATA "%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%d"
+
 typedef long long int MAO;
 struct database{
     MAO mao[4];
     MAO selected;
-    MAO jogadas;
+    MAO jogadas[4];
+    int play;
+    //int passou[3]; tentar não usar isto, simplesmente pôr a 0's as cartas.jogadas quando passarem os bots todos
 };
 typedef struct database DATABASE;
 
@@ -94,31 +98,29 @@ void DATA2STR(char * str,DATABASE data, int n, int v){
         data.selected = add_carta(data.selected,n,v);
     else
         data.selected = rem_carta(data.selected,n,v);
-    sprintf(str,"%lld_%lld_%lld_%lld_%lld_%lld",data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas);//TODO: a string com os lld's acho que dá para subsituir por uma palavra com um "define" no topo
+    data.play = 0;
+    sprintf(str,"%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%d",data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play);//TODO: a string com os lld's acho que dá para subsituir por uma palavra com um "define" no topo
 }
 
 //Dá a string que fica no link do botao play
 void DATA2STR_botao(char * str, DATABASE data){
-    int ind,n,v,i,x,y;
+    int ind,n,v;
     for(ind=0;ind<52;ind++)
         if(carta_existe2(data.selected,ind)){
-            for(i=0;i<4;i++){
-                n = ind/13;
-                v = ind%13;
-                if(carta_existe2(data.mao[i],ind)){
-                    data.mao[i]=rem_carta(data.mao[i],n,v);
-                    data.jogadas = add_carta(data.jogadas,n,v);
-                }
-            }
+            n = ind/13;
+            v = ind%13;
+            data.mao[0]=rem_carta(data.mao[0],n,v);
+            data.jogadas[0] = add_carta(data.jogadas[0],n,v);
         }
     data.selected = 0;
-    sprintf(str,"%lld_%lld_%lld_%lld_%lld_%lld",data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas);
+    data.play = 1;
+    sprintf(str,"%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%d",data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play);
 }
 
 //Passa a string que recebemos do browser para a nossa estrutura
 DATABASE STR2DATA(char * str){
     DATABASE data;
-    sscanf(str, "%lld_%lld_%lld_%lld_%lld_%lld",&(data.mao[0]),&(data.mao[1]),&(data.mao[2]),&(data.mao[3]),&(data.selected),&(data.jogadas));
+    sscanf(str, "%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%d",&(data.mao[0]),&(data.mao[1]),&(data.mao[2]),&(data.mao[3]),&(data.selected),&(data.jogadas[0]),&(data.jogadas[1]),&(data.jogadas[2]),&(data.jogadas[3]),&data.play);
     return data;
 }
 
@@ -126,9 +128,8 @@ DATABASE STR2DATA(char * str){
 /** \brief Distribui as cartas pelas mãos de cada um dos jogadores, e põe o estado das cartas selecionadas tudo a 0's
  @return   Estrutura com as cartas distribuídas pelos jogadores
 */
-DATABASE distribui(){
+DATABASE distribui(DATABASE data){
     int maoCount[4]={0};
-    DATABASE data={{0},0};
     int n,v,j;
     for(n=0;n<4;n++){
         v = 0;
@@ -171,19 +172,55 @@ void imprime_carta_bot(char * path, int x, int y, int naipe, int valor){
 
 //temos que meter os botões num ficheiro para os stores
 //Imprime o botão play, que para já só apaga as cartas selecionadas das respetivas mãos
-void imprime_play (char * path, DATABASE data){//meter para if combinação válida imprimir este link, senão meter só uma imagem do botão "desvanecido"
+void imprime_play (char * path, DATABASE data){//TODO:meter para if combinação válida imprimir este link, senão meter só uma imagem do botão "desvanecido"
     //WARNING: não sei se no futuro, alterar data aqui não altera data na função imprim_carta, mas como está de ambas as maneiras é igual.
+    //if(selecionadas são válidas para jogar)
     char script [52000];
+    int i;
     DATA2STR_botao(script,data);
     printf("<a xlink:href = \"cartas?%s\"><image x = \"600\" y = \"450\" height = \"60\" width = \"30\" xlink:href = \"%s/botao.svg\" /></a>\n", script, path);
+    //else
+    // imprimir só imagem do botão desvanecido
 }
 
 //Imprime o botão passar, que para já só mete as cartas seleecionadas a 0.
 void imprime_passar (char * path, DATABASE data){
     char script[52000];
+    int i,m;
     data.selected = 0;
-    sprintf(script,"%lld_%lld_%lld_%lld_%lld_%lld",data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas);
+    data.jogadas[0]=0;
+    data.play = 1;
+    sprintf(script,"%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%d",data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play);
     printf("<a xlink:href = \"cartas?%s\"><image x = \"650\" y = \"450\" height = \"60\" width = \"30\" xlink:href = \"%s/botao.svg\" /></a>\n", script, path);
+}
+
+int maior_jogadas(MAO jogadas){
+    int i, max=-1;
+    for(i=0;i<52;i++)
+        if(carta_existe2(jogadas,i))
+            max = i;
+    return max;
+}
+
+DATABASE joga_bots(DATABASE data,int m){
+    int max,n,i,v;
+    for(i=0;i<4;i++){
+        if(maior_jogadas(data.jogadas[i])>max)
+            max = maior_jogadas(data.jogadas[i]);
+    }
+    data.jogadas[m]=0;
+    //TODO: tem que testar, se os outros data.jogadas forem 0, pode jogar o que quiser, senão, faz o que está aqui em baixo, tem que se acrescentar à estrutura número da cartas a ser usado nesta jogada
+    //retirar o break para dar com mais do que uma carta por jogador;
+    for(i=max+1;i<52;i++){
+        n=i/13;
+        v=i%13;
+        if(carta_existe2(data.mao[m],i)==1){
+            data.jogadas[m] = add_carta(data.jogadas[m],n,v);
+            data.mao[m] = rem_carta(data.mao[m],n,v);
+            break;
+        }
+    }
+    return data;
 }
 
 /** \brief Imprime o estado
@@ -195,27 +232,29 @@ void imprime_passar (char * path, DATABASE data){
 void imprime(char *path, DATABASE data) {
     int n, v, p;
     int x, y,ind;
+    int i;
     
     printf("<svg height = \"800\" width = \"800\">\n");
     printf("<rect x = \"0\" y = \"0\" height = \"800\" width = \"800\" style = \"fill:#007700\"/>\n");
-    //if(data.jogadas != 0)
-    //    joga_bots;
-    for(y = 10, p = 0; p < 2; p++, y += 420) {
+    if(data.play == 1)
+        for(i=1;i<4;i++)
+            data = joga_bots(data,i);
+    for(y = 430, p = 0; p < 2; p++, y -= 420) {
         for(x = 200, ind = 0; ind < 52; ind++){
-            if(p==1){
-                if(carta_existe2(data.selected,ind))//desvio das cartas selecionadas
+            if(p==0){
+                if(carta_existe2(data.selected,ind)==1)//desvio das cartas selecionadas
                     y -= 20;
-                if(carta_existe2(data.mao[1],ind)){
+                if(carta_existe2(data.mao[p],ind)==1){
                     n = ind/13;
                     v = ind%13;
                     imprime_carta(path,x,y,data,n,v);
                     x += 20;
                 }
-                if(carta_existe2(data.selected,ind))//anula o desvio, para n ficarem todas levantadas
+                if(carta_existe2(data.selected,ind)==1)//anula o desvio, para n ficarem todas levantadas
                     y += 20;
             }
             else
-                if(carta_existe2(data.mao[p],ind)){
+                if(carta_existe2(data.mao[p],ind)==1){
                     n = ind/13;
                     v = ind%13;
                     imprime_carta_bot(path,x,y,n,v);
@@ -224,9 +263,10 @@ void imprime(char *path, DATABASE data) {
                 
         }
     }
-    for(x = 10, p = 2; p < 4; p++, x += 600) {
-        for(y = 60, ind = 0; ind < 52; ind++){
-            if(carta_existe2(data.mao[p],ind)){
+    //TODO:fazer imprimir as cartas à frente de cada jgador e se n jogar nenhuma imprimir imagem "Pass" ->que se tem que fazer
+    for(x = 10, p = 2; p < 4; p++, x += 650) {
+        for(y = 100, ind = 0; ind < 52; ind++){
+            if(carta_existe2(data.mao[p],ind)==1){
                 n = ind/13;
                 v = ind%13;
                 imprime_carta_bot(path,x,y,n,v);
@@ -234,15 +274,16 @@ void imprime(char *path, DATABASE data) {
             }
         }
     }
-    for(x=280,y=200,ind=0;ind<52;ind++){
-        if(carta_existe2(data.jogadas,ind)){
-                n = ind/13;
-                v = ind%13;
-                imprime_carta_bot(path,x,y,n,v);
-                x +=20;
-        }
-    }
-    data.jogadas = 0;
+    for(x=280,y=200,i=0;i<4;i++,y+=20)
+        for(ind=0;ind<52;ind++)
+            if(carta_existe2(data.jogadas[i],ind)){ 
+                    n = ind/13;
+                    v = ind%13;
+                    imprime_carta_bot(path,x,y,n,v);
+                    x +=20;
+            }
+    
+    //data.jogadas = 0; //remover de data.jogadas a carta quando imprimida antes?
     imprime_play(path,data);
     imprime_passar(path,data);
     printf("</svg>\n");    
@@ -257,11 +298,11 @@ void imprime(char *path, DATABASE data) {
  @param query A query que é passada à cgi-bin
  */
 void parse (char * query) {
-    DATABASE data = {{0},007700,0};
+    DATABASE data = {{0},0,{0},0};
     if(query!=NULL && strlen(query) != 0) //n sei para q é preciso a primeira condição...
         data = STR2DATA(query);
     else
-        data = distribui();
+        data = distribui(data);
     imprime(BARALHO, data);
 }
 
