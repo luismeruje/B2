@@ -178,6 +178,7 @@ void imprime_play (char * path, DATABASE data){//TODO:meter para if combinação
     char script [52000];
     int i;
     data.jogadas[0]=0;
+    data.passar=0;
     DATA2STR_botao(script,data);
     printf("<a xlink:href = \"cartas?%s\"><image x = \"560\" y = \"460\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_play.svg\" /></a>\n", script, path);
     //else
@@ -300,7 +301,7 @@ void imprime(char *path, DATABASE data) {
                 data = joga_bots(data,i);
         data.inicio=2;
     }
-    if(data.play == 1 && data.inicio==2)
+    if(data.play == 1)
         for(i=1;i<4;i++)
             data = joga_bots(data,i);
     for(y = 430, p = 0; p < 3; p+=2, y -= 420){
