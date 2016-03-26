@@ -462,4 +462,19 @@ int main() {
     parse(getenv("QUERY_STRING"));
     printf("</body>\n");
     return 0;
+}   
+
+int calculascore(MAO mao){
+    int ind,n,v,r=0;
+    for (ind=0;ind<52;ind++){
+        n = ind/13;
+        v = ind%13;
+        if(carta_existe(mao,n,v)==1) 
+            r++:
+    }
+    if (r>9){
+        if (r==13) r=39;
+        else r=r*2;
+    }
+return r;
 }
