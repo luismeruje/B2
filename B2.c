@@ -243,7 +243,7 @@ DATABASE comeca_bot(DATABASE data,int m){
 }
 
 DATABASE joga_bots(DATABASE data,int m){
-    int max,n,i,v,passou=0;
+    int max,n,i,v,passou;
     for(i=0;i<4;i++){
         n=maior_jogadas(data.jogadas[i])/13;
         v=maior_jogadas(data.jogadas[i])%13;
@@ -254,6 +254,7 @@ DATABASE joga_bots(DATABASE data,int m){
     //TODO: tem que testar, se os outros data.jogadas forem 0, pode jogar o que quiser, senão, faz o que está aqui em baixo, tem que se acrescentar à estrutura número da cartas a ser usado nesta jogada
     //retirar o break para dar com mais do que uma carta por jogador;
     if(all_passed(data,m)==0){
+        passou=0;
         for(i=0;i<52;i++){
             n=i/13;
             v=i%13;
@@ -276,20 +277,36 @@ DATABASE joga_bots(DATABASE data,int m){
     return data;
 }
 
+int quem_comeca(DATABASE data){
+    int i,r=0;
+    for(i=1;i<4;i++)
+        if(carta_existe(data.mao[i],0,0)==1){
+            r=i;
+            break;
+        }
+    return r;
+}
+
 /** \brief Imprime o estado
  
  Esta função está a imprimir o estado em quatro colunas: uma para cada naipe
  @param path	o URL correspondente à pasta que contém todas as cartas
  @param data	O estado atual
  */
-void imprime(char *path, DATABASE data) {
+void imprime(char *path, DATABASE data,int inicio) {
     int n, v, p;
     int x, y,ind;
     int i;
     
     printf("<svg height = \"800\" width = \"800\">\n");
     printf("<rect x = \"0\" y = \"0\" height = \"800\" width = \"800\" style = \"fill:#007700\"/>\n");
-    if(data.play == 1)
+    if(inicio == 1){
+        i = quem_comeca(data);
+        if (i!=0)
+            for(i;i<4;i++)
+                data = joga_bots(data,i);
+    }
+    if(data.play == 1 && inicio==0)
         for(i=1;i<4;i++)
             data = joga_bots(data,i);
     for(y = 430, p = 0; p < 3; p+=2, y -= 420) {
@@ -327,14 +344,28 @@ void imprime(char *path, DATABASE data) {
             }
         }
     }
-    for(x=280,y=200,i=0;i<4;i++,y+=20)
+    for(x=300,y=150,i=2;i>=0;i-=2,y+=150){
         for(ind=0;ind<52;ind++)
-            if(carta_existe2(data.jogadas[i],ind)){ 
-                    n = ind/13;
-                    v = ind%13;
-                    imprime_carta_bot(path,x,y,n,v);
-                    x +=20;
+            if(carta_existe2(data.jogadas[i],ind)){
+                n = ind/13;
+                v = ind%13;
+                imprime_carta_bot(path,x,y,n,v);
+                x +=20;
             }
+        x=300;
+    }
+    
+    
+    for(x=150,y=200,i=1;i<4;i+=2,x+=350){
+        for(ind=0;ind<52;ind++)
+            if(carta_existe2(data.jogadas[i],ind)){
+                n = ind/13;
+                v = ind%13;
+                imprime_carta_bot(path,x,y,n,v);
+                y +=20;
+            }
+        y=200;
+    }
     
     //data.jogadas = 0; //remover de data.jogadas a carta quando imprimida antes?
     imprime_play(path,data);
@@ -342,6 +373,16 @@ void imprime(char *path, DATABASE data) {
     printf("</svg>\n");    
 }
 
+void check_finish(char * path, DATABASE data, int i){
+    int f=0,b;
+    for(b=0;b<4;b++)
+        if(data.mao[b]==0)
+            f=1;
+    if(f==1)
+        printf("Fim\n");
+    else
+        imprime(path,data,i);
+}
 /** \brief Trata os argumentos da CGI
  
  Esta função recebe a query que é passada à cgi-bin e trata-a.
@@ -352,11 +393,17 @@ void imprime(char *path, DATABASE data) {
  */
 void parse (char * query) {
     DATABASE data = {{0},0,{0},0,0,{0}};
-    if(query!=NULL && strlen(query) != 0) //n sei para q é preciso a primeira condição...
+    int i;
+    if(query!=NULL && strlen(query) != 0){ //n sei para q é preciso a primeira condição...
         data = STR2DATA(query);
-    else
+        i=0; //não estamos a começar
+        check_finish(BARALHO,data,i);
+    }
+    else{
         data = distribui(data);
-    imprime(BARALHO, data);
+        i=1; //é a primeira jogada, quem será que tem o precioso 3 de ouros?
+        imprime(BARALHO, data,i);
+    }
 }
 
 
