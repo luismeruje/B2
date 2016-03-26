@@ -327,7 +327,7 @@ void imprime(char *path, DATABASE data) {
             }
         }
     }
-    for(x=280,y=200,i=0;i<4;i++,y+=20)
+    for(x=300,y=150,i=2;i>=0;i-=2,y+=150){
         for(ind=0;ind<52;ind++)
             if(carta_existe2(data.jogadas[i],ind)){ 
                     n = ind/13;
@@ -335,7 +335,21 @@ void imprime(char *path, DATABASE data) {
                     imprime_carta_bot(path,x,y,n,v);
                     x +=20;
             }
-    
+    x=300;
+    }
+
+
+    for(x=150,y=200,i=1;i<4;i+=2,x+=350){
+        for(ind=0;ind<52;ind++)
+            if(carta_existe2(data.jogadas[i],ind)){ 
+                    n = ind/13;
+                    v = ind%13;
+                    imprime_carta_bot(path,x,y,n,v);
+                    y +=20;
+            }
+    y=200;
+    }
+
     //data.jogadas = 0; //remover de data.jogadas a carta quando imprimida antes?
     imprime_play(path,data);
     imprime_passar(path,data);
