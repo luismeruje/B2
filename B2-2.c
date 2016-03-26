@@ -250,7 +250,7 @@ void imprime_play (DATABASE data, char * path){
     	printf("<a xlink:href = \"cartas?%s\"><image x = \"560\" y = \"460\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_play.svg\" /></a>\n", script, path);
     }
     else
-    	printf("<image x = \"560\" y = \"460\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_play.svg\" />\n", path);
+    	printf("<image x = \"560\" y = \"460\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_play_cinza.svg\" />\n", path);
 
 }
 
@@ -416,6 +416,25 @@ void imprime(char * path,DATABASE data){
 //*****************************Função central- FIM################################
 
 
+int calcula_score(MAO mao){
+    int ind;
+    int n,v;
+    int r=0;
+
+    for (ind=0;ind<52;ind++){
+        n = ind/13;
+        v = ind%13;
+        if(carta_existe(mao,n,v)==1) 
+        	r++;
+    }
+    if (r>9){
+        if (r==13) 
+        	r=39;
+        else 
+        	r=r*2;
+    }
+return r;
+}
 
 void check_finish(char * path, DATABASE data){
     int f=0,b;
@@ -424,8 +443,10 @@ void check_finish(char * path, DATABASE data){
             f=1;
             break;
         }
-    if(f==1)
-        printf("Fim\n");
+    if(f==1){
+        printf("Fim<br>");
+    	printf("Pontuação:<br>Jogador - %d<br>Bot1 - %d<br>Bot2 - %d<br>Bot3 - %d",calcula_score(data.mao[0]),calcula_score(data.mao[1]),calcula_score(data.mao[2]),calcula_score(data.mao[3]));
+    }
     else
         imprime(path,data);
 }
