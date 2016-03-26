@@ -21,7 +21,7 @@
  */
 #define VALORES		"3456789TJQKA2"
 
-#define DATA "%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%d_%d_%d_%d_%d_%d"
+#define DATA "%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%d_%d_%d_%d_%d_%d_%d"
 
 typedef long long int MAO;
 struct database{
@@ -31,6 +31,7 @@ struct database{
     int play;
     int nc; //número de cartas a serem jogadas por cada jogador
     int passar[4];
+    int inicio;
 };
 typedef struct database DATABASE;
 
@@ -100,7 +101,7 @@ void DATA2STR(char * str,DATABASE data, int n, int v){
     else
         data.selected = rem_carta(data.selected,n,v);
     data.play = 0;
-    sprintf(str,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc,data.passar[0],data.passar[1],data.passar[2],data.passar[3]);//TODO: a string com os lld's acho que dá para subsituir por uma palavra com um "define" no topo
+    sprintf(str,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc,data.passar[0],data.passar[1],data.passar[2],data.passar[3],data.inicio);//TODO: a string com os lld's acho que dá para subsituir por uma palavra com um "define" no topo
 }
 
 //Dá a string que fica no link do botao play
@@ -119,13 +120,13 @@ void DATA2STR_botao(char * str, DATABASE data){
     for(i=0;i<4;i++){
         data.passar[i]=0;
     }
-    sprintf(str,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc,data.passar[0],data.passar[1],data.passar[2],data.passar[3]);
+    sprintf(str,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc,data.passar[0],data.passar[1],data.passar[2],data.passar[3],data.inicio);
 }
 
 //Passa a string que recebemos do browser para a nossa estrutura
 DATABASE STR2DATA(char * str){
     DATABASE data;
-    sscanf(str, DATA,&(data.mao[0]),&(data.mao[1]),&(data.mao[2]),&(data.mao[3]),&(data.selected),&(data.jogadas[0]),&(data.jogadas[1]),&(data.jogadas[2]),&(data.jogadas[3]),&data.play,&data.nc,&data.passar[0],&data.passar[1],&data.passar[2],&data.passar[3]);
+    sscanf(str, DATA,&(data.mao[0]),&(data.mao[1]),&(data.mao[2]),&(data.mao[3]),&(data.selected),&(data.jogadas[0]),&(data.jogadas[1]),&(data.jogadas[2]),&(data.jogadas[3]),&data.play,&data.nc,&data.passar[0],&data.passar[1],&data.passar[2],&data.passar[3],&data.inicio);
     return data;
 }
 
@@ -197,7 +198,7 @@ void imprime_passar (char * path, DATABASE data){
     data.jogadas[0]=0;
     data.play = 1;
     data.passar[0]=1;
-    sprintf(script,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc,data.passar[0],data.passar[1],data.passar[2],data.passar[3]);
+    sprintf(script,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc,data.passar[0],data.passar[1],data.passar[2],data.passar[3],data.inicio);
     printf("<a xlink:href = \"cartas?%s\"><image x = \"560\" y = \"500\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_pass.svg\" /></a>\n", script, path);
 }
 
@@ -293,20 +294,21 @@ int quem_comeca(DATABASE data){
  @param path	o URL correspondente à pasta que contém todas as cartas
  @param data	O estado atual
  */
-void imprime(char *path, DATABASE data,int inicio) {
+void imprime(char *path, DATABASE data) {
     int n, v, p;
     int x, y,ind;
     int i;
     
     printf("<svg height = \"800\" width = \"800\">\n");
     printf("<rect x = \"0\" y = \"0\" height = \"800\" width = \"800\" style = \"fill:#007700\"/>\n");
-    if(inicio == 1){
+    if(data.inicio == 1){
         i = quem_comeca(data);
         if (i!=0)
             for(i;i<4;i++)
                 data = joga_bots(data,i);
+        data.inicio=2;
     }
-    if(data.play == 1 && inicio==0)
+    if(data.play == 1 && data.inicio==2)
         for(i=1;i<4;i++)
             data = joga_bots(data,i);
     for(y = 430, p = 0; p < 3; p+=2, y -= 420) {
@@ -333,7 +335,7 @@ void imprime(char *path, DATABASE data,int inicio) {
                 
         }
     }
-    //TODO:fazer imprimir as cartas à frente de cada jgador e se n jogar nenhuma imprimir imagem "Pass" ->que se tem que fazer
+    
     for(x = 10, p = 1; p < 4; p+=2, x += 650) {
         for(y = 100, ind = 0; ind < 52; ind++){
             if(carta_existe2(data.mao[p],ind)==1){
@@ -373,7 +375,7 @@ void imprime(char *path, DATABASE data,int inicio) {
     printf("</svg>\n");    
 }
 
-void check_finish(char * path, DATABASE data, int i){
+void check_finish(char * path, DATABASE data){
     int f=0,b;
     for(b=0;b<4;b++)
         if(data.mao[b]==0)
@@ -381,7 +383,43 @@ void check_finish(char * path, DATABASE data, int i){
     if(f==1)
         printf("Fim\n");
     else
-        imprime(path,data,i);
+        imprime(path,data);
+}
+
+void imprime_start(DATABASE data,char * path){
+    char script[52000];
+    sprintf(script,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc,data.passar[0],data.passar[1],data.passar[2],data.passar[3],data.inicio);
+    printf("<a xlink:href = \"cartas?%s\"><image x = \"350\" y = \"250\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_start.svg\" /></a>\n", script, path);
+}
+
+void start(char * path, DATABASE data){
+    int y, x,p,ind,n,v;
+    printf("<svg height = \"800\" width = \"800\">\n");
+    printf("<rect x = \"0\" y = \"0\" height = \"800\" width = \"800\" style = \"fill:#007700\"/>\n");
+    if(data.inicio==0){
+        for(y = 430, p = 0; p < 3; p+=2, y -= 420)
+            for(x = 200, ind = 0; ind < 52; ind++)
+                if(carta_existe2(data.mao[p],ind)==1){
+                    n = ind/13;
+                    v = ind%13;
+                    imprime_carta_bot(path,x,y,n,v);
+                    x += 20;
+                }
+        for(x = 10, p = 1; p < 4; p+=2, x += 650)
+            for(y = 100, ind = 0; ind < 52; ind++)
+                if(carta_existe2(data.mao[p],ind)==1){
+                    n = ind/13;
+                    v = ind%13;
+                    imprime_carta_bot(path,x,y,n,v);
+                    y += 20;
+                }
+        data.inicio=1;
+        imprime_start(data,path);
+        printf("</svg>\n");
+    }
+    else
+        imprime(path,data);
+    
 }
 /** \brief Trata os argumentos da CGI
  
@@ -392,17 +430,14 @@ void check_finish(char * path, DATABASE data, int i){
  @param query A query que é passada à cgi-bin
  */
 void parse (char * query) {
-    DATABASE data = {{0},0,{0},0,0,{0}};
-    int i;
+    DATABASE data = {{0},0,{0},0,0,{0},0};
     if(query!=NULL && strlen(query) != 0){ //n sei para q é preciso a primeira condição...
         data = STR2DATA(query);
-        i=0; //não estamos a começar
-        check_finish(BARALHO,data,i);
+        check_finish(BARALHO,data);
     }
     else{
-        data = distribui(data);
-        i=1; //é a primeira jogada, quem será que tem o precioso 3 de ouros?
-        imprime(BARALHO, data,i);
+        data = distribui(data); //é a primeira jogada, quem será que tem o precioso 3 de ouros?
+        start(BARALHO, data);
     }
 }
 
