@@ -184,7 +184,7 @@ void imprime_play (char * path, DATABASE data){//TODO:meter para if combinação
     int i;
     data.jogadas[0]=0;
     DATA2STR_botao(script,data);
-    printf("<a xlink:href = \"cartas?%s\"><image x = \"600\" y = \"450\" height = \"60\" width = \"30\" xlink:href = \"%s/botao.svg\" /></a>\n", script, path);
+    printf("<a xlink:href = \"cartas?%s\"><image x = \"560\" y = \"460\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_play.svg\" /></a>\n", script, path);
     //else
     // imprimir só imagem do botão desvanecido
 }
@@ -198,7 +198,7 @@ void imprime_passar (char * path, DATABASE data){
     data.play = 1;
     data.passar[0]=1;
     sprintf(script,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc,data.passar[0],data.passar[1],data.passar[2],data.passar[3]);
-    printf("<a xlink:href = \"cartas?%s\"><image x = \"650\" y = \"450\" height = \"60\" width = \"30\" xlink:href = \"%s/botao.svg\" /></a>\n", script, path);
+    printf("<a xlink:href = \"cartas?%s\"><image x = \"560\" y = \"500\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_pass.svg\" /></a>\n", script, path);
 }
 
 
