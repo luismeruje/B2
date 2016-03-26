@@ -289,7 +289,7 @@ void imprime(char *path, DATABASE data) {
     if(data.play == 1)
         for(i=1;i<4;i++)
             data = joga_bots(data,i);
-    for(y = 430, p = 0; p < 2; p++, y -= 420) {
+    for(y = 430, p = 0; p < 3; p+=2, y -= 420) {
         for(x = 200, ind = 0; ind < 52; ind++){
             if(p==0){
                 if(carta_existe2(data.selected,ind)==1)//desvio das cartas selecionadas
@@ -314,7 +314,7 @@ void imprime(char *path, DATABASE data) {
         }
     }
     //TODO:fazer imprimir as cartas à frente de cada jgador e se n jogar nenhuma imprimir imagem "Pass" ->que se tem que fazer
-    for(x = 10, p = 2; p < 4; p++, x += 650) {
+    for(x = 10, p = 1; p < 4; p+=2, x += 650) {
         for(y = 100, ind = 0; ind < 52; ind++){
             if(carta_existe2(data.mao[p],ind)==1){
                 n = ind/13;
