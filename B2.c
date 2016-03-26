@@ -106,7 +106,7 @@ void DATA2STR(char * str,DATABASE data, int n, int v){
 //Dá a string que fica no link do botao play
 //TODO:fazer com que determine o data.nc
 void DATA2STR_botao(char * str, DATABASE data){
-    int ind,n,v;
+    int ind,n,v,i;
     for(ind=0;ind<52;ind++)
         if(carta_existe2(data.selected,ind)){
             n = ind/13;
@@ -116,6 +116,9 @@ void DATA2STR_botao(char * str, DATABASE data){
         }
     data.selected = 0;
     data.play = 1;
+    for(i=0;i<4;i++){
+        data.passar[i]=0;
+    }
     sprintf(str,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc,data.passar[0],data.passar[1],data.passar[2],data.passar[3]);
 }
 
