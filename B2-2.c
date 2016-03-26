@@ -112,7 +112,6 @@ void imprime_carta_imagem(char * path,int x, int y,int n,int v){
 
 
 void imprime_carta_link(char * path,int x, int y,DATABASE data,int n,int v){
-	int ind;
     char *suit = NAIPES;
     char *rank = VALORES;
     char script[52000]; // n sei quanto precisamos.
@@ -128,7 +127,7 @@ void imprime_carta_link(char * path,int x, int y,DATABASE data,int n,int v){
 
 int quem_comeca(DATABASE data){
 	int first,jog;
-	for(jog=0;jog<4;jog++)
+	for(jog=0;;jog++)
 		if(carta_existe(data.mao[jog],0,0)){
 			first = jog;
 			break;
@@ -169,7 +168,6 @@ void imprime_start(DATABASE data,char * path){
 
 void imprime_passar (DATABASE data,char * path){
 	char script[52000];
-    int i,m;
     data.selected = 0;
     data.jogadas[0]=0;
     data.play = 1;
@@ -180,7 +178,6 @@ void imprime_passar (DATABASE data,char * path){
 
 void imprime_play (DATABASE data, char * path){
 	int n,v;
-	int jog;
 	int ind;
 	char script [52000];
 	data.jogadas[0]=0;
@@ -372,8 +369,9 @@ void imprime(char * path,DATABASE data){
     if(data.inicio == 1){
     	jog = quem_comeca(data);
     	if (jog>0)
-    		for(jog;jog<4;jog++)
+    		for(jog;jog<4;jog++){
     			data=joga_bots(data,jog);
+    		}
     	data.inicio = 2;
     }
     if(data.play == 1)
