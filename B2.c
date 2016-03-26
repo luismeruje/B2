@@ -21,7 +21,7 @@
  */
 #define VALORES		"3456789TJQKA2"
 
-#define DATA "%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%d_%d_%d_%d_%d_%d_%d"
+#define DATA "%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%d_%d_%d_%d"
 
 typedef long long int MAO;
 struct database{
@@ -30,15 +30,11 @@ struct database{
     MAO jogadas[4];
     int play;
     int nc; //número de cartas a serem jogadas por cada jogador
-    int passar[4];
+    int passar;
     int inicio;
 };
 typedef struct database DATABASE;
 
-//database STR2ESTADO (char *query){
-//    database data = {{1},0};
-//    return data;
-//}
 /** \brief Devolve o índice da carta
  
  @param naipe	O naipe da carta (inteiro entre 0 e 3)
@@ -101,32 +97,30 @@ void DATA2STR(char * str,DATABASE data, int n, int v){
     else
         data.selected = rem_carta(data.selected,n,v);
     data.play = 0;
-    sprintf(str,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc,data.passar[0],data.passar[1],data.passar[2],data.passar[3],data.inicio);//TODO: a string com os lld's acho que dá para subsituir por uma palavra com um "define" no topo
+    sprintf(str,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc,data.passar,data.inicio);//TODO: a string com os lld's acho que dá para subsituir por uma palavra com um "define" no topo
 }
 
 //Dá a string que fica no link do botao play
 //TODO:fazer com que determine o data.nc
 void DATA2STR_botao(char * str, DATABASE data){
     int ind,n,v,i;
-    for(ind=0;ind<52;ind++)
-        if(carta_existe2(data.selected,ind)){
-            n = ind/13;
-            v = ind%13;
+    for(ind=0;ind<52;ind++){
+        n = ind/13;
+        v = ind%13;
+        if(carta_existe(data.selected,n,v)){
             data.mao[0]=rem_carta(data.mao[0],n,v);
             data.jogadas[0] = add_carta(data.jogadas[0],n,v);
         }
+    }
     data.selected = 0;
     data.play = 1;
-    for(i=0;i<4;i++){
-        data.passar[i]=0;
-    }
-    sprintf(str,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc,data.passar[0],data.passar[1],data.passar[2],data.passar[3],data.inicio);
+    sprintf(str,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc,data.passar,data.inicio);
 }
 
 //Passa a string que recebemos do browser para a nossa estrutura
 DATABASE STR2DATA(char * str){
     DATABASE data;
-    sscanf(str, DATA,&(data.mao[0]),&(data.mao[1]),&(data.mao[2]),&(data.mao[3]),&(data.selected),&(data.jogadas[0]),&(data.jogadas[1]),&(data.jogadas[2]),&(data.jogadas[3]),&data.play,&data.nc,&data.passar[0],&data.passar[1],&data.passar[2],&data.passar[3],&data.inicio);
+    sscanf(str, DATA,&(data.mao[0]),&(data.mao[1]),&(data.mao[2]),&(data.mao[3]),&(data.selected),&(data.jogadas[0]),&(data.jogadas[1]),&(data.jogadas[2]),&(data.jogadas[3]),&data.play,&data.nc,&data.passar,&data.inicio);
     return data;
 }
 
@@ -197,48 +191,47 @@ void imprime_passar (char * path, DATABASE data){
     data.selected = 0;
     data.jogadas[0]=0;
     data.play = 1;
-    data.passar[0]=1;
-    sprintf(script,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc,data.passar[0],data.passar[1],data.passar[2],data.passar[3],data.inicio);
+    data.passar++;
+    sprintf(script,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc,data.passar,data.inicio);
     printf("<a xlink:href = \"cartas?%s\"><image x = \"560\" y = \"500\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_pass.svg\" /></a>\n", script, path);
 }
 
 
 int maior_jogadas(MAO jogadas){
     int i, max=-1,n,v;
-    for(i=0;i<52;i++)
-        if(carta_existe2(jogadas,i)){
-            v=i%13;
-            n=i/13;
+    for(i=0;i<52;i++){
+        n=i/13;
+        v=i%13;
+        if(carta_existe(jogadas,n,v)){
             if(v>max%13||(v==max%13&&n>max/13))
                 max = i;
         }
+    }
     return max;
 }
+
 int all_passed(DATABASE data, int m){
-    int i,c,result=0;
-    for(i=0,c=0;i<4;i++)
-        if(i!=m)
-            if(data.passar[i]==1)
-                c++;
-    if(c==3)
-        result = 1;
+    int result;
+    if (data.passar>=3)
+        result=1;
     return result;
 }
 
 DATABASE comeca_bot(DATABASE data,int m){
     int i,n,v;
     for(i=0;i<4;i++){
-        data.passar[i]=0;
         data.jogadas[i]=0;
     }
-    for(i=0;i<52;i++)
-        if(carta_existe2(data.mao[m],i)){
-            n=i/13;
-            v=i%13;
+    data.passar=0;
+    for(i=0;i<52;i++){
+        n=i/13;
+        v=i%13;
+        if(carta_existe(data.mao[m],n,v)){
             data.jogadas[m]=add_carta(data.jogadas[m],n,v);
             data.mao[m] = rem_carta(data.mao[m],n,v);
             break;
         }
+    }
     
     return data;
 }
@@ -259,7 +252,7 @@ DATABASE joga_bots(DATABASE data,int m){
         for(i=0;i<52;i++){
             n=i/13;
             v=i%13;
-            if(carta_existe2(data.mao[m],i)==1)
+            if(carta_existe(data.mao[m],n,v)==1)
                 if(v>max%13||(v==max%13&&n>max/13)){
                     data.jogadas[m] = add_carta(data.jogadas[m],n,v);
                     data.mao[m] = rem_carta(data.mao[m],n,v);
@@ -268,10 +261,9 @@ DATABASE joga_bots(DATABASE data,int m){
                 }
         }
         if (passou == 0)
-            data.passar[m]=1;
+            data.passar++;
         else
-            for(i=0;i<4;i++)
-                data.passar[i]=0;
+            data.passar = 0;
     }
     else
         data = comeca_bot(data,m);
@@ -311,61 +303,63 @@ void imprime(char *path, DATABASE data) {
     if(data.play == 1 && data.inicio==2)
         for(i=1;i<4;i++)
             data = joga_bots(data,i);
-    for(y = 430, p = 0; p < 3; p+=2, y -= 420) {
+    for(y = 430, p = 0; p < 3; p+=2, y -= 420){
         for(x = 200, ind = 0; ind < 52; ind++){
+            n = ind/13;
+            v = ind%13;
             if(p==0){
-                if(carta_existe2(data.selected,ind)==1)//desvio das cartas selecionadas
+                if(carta_existe(data.selected,n,v)==1)//desvio das cartas selecionadas
                     y -= 20;
-                if(carta_existe2(data.mao[p],ind)==1){
-                    n = ind/13;
-                    v = ind%13;
+                if(carta_existe(data.mao[p],n,v)==1){
                     imprime_carta(path,x,y,data,n,v);
                     x += 20;
                 }
-                if(carta_existe2(data.selected,ind)==1)//anula o desvio, para n ficarem todas levantadas
+                if(carta_existe(data.selected,n,v)==1)//anula o desvio, para n ficarem todas levantadas
                     y += 20;
             }
-            else
-                if(carta_existe2(data.mao[p],ind)==1){
-                    n = ind/13;
-                    v = ind%13;
+            else{
+                n = ind/13;
+                v = ind%13;
+                if(carta_existe(data.mao[p],n,v)==1){
                     imprime_carta_bot(path,x,y,n,v);
                     x += 20;
                 }
-                
+            }
         }
     }
     
     for(x = 10, p = 3; p > 0; p-=2, x += 650) {
         for(y = 100, ind = 0; ind < 52; ind++){
-            if(carta_existe2(data.mao[p],ind)==1){
-                n = ind/13;
-                v = ind%13;
+            n = ind/13;
+            v = ind%13;
+            if(carta_existe(data.mao[p],n,v)==1){
                 imprime_carta_bot(path,x,y,n,v);
                 y += 20;
             }
         }
     }
     for(x=300,y=150,i=2;i>=0;i-=2,y+=150){
-        for(ind=0;ind<52;ind++)
-            if(carta_existe2(data.jogadas[i],ind)){
-                n = ind/13;
-                v = ind%13;
+        for(ind=0;ind<52;ind++){
+            n = ind/13;
+            v = ind%13;
+            if(carta_existe(data.jogadas[i],n,v)){
                 imprime_carta_bot(path,x,y,n,v);
                 x +=20;
             }
+        }
         x=300;
     }
     
     
     for(x=150,y=200,i=3;i>0;i-=2,x+=350){
-        for(ind=0;ind<52;ind++)
-            if(carta_existe2(data.jogadas[i],ind)){
-                n = ind/13;
-                v = ind%13;
+        for(ind=0;ind<52;ind++){
+            n = ind/13;
+            v = ind%13;
+            if(carta_existe(data.jogadas[i],n,v)){
                 imprime_carta_bot(path,x,y,n,v);
                 y +=20;
             }
+        }
         y=200;
     }
     
@@ -378,8 +372,10 @@ void imprime(char *path, DATABASE data) {
 void check_finish(char * path, DATABASE data){
     int f=0,b;
     for(b=0;b<4;b++)
-        if(data.mao[b]==0)
+        if(data.mao[b]==0){
             f=1;
+            break;
+        }
     if(f==1)
         printf("Fim\n");
     else
@@ -388,7 +384,7 @@ void check_finish(char * path, DATABASE data){
 
 void imprime_start(DATABASE data,char * path){
     char script[52000];
-    sprintf(script,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc,data.passar[0],data.passar[1],data.passar[2],data.passar[3],data.inicio);
+    sprintf(script,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc,data.passar,data.inicio);
     printf("<a xlink:href = \"cartas?%s\"><image x = \"350\" y = \"250\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_start.svg\" /></a>\n", script, path);
 }
 
@@ -398,21 +394,23 @@ void start(char * path, DATABASE data){
     printf("<rect x = \"0\" y = \"0\" height = \"800\" width = \"800\" style = \"fill:#007700\"/>\n");
     if(data.inicio==0){
         for(y = 430, p = 0; p < 3; p+=2, y -= 420)
-            for(x = 200, ind = 0; ind < 52; ind++)
-                if(carta_existe2(data.mao[p],ind)==1){
-                    n = ind/13;
-                    v = ind%13;
+            for(x = 200, ind = 0; ind < 52; ind++){
+                n = ind/13;
+                v = ind%13;
+                if(carta_existe(data.mao[p],n,v)==1){
                     imprime_carta_bot(path,x,y,n,v);
                     x += 20;
                 }
+            }
         for(x = 10, p = 3; p > 0; p-=2, x += 650)
-            for(y = 100, ind = 0; ind < 52; ind++)
-                if(carta_existe2(data.mao[p],ind)==1){
-                    n = ind/13;
-                    v = ind%13;
+            for(y = 100, ind = 0; ind < 52; ind++){
+                n = ind/13;
+                v = ind%13;
+                if(carta_existe(data.mao[p],n,v)==1){
                     imprime_carta_bot(path,x,y,n,v);
                     y += 20;
                 }
+            }
         data.inicio=1;
         imprime_start(data,path);
         printf("</svg>\n");
@@ -430,7 +428,7 @@ void start(char * path, DATABASE data){
  @param query A query que é passada à cgi-bin
  */
 void parse (char * query) {
-    DATABASE data = {{0},0,{0},0,0,{0},0};
+    DATABASE data = {{0},0,{0},0,0,0,0};
     if(query!=NULL && strlen(query) != 0){ //n sei para q é preciso a primeira condição...
         data = STR2DATA(query);
         check_finish(BARALHO,data);
