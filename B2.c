@@ -336,7 +336,7 @@ void imprime(char *path, DATABASE data) {
         }
     }
     
-    for(x = 10, p = 1; p < 4; p+=2, x += 650) {
+    for(x = 10, p = 3; p > 0; p-=2, x += 650) {
         for(y = 100, ind = 0; ind < 52; ind++){
             if(carta_existe2(data.mao[p],ind)==1){
                 n = ind/13;
@@ -358,7 +358,7 @@ void imprime(char *path, DATABASE data) {
     }
     
     
-    for(x=150,y=200,i=1;i<4;i+=2,x+=350){
+    for(x=150,y=200,i=3;i>0;i-=2,x+=350){
         for(ind=0;ind<52;ind++)
             if(carta_existe2(data.jogadas[i],ind)){
                 n = ind/13;
@@ -405,7 +405,7 @@ void start(char * path, DATABASE data){
                     imprime_carta_bot(path,x,y,n,v);
                     x += 20;
                 }
-        for(x = 10, p = 1; p < 4; p+=2, x += 650)
+        for(x = 10, p = 3; p > 0; p-=2, x += 650)
             for(y = 100, ind = 0; ind < 52; ind++)
                 if(carta_existe2(data.mao[p],ind)==1){
                     n = ind/13;
