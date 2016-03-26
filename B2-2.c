@@ -136,6 +136,36 @@ int quem_comeca(DATABASE data){
 }
 
 
+int maior_carta_mao(MAO mao){
+    int ind;
+    int max=-1;
+    int n,v;
+    for(ind=0;ind<52;ind++){
+        n=ind/13;
+        v=ind%13;
+        if(carta_existe(mao,n,v)){
+            if(v>max%13||(v==max%13&&n>max/13))
+                max = ind;
+        }
+    }
+    return max;
+}
+
+int maior_carta_jogada(DATABASE data){
+	int jog;
+	int n,v;
+	int temp;
+	int max = -1;
+	for(jog=0;jog<4;jog++){
+		temp = maior_carta_mao(data.jogadas[jog]);
+		n = temp/13;
+		v = temp%13;
+		if(v>max%13||(v==max%13&&n>max/13))
+			max = temp;
+	}
+	return max;
+}
+
 
 //##############################UTILITÁRIOS-FIM################################################
 /** \brief Distribui as cartas pelas mãos de cada um dos jogadores, e põe o estado das cartas selecionadas tudo a 0's
@@ -176,24 +206,52 @@ void imprime_passar (DATABASE data,char * path){
     printf("<a xlink:href = \"cartas?%s\"><image x = \"560\" y = \"500\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_pass.svg\" /></a>\n", script, path);
 }
 
+int pode_jogar(DATABASE data){
+	int ind,n,v;
+	int count=0;
+	int r=0;
+	int selec;
+	int max;
+	for(ind=0;ind<52;ind++){
+		n=ind/13;
+		v=ind%13;
+		if(carta_existe(data.selected,n,v)){
+			selec = ind;
+			count++;
+		}
+	}
+	if(count==1){
+		n=selec/13;
+		v=selec%13;
+		max = maior_carta_jogada(data);
+		if(v>max%13||(v==max%13&&n>max/13))
+			r=1;
+	}
+	return r;
+}
 void imprime_play (DATABASE data, char * path){
 	int n,v;
 	int ind;
 	char script [52000];
 	data.jogadas[0]=0;
-	for(ind=0;ind<52;ind++){
-        n = ind/13;
-        v = ind%13;
-        if(carta_existe(data.selected,n,v)){
-            data.mao[0]=rem_carta(data.mao[0],n,v);
-            data.jogadas[0] = add_carta(data.jogadas[0],n,v);
-        }
+	if(pode_jogar(data)==1){
+		for(ind=0;ind<52;ind++){
+        	n = ind/13;
+        	v = ind%13;
+        	if(carta_existe(data.selected,n,v)){
+            	data.mao[0]=rem_carta(data.mao[0],n,v);
+            	data.jogadas[0] = add_carta(data.jogadas[0],n,v);
+        	}
+    	}
+    	data.selected = 0;
+    	data.passar = 0;
+    	data.play = 1;
+    	DATA2STR(script, data);
+    	printf("<a xlink:href = \"cartas?%s\"><image x = \"560\" y = \"460\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_play.svg\" /></a>\n", script, path);
     }
-    data.selected = 0;
-    data.passar = 0;
-    data.play = 1;
-    DATA2STR(script, data);
-    printf("<a xlink:href = \"cartas?%s\"><image x = \"560\" y = \"460\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_play.svg\" /></a>\n", script, path);
+    else
+    	printf("<image x = \"560\" y = \"460\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_play.svg\" />\n", path);
+
 }
 
 
@@ -279,35 +337,6 @@ void imprime_maos (DATABASE data, char * path){
 
 //##############################Funções bots#######################################################
 
-int maior_carta_mao(MAO mao){
-    int ind;
-    int max=-1;
-    int n,v;
-    for(ind=0;ind<52;ind++){
-        n=ind/13;
-        v=ind%13;
-        if(carta_existe(mao,n,v)){
-            if(v>max%13||(v==max%13&&n>max/13))
-                max = ind;
-        }
-    }
-    return max;
-}
-
-int maior_carta_jogada(DATABASE data){
-	int jog;
-	int n,v;
-	int temp;
-	int max = -1;
-	for(jog=0;jog<4;jog++){
-		temp = maior_carta_mao(data.jogadas[jog]);
-		n = temp/13;
-		v = temp%13;
-		if(v>max%13||(v==max%13&&n>max/13))
-			max = temp;
-	}
-	return max;
-}
 
 DATABASE joga_bots(DATABASE data,int m){
     int max;
