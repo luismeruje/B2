@@ -210,30 +210,48 @@ int pode_jogar(DATABASE data){
 	int ind,n,v;
 	int count=0;
 	int r=0;
-	int selec;
+	int selec[3];
+	int i = 0;
 	int max;
 	for(ind=0;ind<52;ind++){
 		n=ind/13;
 		v=ind%13;
 		if(carta_existe(data.selected,n,v)){
-			selec = ind;
+			selec[i] = ind;
 			count++;
+			i++;
 		}
 	}
-	if(count==1){
-		n=selec/13;
-		v=selec%13;
-		max = maior_carta_jogada(data);
-		if(v>max%13||(v==max%13&&n>max/13))
-			r=1;
+	if(count==data.nc&&data.nc!=0){
+		for(i=0;i<data.nc;i++){
+			n=selec[i]/13;
+			v=selec[i]%13;
+			max = maior_carta_jogada(data);
+			if(v>max%13||(v==max%13&&n>max/13))
+				r=1;
+		}
 	}
+	//if(data.nc==0)
+	//	r=1;
 	return r;
 }
+
+//como é que vê que pode jogar quando os bots passaram todos??
 void imprime_play (DATABASE data, char * path){
 	int n,v;
 	int ind;
 	char script [52000];
 	data.jogadas[0]=0;
+	int count=0;
+	if(data.passar == 3||data.nc==0){
+		data.nc = 0;
+		for(ind=0;ind<52;ind++){
+			n=ind/13;
+			v=ind%13;
+			if(carta_existe(data.selected,n,v))
+				data.nc ++;
+		}
+	}
 	if(pode_jogar(data)==1){
 		for(ind=0;ind<52;ind++){
         	n = ind/13;
@@ -241,6 +259,7 @@ void imprime_play (DATABASE data, char * path){
         	if(carta_existe(data.selected,n,v)){
             	data.mao[0]=rem_carta(data.mao[0],n,v);
             	data.jogadas[0] = add_carta(data.jogadas[0],n,v);
+            	count ++;
         	}
     	}
     	data.selected = 0;
@@ -336,44 +355,79 @@ void imprime_maos (DATABASE data, char * path){
 
 
 //##############################Funções bots#######################################################
+DATABASE check_cartas(int n, int v, DATABASE data,int m){
+	int count=0;
+	int naipe[4] = {-1};
+	int n1,v1;
+	naipe[0]=n;
+	int i = 1;
+	count = data.nc - 1;
+	for(n1=0;n1<4&&count>0;n1++)
+		if(n1!=n&&carta_existe(data.mao[m],n1,v)){
+			naipe[i]=n1;
+			i++;
+			count--;
+		}
+	if(count == 0)
+		for(i=0;i<4;i++)
+			if(naipe[i]!=-1){
+				data.mao[m] = rem_carta(data.mao[m],naipe[i],v);
+				data.jogadas[m] = add_carta(data.jogadas[m],naipe[i],v);
+			}
 
+	return data;
+}
 
-DATABASE joga_bots(DATABASE data,int m){
-    int max;
-    int ind;
-    int n,v;
-    int jog;
-    if(all_passed(data)==1){
-    	for(jog=0;jog<4;jog++)
-        	data.jogadas[jog]=0;
-   		data.passar=0;
-    	for(ind=0;ind<52;ind++){
-        	n=ind/13;
-        	v=ind%13;
-        	if(carta_existe(data.mao[m],n,v)){
-            	data.jogadas[m]=add_carta(data.jogadas[m],n,v);
-            	data.mao[m] = rem_carta(data.mao[m],n,v);
-            	break;
+DATABASE bot_continua(DATABASE data,int m){
+	int max;
+	int ind;
+	int n,v;
+    max = maior_carta_jogada(data);
+    data.jogadas[m] = 0;
+    for(ind=0;ind<52;ind++){
+    	n=ind/13;
+    	v=ind%13;
+    	if(carta_existe(data.mao[m],n,v)==1)
+    		if(v>max%13||(v==max%13&&n>max/13)){
+    			data = check_cartas(n,v,data,m);
+    			break;
             }
+    }
+    if(data.jogadas[m]==0)
+    	data.passar++;
+    else
+    	data.passar=0;
+    return data;
+}
+DATABASE bot_comeca(DATABASE data,int m){
+	int jog;
+	int ind;
+	int n,v;
+	for(jog=0;jog<4;jog++)
+        data.jogadas[jog]=0;
+    data.passar=0;
+    for(ind=0;ind<52;ind++){
+        n=ind/13;
+        v=ind%13;
+        if(carta_existe(data.mao[m],n,v)){
+            data.jogadas[m]=add_carta(data.jogadas[m],n,v);
+            data.mao[m] = rem_carta(data.mao[m],n,v);
+            break;
         }
     }
+    data.nc = 1;
+    return data;
+}
+
+DATABASE joga_bots(DATABASE data,int m){
+	int i;
+    if(all_passed(data)==1||data.nc==0){
+ 		data = bot_comeca(data,m);
+    }
     else{
-    	max = maior_carta_jogada(data);
-    	data.jogadas[m] = 0;
-    	for(ind=0;ind<52;ind++){
-    		n=ind/13;
-    		v=ind%13;
-    		if(carta_existe(data.mao[m],n,v)==1)
-    			if(v>max%13||(v==max%13&&n>max/13)){
-    				data.jogadas[m] = add_carta(data.jogadas[m],n,v);
-                	data.mao[m] = rem_carta(data.mao[m],n,v);
-                	break;
-                }
-    	}
-    	if(data.jogadas[m]==0)
-    		data.passar++;
-    	else
-    		data.passar=0;
+    	i = data.nc;
+    	data = bot_continua(data,m);
+    	data.nc = i;
     }
     return data;
 }
@@ -415,7 +469,7 @@ void imprime(char * path,DATABASE data){
 
 //*****************************Função central- FIM################################
 
-
+//pequenas coisas a corrigir
 int calcula_score(MAO mao){
     int ind;
     int n,v;
