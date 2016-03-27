@@ -193,7 +193,7 @@ DATABASE distribui(DATABASE data){
 void imprime_start(DATABASE data,char * path){
     char script[52000];
     sprintf(script,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc,data.passar,data.inicio);
-    printf("<a xlink:href = \"cartas?%s\"><image x = \"350\" y = \"250\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_start.svg\" /></a>\n", script, path);
+    printf("<a xlink:href = \"cartas?%s\"><image x = \"400\" y = \"250\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_start.svg\" /></a>\n", script, path);
 }
 
 void imprime_passar (DATABASE data,char * path){
@@ -203,7 +203,7 @@ void imprime_passar (DATABASE data,char * path){
     data.play = 1;
     data.passar++;
     DATA2STR(script, data);
-    printf("<a xlink:href = \"cartas?%s\"><image x = \"560\" y = \"500\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_pass.svg\" /></a>\n", script, path);
+    printf("<a xlink:href = \"cartas?%s\"><image x = \"625\" y = \"500\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_pass.svg\" /></a>\n", script, path);
 }
 
 int pode_jogar(DATABASE data){
@@ -242,7 +242,6 @@ void imprime_play (DATABASE data, char * path){
 	int ind;
 	char script [52000];
 	data.jogadas[0]=0;
-	int count=0;
 	if(data.passar == 3||data.nc==0){
 		data.nc = 0;
 		for(ind=0;ind<52;ind++){
@@ -259,17 +258,16 @@ void imprime_play (DATABASE data, char * path){
         	if(carta_existe(data.selected,n,v)){
             	data.mao[0]=rem_carta(data.mao[0],n,v);
             	data.jogadas[0] = add_carta(data.jogadas[0],n,v);
-            	count ++;
         	}
     	}
     	data.selected = 0;
     	data.passar = 0;
     	data.play = 1;
     	DATA2STR(script, data);
-    	printf("<a xlink:href = \"cartas?%s\"><image x = \"560\" y = \"460\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_play.svg\" /></a>\n", script, path);
+    	printf("<a xlink:href = \"cartas?%s\"><image x = \"625\" y = \"460\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_play.svg\" /></a>\n", script, path);
     }
     else
-    	printf("<image x = \"560\" y = \"460\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_play_cinza.svg\" />\n", path);
+    	printf("<image x = \"625\" y = \"460\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_play_cinza.svg\" />\n", path);
 
 }
 
@@ -280,7 +278,7 @@ void imprime_jogadas(DATABASE data, char * path){
 	int n,v;
 	int jog;
 	int ind;
-	for(x=300,y=150,jog=2;jog>=0;jog-=2,y+=150){ //Pôr a ficar o jogador a somar?
+	for(x=400,y=140,jog=2;jog>=0;jog-=2,y+=165){ //Pôr a ficar o jogador a somar?
         for(ind=0;ind<52;ind++){
             n = ind/13;
             v = ind%13;
@@ -289,11 +287,11 @@ void imprime_jogadas(DATABASE data, char * path){
                 x +=20;
             }
         }
-        x=300;
+        x=400;
     }
     
     
-    for(x=150,y=200,jog=3;jog>0;jog-=2,x+=350){//Pôr a ficar o jogador a somar?
+    for(x=200,y=170,jog=3;jog>0;jog-=2,x+=420){//Pôr a ficar o jogador a somar?
         for(ind=0;ind<52;ind++){
             n = ind/13;
             v = ind%13;
@@ -302,7 +300,7 @@ void imprime_jogadas(DATABASE data, char * path){
                 y +=20;
             }
         }
-        y=200;
+        y=170;
     }
 }
 
@@ -315,7 +313,7 @@ void imprime_maos (DATABASE data, char * path){
 	int jog;
 	int ind;
 	for(y = 430, jog = 0; jog < 3; jog+=2, y -= 420)
-        for(x = 200, ind = 0; ind < 52; ind++){
+        for(x = 295, ind = 0; ind < 52; ind++){
             n = ind/13;
             v = ind%13;
             if(jog==0){
@@ -337,8 +335,8 @@ void imprime_maos (DATABASE data, char * path){
                 }
             }
         }
-    for(x = 10, jog = 3; jog > 0; jog-=2, x += 650)//alterar para ser a somar o jog?
-    	for(y = 100, ind = 0; ind < 52; ind++){
+    for(x = 90, jog = 3; jog > 0; jog-=2, x += 640)//alterar para ser a somar o jog?
+    	for(y = 120, ind = 0; ind < 52; ind++){
             n = ind/13;
             v = ind%13;
             if(carta_existe(data.mao[jog],n,v)==1){
@@ -356,25 +354,27 @@ void imprime_maos (DATABASE data, char * path){
 
 //##############################Funções bots#######################################################
 DATABASE check_cartas(int n, int v, DATABASE data,int m){
-	int count=0;
-	int naipe[4] = {-1};
-	int n1,v1;
-	naipe[0]=n;
-	int i = 1;
+	int count;
+	int naipe;
+	int i = 0;
+	DATABASE data1 = data;
 	count = data.nc - 1;
-	for(n1=0;n1<4&&count>0;n1++)
-		if(n1!=n&&carta_existe(data.mao[m],n1,v)){
-			naipe[i]=n1;
+	for(naipe = 0;naipe < 4;naipe++){
+		if(carta_existe(data.mao[m],naipe,v)==1){
 			i++;
-			count--;
 		}
-	if(count == 0)
-		for(i=0;i<4;i++)
-			if(naipe[i]!=-1){
-				data.mao[m] = rem_carta(data.mao[m],naipe[i],v);
-				data.jogadas[m] = add_carta(data.jogadas[m],naipe[i],v);
+	}
+	if(i >= data.nc){
+		data.mao[m] = rem_carta(data.mao[m],n,v);
+		data.jogadas[m]=add_carta(data.jogadas[m],n,v);
+		for(naipe = 0;count>0&& naipe < 4; naipe++){
+			if(carta_existe(data.mao[m],naipe,v)==1&&naipe != n){
+				data.mao[m] = rem_carta(data.mao[m],naipe,v);
+				data.jogadas[m] = add_carta(data.jogadas[m],naipe,v);
+				count --;	
 			}
-
+		}
+	}
 	return data;
 }
 
@@ -446,13 +446,14 @@ DATABASE joga_bots(DATABASE data,int m){
 
 void imprime(char * path,DATABASE data){
 	int jog;
-
-	printf("<svg height = \"800\" width = \"800\">\n");
-    printf("<rect x = \"0\" y = \"0\" height = \"800\" width = \"800\" style = \"fill:#007700\"/>\n");
+	printf("<svg height = \"600\" width = \"1500\">\n");
+    printf("<rect x = \"300\" y = \"0\" height = \"600\" width = \"300\" style = \"fill:#007700\"/>\n");
+    printf("<circle cx=\"300\" cy=\"300\" r=\"300\" stroke=\"black\" stroke-width=\"0\" style = \"fill:#007700\"/>\n");
+    printf("<circle cx=\"600\" cy=\"300\" r=\"300\" stroke=\"black\" stroke-width=\"0\" style = \"fill:#007700\"/>\n");
     if(data.inicio == 1){
     	jog = quem_comeca(data);
     	if (jog>0)
-    		for(jog;jog<4;jog++){
+    		for(;jog<4;jog++){
     			data=joga_bots(data,jog);
     		}
     	data.inicio = 2;
@@ -507,11 +508,13 @@ void check_finish(char * path, DATABASE data){
 
 void check_start(char * path, DATABASE data){
     int y, x,p,ind,n,v;
-    printf("<svg height = \"800\" width = \"800\">\n");
-    printf("<rect x = \"0\" y = \"0\" height = \"800\" width = \"800\" style = \"fill:#007700\"/>\n");
+   printf("<svg height = \"600\" width = \"1500\">\n");
+    printf("<rect x = \"300\" y = \"0\" height = \"600\" width = \"300\" style = \"fill:#007700\"/>\n");
+    printf("<circle cx=\"300\" cy=\"300\" r=\"300\" stroke=\"black\" stroke-width=\"0\" style = \"fill:#007700\"/>\n");
+    printf("<circle cx=\"600\" cy=\"300\" r=\"300\" stroke=\"black\" stroke-width=\"0\" style = \"fill:#007700\"/>\n");
     if(data.inicio==0){
         for(y = 430, p = 0; p < 3; p+=2, y -= 420)
-            for(x = 200, ind = 0; ind < 52; ind++){
+            for(x = 295, ind = 0; ind < 52; ind++){
                 n = ind/13;
                 v = ind%13;
                 if(carta_existe(data.mao[p],n,v)==1){
@@ -519,8 +522,8 @@ void check_start(char * path, DATABASE data){
                     x += 20;
                 }
             }
-        for(x = 10, p = 3; p > 0; p-=2, x += 650)
-            for(y = 100, ind = 0; ind < 52; ind++){
+        for(x = 90, p = 3; p > 0; p-=2, x += 640)
+            for(y = 120, ind = 0; ind < 52; ind++){
                 n = ind/13;
                 v = ind%13;
                 if(carta_existe(data.mao[p],n,v)==1){
