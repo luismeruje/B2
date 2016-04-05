@@ -298,7 +298,7 @@ void imprime_jogadas(DATABASE data, char * path){
 	int jog;
 	int ind;
 	for(x=550,y=210,jog=2;jog>=0;jog-=2,y+=175){ //Pôr a ficar o jogador a somar?
-      if (data.jogadas[jog]==0 && data.inicio!=0) {
+      if (data.jogadas[jog]==0 && data.play==1) {
         if (data.play || jog!=0) {
         y -= 20;
         printf("<image x = \"%d\" y = \"%d\" height = \"140\" width = \"100\" xlink:href = \"%s/passo_%d.svg\" />\n", x, y, path, jog);
@@ -318,7 +318,7 @@ void imprime_jogadas(DATABASE data, char * path){
       x=550;
     }
     for(x=350,y=250,jog=3;jog>0;jog-=2,x+=420){//Pôr a ficar o jogador a somar?
-      if (data.jogadas[jog]==0 && data.inicio!=1) printf("<image x = \"%d\" y = \"%d\" height = \"140\" width = \"100\" xlink:href = \"%s/passo_%d.svg\" />\n", x, y, path, jog);
+      if (data.jogadas[jog]==0 && data.play==1) printf("<image x = \"%d\" y = \"%d\" height = \"140\" width = \"100\" xlink:href = \"%s/passo_%d.svg\" />\n", x, y, path, jog);
       else
         for(ind=0;ind<52;ind++){
             n = ind/13;
