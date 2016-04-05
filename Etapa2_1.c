@@ -94,6 +94,37 @@ int carta_existe(MAO ESTADO, int naipe, int valor) {
     return (ESTADO >> idx) & 1;
 }
 
+//pequenas coisas a corrigir
+int calcula_score(MAO mao){
+    int ind;
+    int n,v;
+    int r=0;
+    
+    for (ind=0;ind<52;ind++){
+        n = ind/13;
+        v = ind%13;
+        if(carta_existe(mao,n,v)==1)
+            r++;
+    }
+    if (r>9){
+        if (r==13)
+            r=39;
+        else
+            r=r*2;
+    }
+    return r;
+}
+
+void imprime_fim(char * path, DATABASE data){
+    printf("<text x = \"550\" y = \"170\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:55px;\">Fim</text>");
+    printf("<text x = \"400\" y = \"240\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:45px;\">Pontuação:</text>");
+    printf("<text x = \"400\" y = \"310\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:40px;\">Jogador - %d</text>", calcula_score(data.mao[0]));
+    printf("<text x = \"400\" y = \"350\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:40px;\">Jorge - %d</text>", calcula_score(data.mao[1]));
+    printf("<text x = \"400\" y = \"390\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:40px;\">Luís - %d</text>", calcula_score(data.mao[2]));
+    printf("<text x = \"400\" y = \"430\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:40px;\">Diogo - %d</text>", calcula_score(data.mao[3]));
+}
+
+
 int all_passed(DATABASE data){
     int result=0;
     if (data.passar>=3)
@@ -266,7 +297,10 @@ void imprime_play (DATABASE data, char * path){
     	}
     	data.selected = 0;
     	data.passar = 0;
-    	data.play = 1;
+    	if(data.mao[0] == 0)
+            data.play = 2;
+        else
+            data.play = 1;
     	DATA2STR(script, data);
     	printf("<a xlink:href = \"cartas?%s\"><image x = \"775\" y = \"510\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_play.svg\" /></a>\n", script, path);
     }
@@ -435,6 +469,8 @@ DATABASE bot_continua(DATABASE data,int m){
     	data.passar++;
     else
     	data.passar=0;
+    if(data.mao[m]==0)
+        data.play = 2;
     return data;
 }
 DATABASE bot_comeca(DATABASE data,int m){
@@ -454,6 +490,8 @@ DATABASE bot_comeca(DATABASE data,int m){
         }
     }
     data.nc = 1;
+    if(data.mao[m]==0)
+        data.play = 2;
     return data;
 }
 
@@ -499,63 +537,23 @@ void imprime(char * path,DATABASE data){
     	data.inicio = 2;
     }
     if(data.play == 1)
-    	for(jog=1;jog<4;jog++)
+    	for(jog=1;jog<4;jog++){
     		data = joga_bots(data,jog);
-
-    imprime_jogadas(data,path);
-    imprime_maos(data,path);
-    imprime_play(data,path);
-    imprime_passar(data,path);
-    imprime_baralhar(data,path);
+            if(data.play == 2)
+                imprime_fim;
+        }
+    if(data.play != 2){
+        imprime_jogadas(data,path);
+        imprime_maos(data,path);
+        imprime_play(data,path);
+        imprime_passar(data,path);
+        imprime_baralhar(data,path);
+    }
 }
 
 //*****************************Função central- FIM################################
 
-//pequenas coisas a corrigir
-int calcula_score(MAO mao){
-    int ind;
-    int n,v;
-    int r=0;
 
-    for (ind=0;ind<52;ind++){
-        n = ind/13;
-        v = ind%13;
-        if(carta_existe(mao,n,v)==1)
-        	r++;
-    }
-    if (r>9){
-        if (r==13)
-        	r=39;
-        else
-        	r=r*2;
-    }
-return r;
-}
-
-void check_finish(char * path, DATABASE data){
-    int f=0,b;
-    for(b=0;b<4;b++)
-        if(data.mao[b]==0){
-            f=1;
-            break;
-        }
-    if(f==1){
-      printf("<svg height = \"680\" width = \"1200\">\n");
-      printf("<image x = \"-155\" y = \"0\" height = \"900\" width = \"1500\" xlink:href = \"%s/floor.svg\" />\n", path);
-      printf("<circle cx=\"450\" cy=\"350\" r=\"290\" stroke=\"maroon\" stroke-width=\"20\" style = \"fill:#007700\"/>\n");
-      printf("<circle cx=\"750\" cy=\"350\" r=\"290\" stroke=\"maroon\" stroke-width=\"20\" style = \"fill:#007700\"/>\n");
-      printf("<rect x = \"450\" y = \"60\" height = \"580\" width = \"300\" stroke=\"maroon\" stroke-width=\"20\" style = \"fill:#007700\"/>\n");
-      printf("<rect x = \"440\" y = \"70\" height = \"560\" width = \"320\" style = \"fill:#007700\"/>\n");
-      printf("<text x = \"550\" y = \"170\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:55px;\">Fim</text>");
-      printf("<text x = \"400\" y = \"240\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:45px;\">Pontuação:</text>");
-      printf("<text x = \"400\" y = \"310\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:40px;\">Jogador - %d</text>", calcula_score(data.mao[0]));
-      printf("<text x = \"400\" y = \"350\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:40px;\">Jorge - %d</text>", calcula_score(data.mao[1]));
-      printf("<text x = \"400\" y = \"390\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:40px;\">Luís - %d</text>", calcula_score(data.mao[2]));
-      printf("<text x = \"400\" y = \"430\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:40px;\">Diogo - %d</text>", calcula_score(data.mao[3]));
-    }
-    else
-        imprime(path,data);
-}
 
 void check_start(char * path, DATABASE data){
     int y, x,p,ind,n,v;
@@ -582,6 +580,7 @@ void check_start(char * path, DATABASE data){
     }
     else
         imprime(path,data);
+        printf("</svg>\n");
 
 }
 
@@ -589,7 +588,7 @@ void parse (char * query) {
     DATABASE data = {{0},0,{0},0,0,0,0};
     if(query!=NULL && strlen(query) != 0){ //n sei para q é preciso a primeira condição...
         data = STR2DATA(query);
-        check_finish(BARALHO,data);
+        imprime(BARALHO,data);
     }
     else{
         data = distribui(data); //é a primeira jogada, quem será que tem o precioso 3 de ouros?
