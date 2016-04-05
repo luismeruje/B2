@@ -108,7 +108,7 @@ void imprime_carta_imagem(char * path,int x, int y,int n,int v){
 }
 
 void imprime_carta_back(char * path,int x, int y){
-    printf("<image x = \"%d\" y = \"%d\" height = \"110\" width = \"80\" xlink:href = \"%s/Card_back.svg\" />\n", x, y, path);
+    printf("<image x = \"%d\" y = \"%d\" height = \"110\" width = \"80\" xlink:href = \"%s/card_back.svg\" />\n", x, y, path);
 }
 
 void imprime_carta_link(char * path,int x, int y,DATABASE data,int n,int v){
