@@ -115,7 +115,7 @@ int calcula_score(MAO mao){
     return r;
 }
 
-void imprime_fim(char * path, DATABASE data){
+void imprime_fim (char * path, DATABASE data){
     printf("<text x = \"550\" y = \"170\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:55px;\">Fim</text>");
     printf("<text x = \"400\" y = \"240\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:45px;\">Pontuação:</text>");
     printf("<text x = \"400\" y = \"310\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:40px;\">Jogador - %d</text>", calcula_score(data.mao[0]));
@@ -537,10 +537,10 @@ void imprime(char * path,DATABASE data){
     	data.inicio = 2;
     }
     if(data.play == 1)
-    	for(jog=1;jog<4;jog++){
+    	for(jog=1;jog<4 && data.play != 2;jog++){
     		data = joga_bots(data,jog);
             if(data.play == 2)
-                imprime_fim;
+                imprime_fim(path, data);
         }
     if(data.play != 2){
         imprime_jogadas(data,path);
