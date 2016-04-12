@@ -390,8 +390,8 @@ void imprime_maos (DATABASE data, char * path){
 	int x,y;
 	int jog;
 	int ind;
-  if (data.baralhar) b = 13;
-  else b = 1;
+    if (data.baralhar) b = 13;
+    else b = 1;
 	for(y = 500, jog = 0; jog < 3; jog+=2, y -= 415)
         for(x = 445, ind = 0, i = 0; ind < 52; ind += b){
             n = ind/13;
@@ -544,6 +544,8 @@ void imprime(char * path,DATABASE data){
     printf("<circle cx=\"750\" cy=\"350\" r=\"290\" stroke=\"maroon\" stroke-width=\"20\" style = \"fill:#007700\"/>\n");
     printf("<rect x = \"450\" y = \"60\" height = \"580\" width = \"300\" stroke=\"maroon\" stroke-width=\"20\" style = \"fill:#007700\"/>\n");
     printf("<rect x = \"440\" y = \"70\" height = \"560\" width = \"320\" style = \"fill:#007700\"/>\n");
+    if(data.mao[0]==0)
+        imprime_fim(path,data);
     if(data.inicio == 1){
     	jog = quem_comeca(data);
     	if (jog>0)
