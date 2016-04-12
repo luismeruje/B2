@@ -99,7 +99,7 @@ int calcula_score(MAO mao){
     int ind;
     int n,v;
     int r=0;
-    
+
     for (ind=0;ind<52;ind++){
         n = ind/13;
         v = ind%13;
@@ -115,6 +115,18 @@ int calcula_score(MAO mao){
     return r;
 }
 
+void imprime_continuar(char *path, DATABASE data) {
+  char script[52000];
+  DATABASE data1 = {{0},0,{0},0,0,0,0};
+  data = data1;
+  DATA2STR(script,data);
+  printf("<a xlink:href = \"cartas?%s\"><image x = \"400\" y = \"500\" height = \"110\" width = \"80\" xlink:href = \"%s/botao_continuar.svg\" /></a>\n", script, path);
+}
+
+void imprime_novojogo(char *path) {
+  printf("<a xlink:href = \"cartas?\"><image x = \"500\" y = \"500\" height = \"50\" width = \"120\" xlink:href = \"%s/botao_novo_jogo.svg\" /></a>\n", path);
+}
+
 void imprime_fim (char * path, DATABASE data){
     printf("<text x = \"550\" y = \"170\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:55px;\">Fim</text>");
     printf("<text x = \"400\" y = \"240\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:45px;\">Pontuação:</text>");
@@ -122,6 +134,8 @@ void imprime_fim (char * path, DATABASE data){
     printf("<text x = \"400\" y = \"350\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:40px;\">Jorge - %d</text>", calcula_score(data.mao[1]));
     printf("<text x = \"400\" y = \"390\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:40px;\">Luís - %d</text>", calcula_score(data.mao[2]));
     printf("<text x = \"400\" y = \"430\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:40px;\">Diogo - %d</text>", calcula_score(data.mao[3]));
+    imprime_continuar(path, data);
+    imprime_novojogo(path);
 }
 
 
@@ -229,12 +243,14 @@ void imprime_start(DATABASE data,char * path){
 
 void imprime_passar (DATABASE data,char * path){
 	char script[52000];
+  if (data.nc != 0 || all_passed(data) != 0) {
     data.selected = 0;
     data.jogadas[0]=0;
     data.play = 1;
     data.passar++;
-    DATA2STR(script, data);
-    printf("<a xlink:href = \"cartas?%s\"><image x = \"775\" y = \"550\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_pass.svg\" /></a>\n", script, path);
+  }
+  DATA2STR(script, data);
+  printf("<a xlink:href = \"cartas?%s\"><image x = \"775\" y = \"550\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_pass.svg\" /></a>\n", script, path);
 }
 
 int pode_jogar(DATABASE data){
