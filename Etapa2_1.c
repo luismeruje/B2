@@ -94,7 +94,29 @@ int carta_existe(MAO ESTADO, int naipe, int valor) {
     return (ESTADO >> idx) & 1;
 }
 
-//pequenas coisas a corrigir
+
+void separa_val (MAO ESTADO, int *y){
+    int i,n,v;
+    for(i=0,p=0;i<52;i++){
+        n = ind/13;
+        v = ind %13;
+        if(carta_existe(mao,n,v)==1){
+            y[v]++;
+        }
+    }
+}
+
+void separa_nap (MAO ESTADO, int *y){
+    int i,n,v;
+    for(i=0,p=0;i<52;i++){
+        n = ind/13;
+        v = ind %13;
+        if(carta_existe(mao,n,v)==1){
+            y[n]++;
+        }
+    }
+}
+//Funcao que calcula a pontuacão de cada jogador
 int calcula_score(MAO mao){
     int ind;
     int n,v;
@@ -287,7 +309,7 @@ int pode_jogar(DATABASE data){
 	return r;
 }
 
-//como é que vê que pode jogar quando os bots passaram todos??
+
 void imprime_play (DATABASE data, char * path){
 	int n,v;
 	int ind;
@@ -339,8 +361,6 @@ void imprime_baralhar (DATABASE data, char *path){
     printf("<a xlink:href = \"cartas?%s\"><image x = \"350\" y = \"510\" height = \"40\" width = \"40\" xlink:href = \"%s/baralhar_por_naipe.svg\" />\n", script, path);
   }
 }
-
-
 
 void imprime_jogadas(DATABASE data, char * path){
 	int x,y;
@@ -584,7 +604,7 @@ void check_start(char * path, DATABASE data){
     if(data.inicio==0){
         for(y = 500, p = 0; p < 3; p+=2, y -= 415)
             for(x = 445, ind = 0; ind < 13; ind++){
-                  imprime_carta_back(path,x,y);
+                  imprimeme_carta_back(path,x,y);
                   x += 20;
             }
         for(x = 240, p = 3; p > 0; p-=2, x += 640)
