@@ -117,6 +117,70 @@ void separa_nap (MAO ESTADO, int *y){
         }
     }
 }
+
+int teste_straigh(MAO mao, int sa[13]){
+    int r = 0, n = 0, c = 0;
+    int ca[15];
+    while (n < 13) {
+      ca[n+2] = sa[n];
+      n++;
+    }
+    ca[0] = sa[11];
+    ca[1] = sa[12];
+    for (n=0; n<15; n++) {
+      if((ca[n])==1) c+=1;
+      else c = 0;
+      if (c==5) {
+        n=15;
+        r++;
+      }
+    }
+    return r;
+}
+
+int teste_flush(MAO mao, int naipe[4]) {
+  int r = 0, n;
+  for (n=0; n<4; n++) {
+    if(naipe[n]==5) {
+      r = 1;
+      n = 4;
+    }
+  }
+  return r;
+}
+
+int teste_fullhouse(MAO mao, int rank[13]) {
+  int r = 1, n;
+  for (n=0; n<13; n++) {
+    if (rank[n]==4 || rank[n]==1) r = 0;
+  }
+  return r;
+}
+
+int teste_fourofakind(MAO mao, int rank[13]) {
+  int r = 1, n;
+  for (n=0; n<13; n++) {
+    if (rank[n]==3 || rank[n]==2) r = 0;
+  }
+  return r;
+}
+
+int tipo_comb_five(MAO mao) {
+  int r = 0, c;
+  int n[4];
+  int v[13];
+  n = separa_nap(mao, n);
+  v = separa_val(mao, v);
+  if(teste_straigh) {
+    if(teste_flush) r = 5;
+    else r = 1;
+  }
+  if(r==0 && teste_flush) r = 2;
+  if(r==0 && teste_fullhouse) r = 3;
+  if(r==0 && teste_fourofakind) r = 5;
+  return r;
+}
+
 //Funcao que calcula a pontuacão de cada jogador
 int calcula_score(MAO mao){
     int ind;
