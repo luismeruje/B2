@@ -21,7 +21,7 @@
  */
 #define VALORES		"3456789TJQKA2"
 
-#define DATA "%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%d_%d_%d_%d_%d"
+#define DATA "%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%d_%d_%d_%d_%d_%d_%d_%d_%d"
 
 typedef long long int MAO;
 struct database{
@@ -33,6 +33,7 @@ struct database{
     int passar;
     int inicio;
     int baralhar;
+    int score[4];
 };
 
 typedef struct database DATABASE;
@@ -41,12 +42,12 @@ typedef struct database DATABASE;
 
 DATABASE STR2DATA(char * str){
     DATABASE data;
-    sscanf(str, DATA,&(data.mao[0]),&(data.mao[1]),&(data.mao[2]),&(data.mao[3]),&(data.selected),&(data.jogadas[0]),&(data.jogadas[1]),&(data.jogadas[2]),&(data.jogadas[3]),&data.play,&data.nc,&data.passar,&data.inicio,&data.baralhar);
+    sscanf(str, DATA,&(data.mao[0]),&(data.mao[1]),&(data.mao[2]),&(data.mao[3]),&(data.selected),&(data.jogadas[0]),&(data.jogadas[1]),&(data.jogadas[2]),&(data.jogadas[3]),&data.play,&data.nc,&data.passar,&data.inicio,&data.baralhar,&data.score[0],&data.score[1],&data.score[2],&data.score[3]);
     return data;
 }
 
 void DATA2STR(char * str,DATABASE data){
-    sprintf(str,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc,data.passar,data.inicio,data.baralhar);//TODO: a string com os lld's acho que dá para subsituir por uma palavra com um "define" no topo
+    sprintf(str,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc,data.passar,data.inicio,data.baralhar,data.score[0],data.score[1],data.score[2],data.score[3]);//TODO: a string com os lld's acho que dá para subsituir por uma palavra com um "define" no topo
 }
 /** \brief Devolve o índice da carta
 
@@ -96,22 +97,22 @@ int carta_existe(MAO ESTADO, int naipe, int valor) {
 
 
 void separa_val (MAO ESTADO, int *y){
-    int i,n,v;
+    int i,n,v,p;
     for(i=0,p=0;i<52;i++){
-        n = ind/13;
-        v = ind %13;
-        if(carta_existe(mao,n,v)==1){
+        n = i/13;
+        v = i%13;
+        if(carta_existe(ESTADO,n,v)==1){
             y[v]++;
         }
     }
 }
 
 void separa_nap (MAO ESTADO, int *y){
-    int i,n,v;
+    int i,n,v,p;
     for(i=0,p=0;i<52;i++){
-        n = ind/13;
-        v = ind %13;
-        if(carta_existe(mao,n,v)==1){
+        n = i/13;
+        v = i%13;
+        if(carta_existe(ESTADO,n,v)==1){
             y[n]++;
         }
     }
@@ -139,23 +140,39 @@ int calcula_score(MAO mao){
 
 void imprime_continuar(char *path, DATABASE data) {
   char script[52000];
-  DATABASE data1 = {{0},0,{0},0,0,0,0};
-  data = data1;
+  data.mao[0] = 0;
+  data.mao[1] = 0;
+  data.mao[2] = 0;
+  data.mao[3] = 0;
+  data.selected = 0;
+  data.jogadas[0] = 0;
+  data.jogadas[1] = 0;
+  data.jogadas[3] = 0;
+  data.jogadas[4] = 0;
+  data.play = 0;
+  data.nc = 0;
+  data.passar = 0;
+  data.inicio = 0;
+  data.baralhar = 0;
   DATA2STR(script,data);
-  printf("<a xlink:href = \"cartas?%s\"><image x = \"400\" y = \"500\" height = \"110\" width = \"80\" xlink:href = \"%s/botao_continuar.svg\" /></a>\n", script, path);
+  printf("<a xlink:href = \"cartas?%s\"><image x = \"380\" y = \"500\" height = \"70\" width = \"170\" xlink:href = \"%s/botao_continuar.svg\" /></a>\n", script, path);
 }
 
 void imprime_novojogo(char *path) {
-  printf("<a xlink:href = \"cartas?\"><image x = \"500\" y = \"500\" height = \"50\" width = \"120\" xlink:href = \"%s/botao_novo_jogo.svg\" /></a>\n", path);
+  printf("<a xlink:href = \"cartas?\"><image x = \"630\" y = \"500\" height = \"70\" width = \"170\" xlink:href = \"%s/botao_novo_jogo.svg\" /></a>\n", path);
 }
 
 void imprime_fim (char * path, DATABASE data){
-    printf("<text x = \"550\" y = \"170\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:55px;\">Fim</text>");
-    printf("<text x = \"400\" y = \"240\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:45px;\">Pontuação:</text>");
-    printf("<text x = \"400\" y = \"310\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:40px;\">Jogador - %d</text>", calcula_score(data.mao[0]));
-    printf("<text x = \"400\" y = \"350\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:40px;\">Jorge - %d</text>", calcula_score(data.mao[1]));
-    printf("<text x = \"400\" y = \"390\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:40px;\">Luís - %d</text>", calcula_score(data.mao[2]));
-    printf("<text x = \"400\" y = \"430\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:40px;\">Diogo - %d</text>", calcula_score(data.mao[3]));
+    data.score[0] += calcula_score(data.mao[0]);
+    data.score[1] += calcula_score(data.mao[1]);
+    data.score[2] += calcula_score(data.mao[2]);
+    data.score[3] += calcula_score(data.mao[3]);
+    printf("<text x = \"550\" y = \"170\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:55px;\">Fim</text>\n");
+    printf("<text x = \"400\" y = \"240\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:45px;\">Pontuação:</text>\n");
+    printf("<text x = \"400\" y = \"310\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:40px;\">Jogador - %d</text>\n", data.score[0]);
+    printf("<text x = \"400\" y = \"350\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:40px;\">Jorge - %d</text>\n", data.score[1]);
+    printf("<text x = \"400\" y = \"390\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:40px;\">Luís - %d</text>\n", data.score[2]);
+    printf("<text x = \"400\" y = \"430\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:40px;\">Diogo - %d</text>\n", data.score[3]);
     imprime_continuar(path, data);
     imprime_novojogo(path);
 }
@@ -259,7 +276,7 @@ DATABASE distribui(DATABASE data){
 
 void imprime_start(DATABASE data,char * path){
     char script[52000];
-    sprintf(script,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc,data.passar,data.inicio,data.baralhar);
+    sprintf(script,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc,data.passar,data.inicio,data.baralhar,data.score[0],data.score[1],data.score[2],data.score[3]);
     printf("<a xlink:href = \"cartas?%s\"><image x = \"510\" y = \"300\" height = \"60\" width = \"180\" xlink:href = \"%s/botao_start.svg\" /></a>\n", script, path);
 }
 
@@ -604,7 +621,7 @@ void check_start(char * path, DATABASE data){
     if(data.inicio==0){
         for(y = 500, p = 0; p < 3; p+=2, y -= 415)
             for(x = 445, ind = 0; ind < 13; ind++){
-                  imprimeme_carta_back(path,x,y);
+                  imprime_carta_back(path,x,y);
                   x += 20;
             }
         for(x = 240, p = 3; p > 0; p-=2, x += 640)
@@ -623,13 +640,17 @@ void check_start(char * path, DATABASE data){
 }
 
 void parse (char * query) {
-    DATABASE data = {{0},0,{0},0,0,0,0};
+    DATABASE data = {{0},0,{0},0,0,0,0,0,{0}};
     if(query!=NULL && strlen(query) != 0){ //n sei para q é preciso a primeira condição...
         data = STR2DATA(query);
-        imprime(BARALHO,data);
+        if (data.mao[0]==0 && data.mao[1]==0 && data.mao[2]==0 && data.mao[3]==0) {
+          data = distribui(data);
+          check_start(BARALHO, data);
+        }
+        else imprime(BARALHO,data);
     }
     else{
-        data = distribui(data); //é a primeira jogada, quem será que tem o precioso 3 de ouros?
+        data = distribui(data);
         check_start(BARALHO, data);
     }
 }
@@ -640,7 +661,7 @@ int main() {
      * Cabeçalhos necessários numa CGI
      */
     printf("Content-Type: text/html; charset=utf-8\n\n");
-    printf("<header><title>Exemplo</title></header>\n");
+    printf("<header><title>Big Two</title></header>\n");
     printf("<body>\n");
 
     /*
