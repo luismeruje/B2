@@ -172,7 +172,7 @@ int tipo_comb_five(MAO mao) {
   n = separa_nap(mao, n);
   v = separa_val(mao, v);
   if(teste_straigh) {
-    if(teste_flush) r = 5;
+    if(teste_straightflush) r = 5;
     else r = 1;
   }
   if(r==0 && teste_flush) r = 2;
@@ -180,6 +180,18 @@ int tipo_comb_five(MAO mao) {
   if(r==0 && teste_fourofakind) r = 5;
   return r;
 }
+
+int teste_straighflush(MAO mao){
+
+}
+
+int compstraight(MAO mao,MAO mao){
+
+}
+int compflush (MAO mao,MAO mao){
+
+}
+
 
 //Funcao que calcula a pontuacão de cada jogador
 int calcula_score(MAO mao){
