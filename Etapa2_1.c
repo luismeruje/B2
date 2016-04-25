@@ -177,21 +177,30 @@ int tipo_comb_five(MAO mao) {
   }
   if(r==0 && teste_flush) r = 2;
   if(r==0 && teste_fullhouse) r = 3;
-  if(r==0 && teste_fourofakind) r = 5;
+  if(r==0 && teste_fourofakind) r = 4;
   return r;
 }
-
+/* à priori vai ser a mais dificil de fazer de todas, para tratar amanha terca
 int teste_straighflush(MAO mao){
 
 }
+*/
 
 int compstraight(MAO mao,MAO mao){
 
 }
+
 int compflush (MAO mao,MAO mao){
 
 }
 
+int compFullHouse (MAO mao,MAO mao){
+
+}
+
+int compfourofakind (MAO mao,MAO mao){
+
+}
 
 //Funcao que calcula a pontuacão de cada jogador
 int calcula_score(MAO mao){
