@@ -186,8 +186,8 @@ int teste_straighflush(MAO mao){
 }
 */
 
-int compstraight(MAO mao,MAO mao){
-
+int compstraight(MAO mao,DATABASE data){
+int i;
 }
 
 int compflush (MAO mao,MAO mao){
