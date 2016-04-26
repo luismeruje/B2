@@ -410,7 +410,8 @@ int pode_jogar(DATABASE data){
     if(selec[i]%13!=n) r=0;
     }
   }
-    if (count==5 && data.nc==0){
+
+    else if (count==5 && data.nc==0){
     if (tipo_comb_five(data) >0) r=1;
   }
 	//if(data.nc==0)
