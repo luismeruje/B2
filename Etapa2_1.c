@@ -172,7 +172,7 @@ int tipo_comb_five(MAO mao) {
   n = separa_nap(mao, n);
   v = separa_val(mao, v);
   if(teste_straigh) {
-    if(teste_straightflush) r = 5;
+    if(teste_flush) r = 5;
     else r = 1;
   }
   if(r==0 && teste_flush) r = 2;
@@ -184,7 +184,7 @@ int tipo_comb_five(MAO mao) {
 int teste_straighflush(MAO mao){
 
 }
-*/
+
 
 int compstraight(MAO mao,DATABASE data){
 int i;
@@ -201,6 +201,7 @@ int compFullHouse (MAO mao,MAO mao){
 int compfourofakind (MAO mao,MAO mao){
 
 }
+*/
 
 //Funcao que calcula a pontuacão de cada jogador
 int calcula_score(MAO mao){
@@ -376,12 +377,12 @@ void imprime_passar (DATABASE data,char * path){
   DATA2STR(script, data);
   printf("<a xlink:href = \"cartas?%s\"><image x = \"775\" y = \"550\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_pass.svg\" /></a>\n", script, path);
 }
-
+//falta limitar com 4....
 int pode_jogar(DATABASE data){
 	int ind,n,v;
 	int count=0;
 	int r=0;
-	int selec[3];
+	int selec[5];
 	int i = 0;
 	int max;
 	for(ind=0;ind<52;ind++){
@@ -393,18 +394,24 @@ int pode_jogar(DATABASE data){
 			i++;
 		}
 	}
-	if(count==data.nc&&data.nc!=0){
-		for(i=0;i<data.nc;i++){
-			n=selec[i]/13;
-			v=selec[i]%13;
-			max = maior_carta_jogada(data);
-			if(v>max%13||(v==max%13&&n>max/13))
+	if (count < 4){
+    if(count==data.nc&&data.nc!=0){
+		  for(i=0;i<data.nc;i++){
+			 n=selec[i]/13;
+			 v=selec[i]%13;
+			 max = maior_carta_jogada(data);
+			 if(v>max%13||(v==max%13&&n>max/13))
 				r=1;
-		}
-	}
-  for(i=0; i<count; i++){
+		  }
+	   }
+
+    for(i=0; i<count; i++){
     n = selec[0]%13;
     if(selec[i]%13!=n) r=0;
+    }
+  }
+    if (count==5 && data.nc==0){
+    if (tipo_comb_five(data) >0) r=1;
   }
 	//if(data.nc==0)
 	//	r=1;
