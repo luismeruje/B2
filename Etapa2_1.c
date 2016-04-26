@@ -164,7 +164,7 @@ int teste_fourofakind(MAO mao, int rank[13]) {
   }
   return r;
 }
-
+/*
 int tipo_comb_five(MAO mao) {
   int r = 0, c;
   int n[4];
@@ -179,7 +179,8 @@ int tipo_comb_five(MAO mao) {
   if(r==0 && teste_fullhouse) r = 3;
   if(r==0 && teste_fourofakind) r = 4;
   return r;
-}
+} */
+
 /* à priori vai ser a mais dificil de fazer de todas, para tratar amanha terca
 int teste_straighflush(MAO mao){
 
@@ -411,9 +412,9 @@ int pode_jogar(DATABASE data){
     }
   }
 
-    else if (count==5 && data.nc==0){
-    if (tipo_comb_five(data) >0) r=1;
-  }
+    //else if (count==5 && data.nc==0){
+    //if (tipo_comb_five(data) >0) r=1;
+  //}
 	//if(data.nc==0)
 	//	r=1;
 	return r;
