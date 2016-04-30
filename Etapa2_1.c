@@ -240,13 +240,12 @@ void imprime_continuar(char *path, DATABASE data) {
   data.nc = 0;
   data.passar = 0;
   data.inicio = 0;
-  data.baralhar = 0;
   DATA2STR(script,data);
-  printf("<a xlink:href = \"cartas?%s\"><image x = \"380\" y = \"500\" height = \"70\" width = \"170\" xlink:href = \"%s/botao_continuar.svg\" /></a>\n", script, path);
+  printf("<a xlink:href = \"cartas?%s\"><image x = \"380\" y = \"500\" height = \"60\" width = \"170\" xlink:href = \"%s/botao_continuar.svg\" /></a>\n", script, path);
 }
 
 void imprime_novojogo(char *path) {
-  printf("<a xlink:href = \"cartas?\"><image x = \"630\" y = \"500\" height = \"70\" width = \"170\" xlink:href = \"%s/botao_novo_jogo.svg\" /></a>\n", path);
+  printf("<a xlink:href = \"cartas?\"><image x = \"630\" y = \"500\" height = \"60\" width = \"170\" xlink:href = \"%s/botao_novo_jogo.svg\" /></a>\n", path);
 }
 
 void imprime_fim (char * path, DATABASE data){
@@ -482,7 +481,7 @@ void imprime_jogadas(DATABASE data, char * path){
       if (data.jogadas[jog]==0 && data.play==1) {
         if (data.play || jog!=0) {
         y -= 20;
-        printf("<image x = \"%d\" y = \"%d\" height = \"140\" width = \"100\" xlink:href = \"%s/passo_%d.svg\" />\n", x, y, path, jog);
+        printf("<image x = \"%d\" y = \"%d\" height = \"100\" width = \"100\" xlink:href = \"%s/passo_%d.svg\" />\n", x, y, path, jog);
         y += 20;
         }
       }
@@ -499,7 +498,7 @@ void imprime_jogadas(DATABASE data, char * path){
       x=550;
     }
     for(x=350,y=250,jog=3;jog>0;jog-=2,x+=420){//Pôr a ficar o jogador a somar?
-      if (data.jogadas[jog]==0 && data.play==1) printf("<image x = \"%d\" y = \"%d\" height = \"140\" width = \"100\" xlink:href = \"%s/passo_%d.svg\" />\n", x, y, path, jog);
+      if (data.jogadas[jog]==0 && data.play==1) printf("<image x = \"%d\" y = \"%d\" height = \"100\" width = \"100\" xlink:href = \"%s/passo_%d.svg\" />\n", x, y, path, jog);
       else
         for(ind=0;ind<52;ind++){
             n = ind/13;
