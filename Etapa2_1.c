@@ -225,6 +225,36 @@ int calcula_score(MAO mao){
     return r;
 }
 
+int maior_carta_mao(MAO mao){
+    int ind;
+    int max=-1;
+    int n,v;
+    for(ind=0;ind<52;ind++){
+        n=ind/13;
+        v=ind%13;
+        if(carta_existe(mao,n,v)){
+            if(v>max%13||(v==max%13&&n>max/13))
+                max = ind;
+        }
+    }
+    return max;
+}
+
+int maior_carta_jogada(DATABASE data){
+  int jog;
+  int n,v;
+  int temp;
+  int max = -1;
+  for(jog=0;jog<4;jog++){
+    temp = maior_carta_mao(data.jogadas[jog]);
+    n = temp/13;
+    v = temp%13;
+    if(v>max%13||(v==max%13&&n>max/13))
+      max = temp;
+  }
+  return max;
+}
+
 void imprime_continuar(char *path, DATABASE data) {
   char script[52000];
   data.mao[0] = 0;
@@ -234,8 +264,8 @@ void imprime_continuar(char *path, DATABASE data) {
   data.selected = 0;
   data.jogadas[0] = 0;
   data.jogadas[1] = 0;
+  data.jogadas[2] = 0;
   data.jogadas[3] = 0;
-  data.jogadas[4] = 0;
   data.play = 0;
   data.nc = 0;
   data.passar = 0;
@@ -271,6 +301,31 @@ int all_passed(DATABASE data){
     return result;
 }
 
+DATABASE check_cartas(int n, int v, DATABASE data,int m){
+  int count;
+  int naipe;
+  int i = 0;
+  DATABASE data1 = data;
+  count = data.nc - 1;
+  for(naipe = 0;naipe < 4;naipe++){
+    if(carta_existe(data.mao[m],naipe,v)==1){
+      i++;
+    }
+  }
+  if(i >= data.nc){
+    data.mao[m] = rem_carta(data.mao[m],n,v);
+    data.jogadas[m]=add_carta(data.jogadas[m],n,v);
+    for(naipe = 0;count>0&& naipe < 4; naipe++){
+      if(carta_existe(data.mao[m],naipe,v)==1&&naipe != n){
+        data.mao[m] = rem_carta(data.mao[m],naipe,v);
+        data.jogadas[m] = add_carta(data.jogadas[m],naipe,v);
+        count --;
+      }
+    }
+  }
+  return data;
+}
+
 void imprime_carta_imagem(char * path,int x, int y,int n,int v){
  	char *suit = NAIPES;
     char *rank = VALORES;
@@ -295,6 +350,27 @@ void imprime_carta_link(char * path,int x, int y,DATABASE data,int n,int v){
     printf("<a xlink:href = \"cartas?%s\"><image x = \"%d\" y = \"%d\" height = \"110\" width = \"80\" xlink:href = \"%s/%c%c.svg\" /></a>\n", script, x, y, path, rank[v], suit[n]);
 }
 
+void imprime_help(DATABASE data, char * path){
+  DATABASE help;
+  char script[52000];
+  int max = maior_carta_jogada(data);
+  int ind;
+  int n,v;
+  data.jogadas[0] = 0;
+    for(ind=0;ind<52;ind++){
+      n=ind/13;
+      v=ind%13;
+      if(carta_existe(data.mao[0],n,v)==1)
+        if(v>max%13||(v==max%13&&n>max/13)){
+          help = check_cartas(n,v,data,0);
+          if (help.jogadas[0]!=0) break;
+        }
+    }
+  data.selected = help.jogadas[0];
+  DATA2STR(script,data);
+  printf("<a xlink:href = \"cartas?%s\"><image x = \"360\" y = \"520\" height = \"40\" width = \"40\" xlink:href = \"%s/baralhar_por_valor.svg\" />\n", script, path);
+}
+
 int quem_comeca(DATABASE data){
 	int first,jog;
 	for(jog=0;;jog++)
@@ -304,38 +380,6 @@ int quem_comeca(DATABASE data){
 		}
 	return first;
 }
-
-
-int maior_carta_mao(MAO mao){
-    int ind;
-    int max=-1;
-    int n,v;
-    for(ind=0;ind<52;ind++){
-        n=ind/13;
-        v=ind%13;
-        if(carta_existe(mao,n,v)){
-            if(v>max%13||(v==max%13&&n>max/13))
-                max = ind;
-        }
-    }
-    return max;
-}
-
-int maior_carta_jogada(DATABASE data){
-	int jog;
-	int n,v;
-	int temp;
-	int max = -1;
-	for(jog=0;jog<4;jog++){
-		temp = maior_carta_mao(data.jogadas[jog]);
-		n = temp/13;
-		v = temp%13;
-		if(v>max%13||(v==max%13&&n>max/13))
-			max = temp;
-	}
-	return max;
-}
-
 
 //##############################UTILITÁRIOS-FIM################################################
 /** \brief Distribui as cartas pelas mãos de cada um dos jogadores, e põe o estado das cartas selecionadas tudo a 0's
@@ -571,30 +615,7 @@ void imprime_maos (DATABASE data, char * path){
 
 
 //##############################Funções bots#######################################################
-DATABASE check_cartas(int n, int v, DATABASE data,int m){
-	int count;
-	int naipe;
-	int i = 0;
-	DATABASE data1 = data;
-	count = data.nc - 1;
-	for(naipe = 0;naipe < 4;naipe++){
-		if(carta_existe(data.mao[m],naipe,v)==1){
-			i++;
-		}
-	}
-	if(i >= data.nc){
-		data.mao[m] = rem_carta(data.mao[m],n,v);
-		data.jogadas[m]=add_carta(data.jogadas[m],n,v);
-		for(naipe = 0;count>0&& naipe < 4; naipe++){
-			if(carta_existe(data.mao[m],naipe,v)==1&&naipe != n){
-				data.mao[m] = rem_carta(data.mao[m],naipe,v);
-				data.jogadas[m] = add_carta(data.jogadas[m],naipe,v);
-				count --;
-			}
-		}
-	}
-	return data;
-}
+
 
 DATABASE bot_continua(DATABASE data,int m){
 	int max;
@@ -696,6 +717,7 @@ void imprime(char * path,DATABASE data){
         imprime_play(data,path);
         imprime_passar(data,path);
         imprime_baralhar(data,path);
+        imprime_help(data,path);
     }
 }
 
