@@ -368,7 +368,7 @@ void imprime_help(DATABASE data, char * path){
     }
   data.selected = help.jogadas[0];
   DATA2STR(script,data);
-  printf("<a xlink:href = \"cartas?%s\"><image x = \"370\" y = \"510\" height = \"40\" width = \"40\" xlink:href = \"%s/botao_help.svg\" />\n", script, path);
+  printf("<a xlink:href = \"cartas?%s\"><image x = \"370\" y = \"510\" height = \"40\" width = \"40\" xlink:href = \"%s/botao_help.svg\" /></a>\n", script, path);
 }
 
 int quem_comeca(DATABASE data){
@@ -506,13 +506,13 @@ void imprime_baralhar (DATABASE data, char *path){
     data.baralhar = 1;
     data.play = 0;
     DATA2STR(script, data);
-    printf("<a xlink:href = \"cartas?%s\"><image x = \"350\" y = \"510\" height = \"40\" width = \"40\" xlink:href = \"%s/baralhar_por_valor.svg\" />\n", script, path);
+    printf("<a xlink:href = \"cartas?%s\"><image x = \"350\" y = \"510\" height = \"40\" width = \"40\" xlink:href = \"%s/baralhar_por_valor.svg\" /></a>\n", script, path);
   }
   else {
     data.baralhar = 0;
     data.play = 0;
     DATA2STR(script, data);
-    printf("<a xlink:href = \"cartas?%s\"><image x = \"350\" y = \"510\" height = \"40\" width = \"40\" xlink:href = \"%s/baralhar_por_naipe.svg\" />\n", script, path);
+    printf("<a xlink:href = \"cartas?%s\"><image x = \"350\" y = \"510\" height = \"40\" width = \"40\" xlink:href = \"%s/baralhar_por_naipe.svg\" /></a>\n", script, path);
   }
 }
 
