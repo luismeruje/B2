@@ -368,7 +368,7 @@ void imprime_help(DATABASE data, char * path){
     }
   data.selected = help.jogadas[0];
   DATA2STR(script,data);
-  printf("<a xlink:href = \"cartas?%s\"><image x = \"360\" y = \"520\" height = \"40\" width = \"40\" xlink:href = \"%s/baralhar_por_valor.svg\" />\n", script, path);
+  printf("<a xlink:href = \"cartas?%s\"><image x = \"370\" y = \"510\" height = \"40\" width = \"40\" xlink:href = \"%s/botao_help.svg\" />\n", script, path);
 }
 
 int quem_comeca(DATABASE data){
