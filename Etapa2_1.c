@@ -351,13 +351,14 @@ void imprime_carta_link(char * path,int x, int y,DATABASE data,int n,int v){
 }
 
 void imprime_help(DATABASE data, char * path){
-  DATABASE help;
-  char script[52000];
-  int max = maior_carta_jogada(data);
-  int ind;
-  int n,v;
-  data.jogadas[0] = 0;
-    for(ind=0;ind<52;ind++){
+  	DATABASE help;
+    MAO old = data.selected;
+  	char script[52000];
+  	data.jogadas[0] = 0;
+  	int max = maior_carta_jogada(data);
+  	int ind;
+  	int n,v;
+  	for(ind=0;ind<52;ind++){
       n=ind/13;
       v=ind%13;
       if(carta_existe(data.mao[0],n,v)==1)
@@ -365,10 +366,13 @@ void imprime_help(DATABASE data, char * path){
           help = check_cartas(n,v,data,0);
           if (help.jogadas[0]!=0) break;
         }
-    }
-  data.selected = help.jogadas[0];
-  DATA2STR(script,data);
-  printf("<a xlink:href = \"cartas?%s\"><image x = \"370\" y = \"510\" height = \"40\" width = \"40\" xlink:href = \"%s/botao_help.svg\" /></a>\n", script, path);
+  	}
+    data.selected = 0;
+    if(old != help.jogadas[0])
+        data.selected = help.jogadas[0];
+    data.play = 0;
+  	DATA2STR(script,data);
+  	printf("<a xlink:href = \"cartas?%s\"><image x = \"370\" y = \"510\" height = \"40\" width = \"40\" xlink:href = \"%s/botao_help.svg\" /><>\n", script, path);
 }
 
 int quem_comeca(DATABASE data){
