@@ -118,6 +118,8 @@ void separa_nap (MAO ESTADO, int *y){
     }
 }
 
+
+//acho que vai ser util criar um array de 6 na estrutura ou assim para as jogadas de 5 que diz os indices das cartas jogadas e na a[5] metemos o rank da jogada (se é straight flush e assim)
 int teste_straigh(MAO mao, int sa[13]){
     int r = 0, n = 0, c = 0;
     int ca[15];
@@ -187,9 +189,16 @@ int teste_straighflush(MAO mao){
 }
 
 
+
 int compstraight(MAO mao,DATABASE data){
-int i;
-}
+  int i,max,p=0,teste[5];
+  for(ind=0;ind<52;ind++){
+    n=ind/13;
+    v=ind%13;
+    if(carta_existe(data.selected,n,v)){
+    teste[p]=i;  //o objetivo era criar uma funcao insere ordenado
+    p++;
+    }
 
 int compflush (MAO mao,MAO mao){
 
