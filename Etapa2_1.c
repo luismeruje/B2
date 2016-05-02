@@ -354,7 +354,6 @@ void imprime_help(DATABASE data, char * path){
   	DATABASE help;
     MAO old = data.selected;
   	char script[52000];
-  	data.jogadas[0] = 0;
   	int max = maior_carta_jogada(data);
   	int ind;
   	int n,v;
