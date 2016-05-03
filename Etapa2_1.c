@@ -373,6 +373,7 @@ void imprime_help(DATABASE data, char * path){
   	int max = maior_carta_jogada(data);
   	int ind;
   	int n,v;
+    data.jogadas[0] = 0;
   	for(ind=0;ind<52;ind++){
       n=ind/13;
       v=ind%13;
@@ -387,7 +388,7 @@ void imprime_help(DATABASE data, char * path){
         data.selected = help.jogadas[0];
     data.play = 0;
   	DATA2STR(script,data);
-  	printf("<a xlink:href = \"cartas?%s\"><image x = \"370\" y = \"510\" height = \"40\" width = \"40\" xlink:href = \"%s/botao_help.svg\" /><>\n", script, path);
+  	printf("<a xlink:href = \"cartas?%s\"><image x = \"370\" y = \"560\" height = \"40\" width = \"40\" xlink:href = \"%s/botao_help.svg\" /><>\n", script, path);
 }
 
 int quem_comeca(DATABASE data){
