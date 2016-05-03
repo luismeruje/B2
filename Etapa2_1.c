@@ -21,7 +21,7 @@
  */
 #define VALORES		"3456789TJQKA2"
 
-#define DATA "%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%d_%d_%d_%d_%d_%d_%d_%d_%d"
+#define DATA "%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d"
 
 typedef long long int MAO;
 struct database{
@@ -32,8 +32,9 @@ struct database{
     int nc; //número de cartas a serem jogadas por cada jogador
     int passar;
     int inicio;
-    int baralhar;
+    int baralhar; 
     int score[4];
+    int combination[6];
 };
 
 typedef struct database DATABASE;
@@ -42,12 +43,12 @@ typedef struct database DATABASE;
 
 DATABASE STR2DATA(char * str){
     DATABASE data;
-    sscanf(str, DATA,&(data.mao[0]),&(data.mao[1]),&(data.mao[2]),&(data.mao[3]),&(data.selected),&(data.jogadas[0]),&(data.jogadas[1]),&(data.jogadas[2]),&(data.jogadas[3]),&data.play,&data.nc,&data.passar,&data.inicio,&data.baralhar,&data.score[0],&data.score[1],&data.score[2],&data.score[3]);
+    sscanf(str, DATA,&(data.mao[0]),&(data.mao[1]),&(data.mao[2]),&(data.mao[3]),&(data.selected),&(data.jogadas[0]),&(data.jogadas[1]),&(data.jogadas[2]),&(data.jogadas[3]),&data.play,&data.nc,&data.passar,&data.inicio,&data.baralhar,&data.score[0],&data.score[1],&data.score[2],&data.score[3],&data.combination[0],&data.combination[1],&data.combination[2],&data.combination[3],&data.combination[4],&data.combination[5]);
     return data;
 }
 
 void DATA2STR(char * str,DATABASE data){
-    sprintf(str,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc,data.passar,data.inicio,data.baralhar,data.score[0],data.score[1],data.score[2],data.score[3]);//TODO: a string com os lld's acho que dá para subsituir por uma palavra com um "define" no topo
+    sprintf(str,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc,data.passar,data.inicio,data.baralhar,data.score[0],data.score[1],data.score[2],data.score[3],data.combination[0],data.combination[1],data.combination[2],data.combination[3],data.combination[4],data.combination[5]);
 }
 /** \brief Devolve o índice da carta
 
@@ -191,7 +192,7 @@ int teste_straighflush(MAO mao){
 
 
 int compstraight(MAO mao,DATABASE data){
-  int i,max,p=0,teste[5];
+  int i,max,p=1,teste[5];
   for(ind=0;ind<52;ind++){
     n=ind/13;
     v=ind%13;
@@ -279,6 +280,12 @@ void imprime_continuar(char *path, DATABASE data) {
   data.nc = 0;
   data.passar = 0;
   data.inicio = 0;
+  data.combination[0]=0;
+  data.combination[1]=0;
+  data.combination[2]=0;
+  data.combination[3]=0;
+  data.combination[4]=0;
+  data.combination[5]=0;
   DATA2STR(script,data);
   printf("<a xlink:href = \"cartas?%s\"><image x = \"380\" y = \"500\" height = \"60\" width = \"170\" xlink:href = \"%s/botao_continuar.svg\" /></a>\n", script, path);
 }
@@ -418,7 +425,7 @@ DATABASE distribui(DATABASE data){
 
 void imprime_start(DATABASE data,char * path){
     char script[52000];
-    sprintf(script,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc,data.passar,data.inicio,data.baralhar,data.score[0],data.score[1],data.score[2],data.score[3]);
+    sprintf(script,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc,data.passar,data.inicio,data.baralhar,data.score[0],data.score[1],data.score[2],data.score[3],data.combination[0],data.combination[1],data.combination[2],data.combination[3],data.combination[4],data.combination[5]);
     printf("<a xlink:href = \"cartas?%s\"><image x = \"510\" y = \"300\" height = \"60\" width = \"180\" xlink:href = \"%s/botao_start.svg\" /></a>\n", script, path);
 }
 
@@ -767,7 +774,7 @@ void check_start(char * path, DATABASE data){
 }
 
 void parse (char * query) {
-    DATABASE data = {{0},0,{0},0,0,0,0,0,{0}};
+    DATABASE data = {{0},0,{0},0,0,0,0,0,{0},{0}};
     if(query!=NULL && strlen(query) != 0){ //n sei para q é preciso a primeira condição...
         data = STR2DATA(query);
         if (data.mao[0]==0 && data.mao[1]==0 && data.mao[2]==0 && data.mao[3]==0) {
