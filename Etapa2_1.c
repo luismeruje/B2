@@ -441,6 +441,24 @@ void imprime_passar (DATABASE data,char * path){
   DATA2STR(script, data);
   printf("<a xlink:href = \"cartas?%s\"><image x = \"775\" y = \"550\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_pass.svg\" /></a>\n", script, path);
 }
+// sendo assim, 1º elemento do array da rank da combinacao de 5 o seguinte dá o valor da carta e o ultimo dá o naipe da maior carta (em caso de straight e flush) 
+// (no 4 of a kind da o valor da combinacao de 4) e (no full house o valor da carta que aparece 3 vezes... :))
+// supostamente vamos meter o rank da play diretamente da funcao responsavel por jogar por isso esta so atualiza a posicao 1 e 2 
+void atualizacomb (DATABASE data) {
+  int ind, n, v, nmax=0,vmax=0;
+    for(ind=0;ind<52;ind++){
+      n=ind/13;
+      v=ind%13;
+    if(carta_existe(data.selected,n,v))
+      if ((v > vmax) || (v == vmax && n > nmax)) {
+        nmax = n;
+        vmax = v;
+      }
+    }
+      data.combination[1]= nmax;
+      data.combination[2]= vmax;
+}
+
 //falta limitar com 4....
 int pode_jogar(DATABASE data){
 	int ind,n,v;
