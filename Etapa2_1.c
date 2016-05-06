@@ -464,6 +464,7 @@ int pode_jogar(DATABASE data){
     int selec[5];
     int i = 0;
     int max;
+    if (data.passar == 3) data.nc=0;
     for(ind=0;ind<52;ind++){
         n=ind/13;
         v=ind%13;
