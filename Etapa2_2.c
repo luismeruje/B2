@@ -217,7 +217,7 @@ int jogadas_possiveis(DATABASE *data, int jog, int jogadas[][5]){
     
     for(v = 0; v < 13; v++){
         i = 0;
-        for(n = 0; n < 4; v++)
+        for(n = 0; n < 4; n++)
             if(carta_existe(data->mao[jog],n,v)){
                 temp_naipe[i] =n;
                 i++; //meter este incremento em cima
