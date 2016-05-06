@@ -98,8 +98,8 @@ int carta_existe(MAO ESTADO, int naipe, int valor) {
 
 
 void separa_val (MAO ESTADO, int y[13]){
-    int i,n,v,p;
-    for(i=0,p=0;i<52;i++){
+    int i,n,v;
+    for(i=0;i<52;i++){
         n = i/13;
         v = i%13;
         if(carta_existe(ESTADO,n,v)==1){
@@ -109,8 +109,8 @@ void separa_val (MAO ESTADO, int y[13]){
 }
 
 void separa_nap (MAO ESTADO, int y[4]){
-    int i,n,v,p;
-    for(i=0,p=0;i<52;i++){
+    int i,n,v;
+    for(i=0;i<52;i++){
         n = i/13;
         v = i%13;
         if(carta_existe(ESTADO,n,v)==1){
