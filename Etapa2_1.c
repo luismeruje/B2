@@ -172,8 +172,8 @@ int tipo_comb_five(MAO mao) {
   int r = 0, c;
   int n[4];
   int v[13];
-  n = separa_nap(mao, n);
-  v = separa_val(mao, v);
+  separa_nap(mao, n);
+  separa_val(mao, v);
   if(teste_straigh(v)) {
     if(teste_flush(n)) r = 5;
     else r = 1;
