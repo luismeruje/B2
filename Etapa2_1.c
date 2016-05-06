@@ -490,11 +490,9 @@ int pode_jogar(DATABASE data){
     }
   }
 
-    else if (count==5 && data.nc==0){
+    else if (count==5 && data.nc==5){
     if (tipo_comb_five(data.selected) >0) r=1;
   }
-    //if(data.nc==0)
-    //  r=1;
     return r;
 }
 
