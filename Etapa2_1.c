@@ -3,23 +3,23 @@
 #include <string.h>
 #include <time.h>
 
-/**
+/*
  URL da CGI
  */
-#define SCRIPT		"http://127.0.0.1/cgi-bin/cartas"
+#define SCRIPT      "http://127.0.0.1/cgi-bin/cartas"
 /**
  URL da pasta com as cartas
  */
-#define BARALHO		"http://127.0.0.1/cards"
+#define BARALHO     "http://127.0.0.1/cards"
 
 /**
  Ordem dos naipes
  */
-#define NAIPES		"DCHS"
+#define NAIPES      "DCHS"
 /**
  Ordem das cartas
  */
-#define VALORES		"3456789TJQKA2"
+#define VALORES     "3456789TJQKA2"
 
 #define DATA "%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d"
 
@@ -34,7 +34,7 @@ struct database{
     int inicio;
     int baralhar; 
     int score[4];
-    int combination[6];
+    int combination[3];
 };
 
 typedef struct database DATABASE;
@@ -43,18 +43,18 @@ typedef struct database DATABASE;
 
 DATABASE STR2DATA(char * str){
     DATABASE data;
-    sscanf(str, DATA,&(data.mao[0]),&(data.mao[1]),&(data.mao[2]),&(data.mao[3]),&(data.selected),&(data.jogadas[0]),&(data.jogadas[1]),&(data.jogadas[2]),&(data.jogadas[3]),&data.play,&data.nc,&data.passar,&data.inicio,&data.baralhar,&data.score[0],&data.score[1],&data.score[2],&data.score[3],&data.combination[0],&data.combination[1],&data.combination[2],&data.combination[3],&data.combination[4],&data.combination[5]);
+    sscanf(str, DATA,&(data.mao[0]),&(data.mao[1]),&(data.mao[2]),&(data.mao[3]),&(data.selected),&(data.jogadas[0]),&(data.jogadas[1]),&(data.jogadas[2]),&(data.jogadas[3]),&data.play,&data.nc,&data.passar,&data.inicio,&data.baralhar,&data.score[0],&data.score[1],&data.score[2],&data.score[3],&data.combination[0],&data.combination[1],&data.combination[2]);
     return data;
 }
 
 void DATA2STR(char * str,DATABASE data){
-    sprintf(str,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc,data.passar,data.inicio,data.baralhar,data.score[0],data.score[1],data.score[2],data.score[3],data.combination[0],data.combination[1],data.combination[2],data.combination[3],data.combination[4],data.combination[5]);
+    sprintf(str,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc,data.passar,data.inicio,data.baralhar,data.score[0],data.score[1],data.score[2],data.score[3],data.combination[0],data.combination[1],data.combination[2]);
 }
 /** \brief Devolve o índice da carta
 
- @param naipe	O naipe da carta (inteiro entre 0 e 3)
- @param valor	O valor da carta (inteiro entre 0 e 12)
- @return		O índice correspondente à carta
+ @param naipe   O naipe da carta (inteiro entre 0 e 3)
+ @param valor   O valor da carta (inteiro entre 0 e 12)
+ @return        O índice correspondente à carta
  */
 int indice(int naipe, int valor) {
     return naipe * 13 + valor;
@@ -62,10 +62,10 @@ int indice(int naipe, int valor) {
 
 /** \brief Adiciona uma carta a um dos estados
 
- @param ESTADO	O estado atual
- @param naipe	O naipe da carta (inteiro entre 0 e 3)
- @param valor	O valor da carta (inteiro entre 0 e 12)
- @return		O novo estado
+ @param ESTADO  O estado atual
+ @param naipe   O naipe da carta (inteiro entre 0 e 3)
+ @param valor   O valor da carta (inteiro entre 0 e 12)
+ @return        O novo estado
  */
 long long int add_carta(MAO ESTADO, int naipe, int valor) {
     int idx = indice(naipe, valor);
@@ -74,10 +74,10 @@ long long int add_carta(MAO ESTADO, int naipe, int valor) {
 
 /** \brief Remove uma carta a um dos estados
 
- @param ESTADO	O estado atual
- @param naipe	O naipe da carta (inteiro entre 0 e 3)
- @param valor	O valor da carta (inteiro entre 0 e 12)
- @return		O novo estado
+ @param ESTADO  O estado atual
+ @param naipe   O naipe da carta (inteiro entre 0 e 3)
+ @param valor   O valor da carta (inteiro entre 0 e 12)
+ @return        O novo estado
  */
 long long int rem_carta(MAO ESTADO, int naipe, int valor) {
     int idx = indice(naipe, valor);
@@ -86,10 +86,10 @@ long long int rem_carta(MAO ESTADO, int naipe, int valor) {
 
 /** \brief Verifica se uma carta pertence a um dos estados
 
- @param ESTADO	O estado atual
- @param naipe	O naipe da carta (inteiro entre 0 e 3)
- @param valor	O valor da carta (inteiro entre 0 e 12)
- @return		1 se a carta existe e 0 caso contrário
+ @param ESTADO  O estado atual
+ @param naipe   O naipe da carta (inteiro entre 0 e 3)
+ @param valor   O valor da carta (inteiro entre 0 e 12)
+ @return        1 se a carta existe e 0 caso contrário
  */
 int carta_existe(MAO ESTADO, int naipe, int valor) {
     int idx = indice(naipe, valor);
@@ -121,7 +121,7 @@ void separa_nap (MAO ESTADO, int *y){
 
 
 //acho que vai ser util criar um array de 6 na estrutura ou assim para as jogadas de 5 que diz os indices das cartas jogadas e na a[5] metemos o rank da jogada (se é straight flush e assim)
-int teste_straigh(MAO mao, int sa[13]){
+int teste_straigh(int sa[13]){
     int r = 0, n = 0, c = 0;
     int ca[15];
     while (n < 13) {
@@ -141,7 +141,7 @@ int teste_straigh(MAO mao, int sa[13]){
     return r;
 }
 
-int teste_flush(MAO mao, int naipe[4]) {
+int teste_flush(int naipe[4]) {
   int r = 0, n;
   for (n=0; n<4; n++) {
     if(naipe[n]==5) {
@@ -152,7 +152,7 @@ int teste_flush(MAO mao, int naipe[4]) {
   return r;
 }
 
-int teste_fullhouse(MAO mao, int rank[13]) {
+int teste_fullhouse(int rank[13]) {
   int r = 1, n;
   for (n=0; n<13; n++) {
     if (rank[n]==4 || rank[n]==1) r = 0;
@@ -160,29 +160,29 @@ int teste_fullhouse(MAO mao, int rank[13]) {
   return r;
 }
 
-int teste_fourofakind(MAO mao, int rank[13]) {
+int teste_fourofakind(int rank[13]) {
   int r = 1, n;
   for (n=0; n<13; n++) {
     if (rank[n]==3 || rank[n]==2) r = 0;
   }
   return r;
 }
-/*
+
 int tipo_comb_five(MAO mao) {
   int r = 0, c;
   int n[4];
   int v[13];
   n = separa_nap(mao, n);
   v = separa_val(mao, v);
-  if(teste_straigh) {
-    if(teste_flush) r = 5;
+  if(teste_straigh(v)) {
+    if(teste_flush(n)) r = 5;
     else r = 1;
   }
-  if(r==0 && teste_flush) r = 2;
-  if(r==0 && teste_fullhouse) r = 3;
-  if(r==0 && teste_fourofakind) r = 4;
+  if(r==0 && teste_flush(n)) r = 2;
+  if(r==0 && teste_fullhouse(v)) r = 3;
+  if(r==0 && teste_fourofakind(v)) r = 4;
   return r;
-} */
+} 
 
 /* à priori vai ser a mais dificil de fazer de todas, para tratar amanha terca
 int teste_straighflush(MAO mao){
@@ -192,7 +192,7 @@ int teste_straighflush(MAO mao){
 
 
 int compstraight(MAO mao,DATABASE data){
-  int i,max,p=1,teste[5];
+  int i,max,p=1,teste[5];int
   for(ind=0;ind<52;ind++){
     n=ind/13;
     v=ind%13;
@@ -283,9 +283,6 @@ void imprime_continuar(char *path, DATABASE data) {
   data.combination[0]=0;
   data.combination[1]=0;
   data.combination[2]=0;
-  data.combination[3]=0;
-  data.combination[4]=0;
-  data.combination[5]=0;
   DATA2STR(script,data);
   printf("<a xlink:href = \"cartas?%s\"><image x = \"380\" y = \"500\" height = \"60\" width = \"170\" xlink:href = \"%s/botao_continuar.svg\" /></a>\n", script, path);
 }
@@ -343,7 +340,7 @@ DATABASE check_cartas(int n, int v, DATABASE data,int m){
 }
 
 void imprime_carta_imagem(char * path,int x, int y,int n,int v){
- 	char *suit = NAIPES;
+    char *suit = NAIPES;
     char *rank = VALORES;
     printf("<image x = \"%d\" y = \"%d\" height = \"95\" width = \"70\" xlink:href = \"%s/%c%c.svg\" />\n", x, y, path, rank[v], suit[n]);
 }
@@ -357,9 +354,9 @@ void imprime_carta_link(char * path,int x, int y,DATABASE data,int n,int v){
     char *rank = VALORES;
     char script[52000]; // n sei quanto precisamos.
     if(carta_existe(data.selected,n,v)==0)
-    	data.selected = add_carta(data.selected,n,v);
+        data.selected = add_carta(data.selected,n,v);
     else
-    	data.selected = rem_carta(data.selected,n,v);
+        data.selected = rem_carta(data.selected,n,v);
     data.play = 0;
     //vale a pena data.jogadas[0]=0, para perceber quando ganha? acho que nao.
     DATA2STR(script,data);
@@ -367,14 +364,14 @@ void imprime_carta_link(char * path,int x, int y,DATABASE data,int n,int v){
 }
 
 void imprime_help(DATABASE data, char * path){
-  	DATABASE help;
+    DATABASE help;
     MAO old = data.selected;
-  	char script[52000];
-  	int max = maior_carta_jogada(data);
-  	int ind;
-  	int n,v;
+    char script[52000];
+    int max = maior_carta_jogada(data);
+    int ind;
+    int n,v;
     data.jogadas[0] = 0;
-  	for(ind=0;ind<52;ind++){
+    for(ind=0;ind<52;ind++){
       n=ind/13;
       v=ind%13;
       if(carta_existe(data.mao[0],n,v)==1)
@@ -382,23 +379,23 @@ void imprime_help(DATABASE data, char * path){
           help = check_cartas(n,v,data,0);
           if (help.jogadas[0]!=0) break;
         }
-  	}
+    }
     data.selected = 0;
     if(old != help.jogadas[0])
         data.selected = help.jogadas[0];
     data.play = 0;
-  	DATA2STR(script,data);
-  	printf("<a xlink:href = \"cartas?%s\"><image x = \"370\" y = \"560\" height = \"40\" width = \"40\" xlink:href = \"%s/botao_help.svg\" /><>\n", script, path);
+    DATA2STR(script,data);
+    printf("<a xlink:href = \"cartas?%s\"><image x = \"370\" y = \"560\" height = \"40\" width = \"40\" xlink:href = \"%s/botao_help.svg\" /><>\n", script, path);
 }
 
 int quem_comeca(DATABASE data){
-	int first,jog;
-	for(jog=0;;jog++)
-		if(carta_existe(data.mao[jog],0,0)){
-			first = jog;
-			break;
-		}
-	return first;
+    int first,jog;
+    for(jog=0;;jog++)
+        if(carta_existe(data.mao[jog],0,0)){
+            first = jog;
+            break;
+        }
+    return first;
 }
 
 //##############################UTILITÁRIOS-FIM################################################
@@ -426,12 +423,12 @@ DATABASE distribui(DATABASE data){
 
 void imprime_start(DATABASE data,char * path){
     char script[52000];
-    sprintf(script,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc,data.passar,data.inicio,data.baralhar,data.score[0],data.score[1],data.score[2],data.score[3],data.combination[0],data.combination[1],data.combination[2],data.combination[3],data.combination[4],data.combination[5]);
+    sprintf(script,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc,data.passar,data.inicio,data.baralhar,data.score[0],data.score[1],data.score[2],data.score[3],data.combination[0],data.combination[1],data.combination[2]);
     printf("<a xlink:href = \"cartas?%s\"><image x = \"510\" y = \"300\" height = \"60\" width = \"180\" xlink:href = \"%s/botao_start.svg\" /></a>\n", script, path);
 }
 
 void imprime_passar (DATABASE data,char * path){
-	char script[52000];
+    char script[52000];
   if (data.nc != 0 || all_passed(data) != 0) {
     data.selected = 0;
     data.jogadas[0]=0;
@@ -461,31 +458,31 @@ void atualizacomb (DATABASE data) {
 
 //falta limitar com 4....
 int pode_jogar(DATABASE data){
-	int ind,n,v;
-	int count=0;
-	int r=0;
-	int selec[5];
-	int i = 0;
-	int max;
-	for(ind=0;ind<52;ind++){
-		n=ind/13;
-		v=ind%13;
-		if(carta_existe(data.selected,n,v)){
-			selec[i] = ind;
-			count++;
-			i++;
-		}
-	}
-	if (count < 4){
+    int ind,n,v;
+    int count=0;
+    int r=0;
+    int selec[5];
+    int i = 0;
+    int max;
+    for(ind=0;ind<52;ind++){
+        n=ind/13;
+        v=ind%13;
+        if(carta_existe(data.selected,n,v)){
+            selec[i] = ind;
+            count++;
+            i++;
+        }
+    }
+    if (count < 4){
     if(count==data.nc&&data.nc!=0){
-		  for(i=0;i<data.nc;i++){
-			 n=selec[i]/13;
-			 v=selec[i]%13;
-			 max = maior_carta_jogada(data);
-			 if(v>max%13||(v==max%13&&n>max/13))
-				r=1;
-		  }
-	   }
+          for(i=0;i<data.nc;i++){
+             n=selec[i]/13;
+             v=selec[i]%13;
+             max = maior_carta_jogada(data);
+             if(v>max%13||(v==max%13&&n>max/13))
+                r=1;
+          }
+       }
 
     for(i=0; i<count; i++){
     n = selec[0]%13;
@@ -493,49 +490,49 @@ int pode_jogar(DATABASE data){
     }
   }
 
-    //else if (count==5 && data.nc==0){
-    //if (tipo_comb_five(data) >0) r=1;
-  //}
-	//if(data.nc==0)
-	//	r=1;
-	return r;
+    else if (count==5 && data.nc==0){
+    if (tipo_comb_five(data.selected) >0) r=1;
+  }
+    //if(data.nc==0)
+    //  r=1;
+    return r;
 }
 
 
 void imprime_play (DATABASE data, char * path){
-	int n,v;
-	int ind;
-	char script [52000];
-	data.jogadas[0]=0;
-	if(data.passar == 3||data.nc==0){
-		data.nc = 0;
-		for(ind=0;ind<52;ind++){
-			n=ind/13;
-			v=ind%13;
-			if(carta_existe(data.selected,n,v))
-				data.nc ++;
-		}
-	}
-	if(pode_jogar(data)==1){
-		for(ind=0;ind<52;ind++){
-        	n = ind/13;
-        	v = ind%13;
-        	if(carta_existe(data.selected,n,v)){
-            	data.mao[0]=rem_carta(data.mao[0],n,v);
-            	data.jogadas[0] = add_carta(data.jogadas[0],n,v);
-        	}
-    	}
-    	data.selected = 0;
-    	data.passar = 0;
-    	if(data.mao[0] == 0)
+    int n,v;
+    int ind;
+    char script [52000];
+    data.jogadas[0]=0;
+    if(data.passar == 3||data.nc==0){
+        data.nc = 0;
+        for(ind=0;ind<52;ind++){
+            n=ind/13;
+            v=ind%13;
+            if(carta_existe(data.selected,n,v))
+                data.nc ++;
+        }
+    }
+    if(pode_jogar(data)==1){
+        for(ind=0;ind<52;ind++){
+            n = ind/13;
+            v = ind%13;
+            if(carta_existe(data.selected,n,v)){
+                data.mao[0]=rem_carta(data.mao[0],n,v);
+                data.jogadas[0] = add_carta(data.jogadas[0],n,v);
+            }
+        }
+        data.selected = 0;
+        data.passar = 0;
+        if(data.mao[0] == 0)
             data.play = 2;
         else
             data.play = 1;
-    	DATA2STR(script, data);
-    	printf("<a xlink:href = \"cartas?%s\"><image x = \"775\" y = \"510\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_play.svg\" /></a>\n", script, path);
+        DATA2STR(script, data);
+        printf("<a xlink:href = \"cartas?%s\"><image x = \"775\" y = \"510\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_play.svg\" /></a>\n", script, path);
     }
     else
-    	printf("<image x = \"775\" y = \"510\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_play_cinza.svg\" />\n", path);
+        printf("<image x = \"775\" y = \"510\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_play_cinza.svg\" />\n", path);
 }
 
 void imprime_baralhar (DATABASE data, char *path){
@@ -555,11 +552,11 @@ void imprime_baralhar (DATABASE data, char *path){
 }
 
 void imprime_jogadas(DATABASE data, char * path){
-	int x,y;
-	int n,v;
-	int jog;
-	int ind;
-	for(x=550,y=210,jog=2;jog>=0;jog-=2,y+=175){ //Pôr a ficar o jogador a somar?
+    int x,y;
+    int n,v;
+    int jog;
+    int ind;
+    for(x=550,y=210,jog=2;jog>=0;jog-=2,y+=175){ //Pôr a ficar o jogador a somar?
       if (data.jogadas[jog]==0 && data.inicio!=1) {
         if (data.play || jog!=0) {
         y -= 20;
@@ -600,13 +597,13 @@ void imprime_jogadas(DATABASE data, char * path){
 
 
 void imprime_maos (DATABASE data, char * path){
-	int n,v,b,i;
-	int x,y;
-	int jog;
-	int ind;
+    int n,v,b,i;
+    int x,y;
+    int jog;
+    int ind;
     if (data.baralhar) b = 13;
     else b = 1;
-	for(y = 500, jog = 0; jog < 3; jog+=2, y -= 415)
+    for(y = 500, jog = 0; jog < 3; jog+=2, y -= 415)
         for(x = 445, ind = 0, i = 0; ind < 52; ind += b){
             n = ind/13;
             v = ind%13;
@@ -621,7 +618,7 @@ void imprime_maos (DATABASE data, char * path){
                     y += 20;
             }
             else{
-            	n = ind/13;
+                n = ind/13;
                 v = ind%13;
                 if(carta_existe(data.mao[jog],n,v)==1){
                     imprime_carta_back(path,x,y);
@@ -634,7 +631,7 @@ void imprime_maos (DATABASE data, char * path){
             }
         }
     for(x = 240, jog = 3; jog > 0; jog-=2, x += 640)//alterar para ser a somar o jog?
-    	for(y = 170, ind = 0, i = 0; ind < 52; ind += b){
+        for(y = 170, ind = 0, i = 0; ind < 52; ind += b){
             n = ind/13;
             v = ind%13;
             if(carta_existe(data.mao[jog],n,v)==1){
@@ -658,33 +655,33 @@ void imprime_maos (DATABASE data, char * path){
 
 
 DATABASE bot_continua(DATABASE data,int m){
-	int max;
-	int ind;
-	int n,v;
+    int max;
+    int ind;
+    int n,v;
     max = maior_carta_jogada(data);
     data.jogadas[m] = 0;
     for(ind=0;ind<52;ind++){
-    	n=ind/13;
-    	v=ind%13;
-    	if(carta_existe(data.mao[m],n,v)==1)
-    		if(v>max%13||(v==max%13&&n>max/13)){
-    			data = check_cartas(n,v,data,m);
-    			break;
+        n=ind/13;
+        v=ind%13;
+        if(carta_existe(data.mao[m],n,v)==1)
+            if(v>max%13||(v==max%13&&n>max/13)){
+                data = check_cartas(n,v,data,m);
+                break;
             }
     }
     if(data.jogadas[m]==0)
-    	data.passar++;
+        data.passar++;
     else
-    	data.passar=0;
+        data.passar=0;
     if(data.mao[m]==0)
         data.play = 2;
     return data;
 }
 DATABASE bot_comeca(DATABASE data,int m){
-	int jog;
-	int ind;
-	int n,v;
-	for(jog=0;jog<4;jog++)
+    int jog;
+    int ind;
+    int n,v;
+    for(jog=0;jog<4;jog++)
         data.jogadas[jog]=0;
     data.passar=0;
     for(ind=0;ind<52;ind++){
@@ -703,14 +700,14 @@ DATABASE bot_comeca(DATABASE data,int m){
 }
 
 DATABASE joga_bots(DATABASE data,int m){
-	int i;
+    int i;
     if(all_passed(data)==1||data.nc==0){
- 		data = bot_comeca(data,m);
+        data = bot_comeca(data,m);
     }
     else{
-    	i = data.nc;
-    	data = bot_continua(data,m);
-    	data.nc = i;
+        i = data.nc;
+        data = bot_continua(data,m);
+        data.nc = i;
     }
     return data;
 }
@@ -728,8 +725,8 @@ DATABASE joga_bots(DATABASE data,int m){
 
 
 void imprime(char * path,DATABASE data){
-	int jog;
-	  printf("<svg height = \"680\" width = \"1200\">\n");
+    int jog;
+      printf("<svg height = \"680\" width = \"1200\">\n");
     printf("<image x = \"-155\" y = \"0\" height = \"900\" width = \"1500\" xlink:href = \"%s/floor.svg\" />\n", path);
     printf("<circle cx=\"450\" cy=\"350\" r=\"290\" stroke=\"maroon\" stroke-width=\"20\" style = \"fill:#007700\"/>\n");
     printf("<circle cx=\"750\" cy=\"350\" r=\"290\" stroke=\"maroon\" stroke-width=\"20\" style = \"fill:#007700\"/>\n");
@@ -738,17 +735,17 @@ void imprime(char * path,DATABASE data){
     if(data.mao[0]==0)
         imprime_fim(path,data);
     if(data.inicio == 1){
-    	jog = quem_comeca(data);
-    	if (jog>0)
-    		for(;jog<4;jog++){
-    			data=joga_bots(data,jog);
+        jog = quem_comeca(data);
+        if (jog>0)
+            for(;jog<4;jog++){
+                data=joga_bots(data,jog);
           if (jog == 3) data.play = 0;
-    		}
-    	data.inicio = 2;
+            }
+        data.inicio = 2;
     }
     if(data.play == 1)
-    	for(jog=1;jog<4 && data.play != 2;jog++){
-    		data = joga_bots(data,jog);
+        for(jog=1;jog<4 && data.play != 2;jog++){
+            data = joga_bots(data,jog);
             if(data.play == 2)
                 imprime_fim(path, data);
         }
