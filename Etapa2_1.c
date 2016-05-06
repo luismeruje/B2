@@ -161,9 +161,9 @@ int teste_fullhouse(int rank[13]) {
 }
 
 int teste_fourofakind(int rank[13]) {
-  int r = 1, n;
+  int r = 0, n;
   for (n=0; n<13; n++) {
-    if (rank[n]==3 || rank[n]==2) r = 0;
+    if (rank[n]==4) r = 1;
   }
   return r;
 }
@@ -464,7 +464,6 @@ int pode_jogar(DATABASE data){
     int selec[5];
     int i = 0;
     int max;
-    if (data.passar == 3) data.nc=0;
     for(ind=0;ind<52;ind++){
         n=ind/13;
         v=ind%13;
