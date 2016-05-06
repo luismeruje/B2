@@ -21,7 +21,7 @@
  */
 #define VALORES     "3456789TJQKA2"
 
-#define DATA "%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d"
+#define DATA "%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d"
 
 typedef long long int MAO;
 struct database{
@@ -97,7 +97,7 @@ int carta_existe(MAO ESTADO, int naipe, int valor) {
 }
 
 
-void separa_val (MAO ESTADO, int *y){
+void separa_val (MAO ESTADO, int y[13]){
     int i,n,v,p;
     for(i=0,p=0;i<52;i++){
         n = i/13;
@@ -108,7 +108,7 @@ void separa_val (MAO ESTADO, int *y){
     }
 }
 
-void separa_nap (MAO ESTADO, int *y){
+void separa_nap (MAO ESTADO, int y[4]){
     int i,n,v,p;
     for(i=0,p=0;i<52;i++){
         n = i/13;
