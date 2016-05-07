@@ -206,7 +206,7 @@ void preenchejogada (MAO mao, int y[3]){
   int m, i;
   int naipe[4] = {0};
   int rank[13] = {0};
-  m = tipo_comb_five(mao MAO);
+  m = tipo_comb_five(MAO mao);
   y[0] = m;
   if (not (m==3 || m==4 || m==2))
     atualizastraight(mao, y);
