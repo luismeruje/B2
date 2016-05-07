@@ -125,8 +125,10 @@ void separa_nap (MAO ESTADO, int y[4]){
 int teste_straight(int v[13]){
     int r = 0, i, count = 0;
     for(i = 0;v[i] == 0; i++);
-    for(; v[i] != 0 && count < 5; i+1 / 13)
+    while (v[i] != 0 && count < 5){
         count++;
+        i = (i + 1) % 13;
+    }
     if(count == 5)
         r = 1;
     return r;
