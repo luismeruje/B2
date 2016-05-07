@@ -178,13 +178,13 @@ int tipo_comb_five(MAO mao) {
 } 
 int cmpplay (MAO mao, int y[3]){
   int r=0;
-  int t[3};
+  int t[3];
   preenchejogada (MAO mao,t);
     if (t[0] > y[0]) r=1;
       else if (t[0] == y[0]){
-        case (t[0] == 2) if (t[2] > y[2]) r = 1;
-        case (t[0] == 3 || t[0] == 4) if (t[1] > y[1]) r = 1;
-        case (t[0] == 5) if (t[1] > y[1] || (t[1]==y[1] && t[2] > y[2]) ) r = 1;
+        case (t[0] == 2) : if (t[2] > y[2]) r = 1;
+        case (t[0] == 3 || t[0] == 4) : if (t[1] > y[1]) r = 1;
+        case (t[0] == 5) if (t[1] > y[1] || (t[1]==y[1] && t[2] > y[2]) ) : r = 1;
       }
   
 }
