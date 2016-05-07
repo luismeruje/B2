@@ -176,22 +176,11 @@ int tipo_comb_five(MAO mao) {
   if(r==0 && teste_fourofakind(v)) r = 4;
   return r;
 } 
-int cmpplay (MAO mao, int y[3]){
-  int r=0;
-  int t[3];
-  preenchejogada (MAO mao,t);
-    if (t[0] > y[0]) r=1;
-      else if (t[0] == y[0]){
-        if ((t[0] == 2) && (t[2] > y[2])) r = 1;
-        if ((t[0] == 3 || t[0] == 4) && (t[1] > y[1])) r = 1;
-        if ((t[0] == 5) && (t[1] > y[1] || (t[1]==y[1] && t[2] > y[2]))) r = 1;
-      }
-  
-}
+
 void atualizacstraight(MAO mao, int y[3]) {
   MAO m = mao;
   int ind, n, v, nmax=0,vmax=0, r = 0;
-    for (n=0, v=11; n<4, r==0; n++) {
+    for (n=0, v=11; n<4, r==0; n++) 
       if ((carta_existe(m, n, v)) && (carta_existe(m, n, (v+1)))) {
         rem_carta(m, n, v);
         rem_carta(m, n, (v+1));
@@ -203,10 +192,10 @@ void atualizacstraight(MAO mao, int y[3]) {
 }
 
 void preenchejogada (MAO mao, int y[3]){
-  int m, i;
+  int m, i,ind;
   int naipe[4] = {0};
   int rank[13] = {0};
-  m = tipo_comb_five(MAO mao);
+  m = tipo_comb_five(mao);
   y[0] = m;
   if (not (m==3 || m==4 || m==2))
     atualizastraight(mao, y);
@@ -226,6 +215,18 @@ void preenchejogada (MAO mao, int y[3]){
   }
 }
 
+int cmpplay (MAO mao, int y[3]){
+  int r=0;
+  int t[3];
+  preenchejogada (mao,t);
+    if (t[0] > y[0]) r=1;
+      else if (t[0] == y[0]){
+        if ((t[0] == 2) && (t[2] > y[2])) r = 1;
+        if ((t[0] == 3 || t[0] == 4) && (t[1] > y[1])) r = 1;
+        if ((t[0] == 5) && (t[1] > y[1] || (t[1]==y[1] && t[2] > y[2]))) r = 1;
+      }
+  return r;
+} 
 
 /* à priori vai ser a mais dificil de fazer de todas, para tratar amanha terca
 int teste_straighflush(MAO mao){
@@ -521,7 +522,7 @@ int pode_jogar(DATABASE data){
 
     else if (count==data.nc==5 && count==5){
     if (data.passar==3 && tipo_comb_five(data.selected) >0) r=1;
-    else if (tipo_comb_fice(data.selected)>0  && cmpplay(codeas) ==1) r=1;
+    else if (tipo_comb_fice(data.selected)>0  && cmpplay(data.selected, data.combination) ==1) r=1;
   }
     return r;
 }
