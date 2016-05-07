@@ -96,6 +96,21 @@ int carta_existe(MAO ESTADO, int naipe, int valor) {
     return (ESTADO >> idx) & 1;
 }
 
+int maior_carta_mao(MAO mao){
+    int ind;
+    int max=-1;
+    int n,v;
+    for(ind=0;ind<52;ind++){
+        n=ind/13;
+        v=ind%13;
+        if(carta_existe(mao,n,v)){
+            if(v>max%13||(v==max%13&&n>max/13))
+                max = ind;
+        }
+    }
+    return max;
+}
+
 //WARNING: se metermos um count que faz a função parar aos 5 fica mais eficiente, não percorre as cartas todas
 void separa_val (MAO ESTADO, int y[13]){
     int i,n,v;
@@ -177,14 +192,15 @@ int tipo_comb_five(MAO mao) {
   return r;
 } 
 
-void atualizacstraight(MAO mao, int y[3]) {
+void atualizastraight(MAO mao, int y[3]) {
   MAO m = mao;
-  int ind, n, v, nmax=0,vmax=0, r = 0;
-    for (n=0, v=11; n<4, r==0; n++) 
-      if ((carta_existe(m, n, v)) && (carta_existe(m, n, (v+1)))) {
+  int ind, n, v, r = 0;
+    for (n=0, v=11; n!=4; n++)
+      ind = v+1;
+      if ((carta_existe(m, n, v)) && (carta_existe(m, n, ind))) {
         rem_carta(m, n, v);
-        rem_carta(m, n, (v+1));
-        r = 1;
+        rem_carta(m, n, ind);
+        n = 4;
     }
    ind = maior_carta_mao(m);
    y[1] = ind/13;
@@ -197,8 +213,7 @@ void preenchejogada (MAO mao, int y[3]){
   int rank[13] = {0};
   m = tipo_comb_five(mao);
   y[0] = m;
-  if (not (m==3 || m==4 || m==2))
-    atualizastraight(mao, y);
+  if (m==1 && m==5) atualizastraight(mao, y);
   else {
     if (m==2) {
       ind = maior_carta_mao(m);
@@ -277,21 +292,6 @@ int calcula_score(MAO mao){
             r=r*2;
     }
     return r;
-}
-
-int maior_carta_mao(MAO mao){
-    int ind;
-    int max=-1;
-    int n,v;
-    for(ind=0;ind<52;ind++){
-        n=ind/13;
-        v=ind%13;
-        if(carta_existe(mao,n,v)){
-            if(v>max%13||(v==max%13&&n>max/13))
-                max = ind;
-        }
-    }
-    return max;
 }
 
 int maior_carta_jogada(DATABASE data){
@@ -520,9 +520,9 @@ int pode_jogar(DATABASE data){
     }
   }
 
-    else if (count==data.nc==5 && count==5){
+    else if (count==data.nc && count==5){
     if (data.passar==3 && tipo_comb_five(data.selected) >0) r=1;
-    else if (tipo_comb_fice(data.selected)>0  && cmpplay(data.selected, data.combination) ==1) r=1;
+    else if (tipo_comb_five(data.selected)>0  && cmpplay(data.selected, data.combination) ==1) r=1;
   }
     return r;
 }
