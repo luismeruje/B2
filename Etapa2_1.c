@@ -137,14 +137,23 @@ void separa_nap (MAO ESTADO, int y[4]){
 
 
 //acho que vai ser util criar um array de 6 na estrutura ou assim para as jogadas de 5 que diz os indices das cartas jogadas e na a[5] metemos o rank da jogada (se é straight flush e assim)
-int teste_straight(int v[13]){
-    int r = 0, i, count = 0;
-    for(i = 0; v[i]!= 0; i++);
-    for(;v[i] == 0; i=(i+1)%13);
-    for (;v[i] != 0 && count < 5; i = (i + 1) % 13)
-        count++;
-    if(count == 5)
-        r = 1;
+int teste_straight(int sa[13]){
+    int r = 0, n = 0, c = 0;
+    int ca[14];
+    while (n < 12) {
+      ca[n+2] = sa[n];
+      n++;
+    }
+    ca[0] = sa[11];
+    ca[1] = sa[12];
+    for (n=0; n<15; n++) {
+      if((ca[n])==1) c+=1;
+      else c = 0;
+      if (c==5) {
+        n=15;
+        r++;
+      }
+    }
     return r;
 }
 
