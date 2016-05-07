@@ -212,10 +212,11 @@ int check_jogada(DATABASE *data, int jog){
 
 
 //TODO: separar em duas funções, uma para se data->nc = 5 e outra para as restantes, que irá ser igual a esta
+//TODO: não testa direito entre pares com valores iguais, os naipes se são mais altos ou não
 int jogadas_possiveis(DATABASE *data, int jog, int jogadas[][5]){
     int n, v, i, temp_naipe[4], count = 0;
-    
-    for(v = 0; v < 13; v++){
+    int max = maior_carta_jogada(data);
+    for(v = max % 13; v < 13; v++){
         i = 0;
         for(n = 0; n < 4; n++)
             if(carta_existe(data->mao[jog],n,v)){
@@ -261,6 +262,7 @@ void imprime_carta_link(int x, int y,DATABASE data,int n,int v){
     printf("<a xlink:href = \"cartas?%s\"><image x = \"%d\" y = \"%d\" height = \"110\" width = \"80\" xlink:href = \"%s/%c%c.svg\" /></a>\n", script, x, y, BARALHO, rank[v], suit[n]);
 }
 
+//WARNING: não imprime os passo na primeira jogada
 void imprime_jogadas(DATABASE data){
     int x,y;
     int n,v;
@@ -416,7 +418,7 @@ void botao_passar (DATABASE data){
     
     data.selected = 0;
     data.jogadas[0]=0;
-    data.play = 0;
+    data.play = 2;
     data.passar++;
     DATA2STR(script, data);
     printf("<a xlink:href = \"cartas?%s\"><image x = \"775\" y = \"550\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_pass.svg\" /></a>\n", script, BARALHO);
@@ -564,7 +566,7 @@ void bot_continua(DATABASE *data,int m){
             n = jogadas[draw][i] / 13;
             v = jogadas[draw][i] % 13;
             data->jogadas[m] = add_carta(data->jogadas[m],n,v);
-            data->mao[m] = rem_carta(data->jogadas[m],n,v);
+            data->mao[m] = rem_carta(data->mao[m],n,v);
         }
     }
     else
@@ -594,13 +596,13 @@ void bot_comeca(DATABASE *data,int m){
         draw = 0;
     else
         draw = rand()%total;
-    
-    for(i = 0; i < data->nc; i++){
-        n = jogadas[draw][i] / 13;
-        v = jogadas[draw][i] % 13;
-        data->jogadas[m] = add_carta(data->jogadas[m],n,v);
-        data->mao[m] = rem_carta(data->jogadas[m],n,v);
-    }
+    if(total != 0)
+    	for(i = 0; i < data->nc; i++){
+        	n = jogadas[draw][i] / 13;
+        	v = jogadas[draw][i] % 13;
+    	    data->jogadas[m] = add_carta(data->jogadas[m],n,v);
+        	data->mao[m] = rem_carta(data->mao[m],n,v);
+    	}
     
     if(data->mao[m]==0)
         data->play = 4;
@@ -618,17 +620,20 @@ void joga_bots(DATABASE *data,int m){
 
 void jogo(DATABASE *data){
     int jog;
-    if (data->play != 3)
-        for(jog = 0; jog < 4; jog++){
+    if(data->play != 3)
+        for(jog = 1; jog < 4; jog++){
     		joga_bots(data,jog);
-            if(data->play == 4)
+            if(data->play == 4){
                 imprime_fim(data);
+            	break;
+            }
         }
     else{ //só acontece no início do jogo se um dos bots tiver o 3 de ouros
         jog = quem_comeca(data);
         data -> passar = 3;
-        for(; jog < 4; jog++)
-            joga_bots(data,jog);
+        if(jog!=0)
+        	for(; jog < 4; jog++)
+            	joga_bots(data,jog);
     }
 }
 
@@ -658,6 +663,7 @@ void Game_Lobby(DATABASE data){
             jogo(&data);
             if(data.play != 4)
             	imprime(data);
+            break; //WARNING: acho que se pode tirar este break
     }
 }
 
@@ -671,6 +677,7 @@ void parse (char * query) {
         distribui(&data);
         data.play = 1;
     }
+    printf("%d", data.play);
     Game_Lobby(data);
 }
 
