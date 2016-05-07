@@ -182,9 +182,9 @@ int cmpplay (MAO mao, int y[3]){
   preenchejogada (MAO mao,t);
     if (t[0] > y[0]) r=1;
       else if (t[0] == y[0]){
-        case (t[0] == 2) : if (t[2] > y[2]) r = 1;
-        case (t[0] == 3 || t[0] == 4) : if (t[1] > y[1]) r = 1;
-        case (t[0] == 5) if (t[1] > y[1] || (t[1]==y[1] && t[2] > y[2]) ) : r = 1;
+        if ((t[0] == 2) && (t[2] > y[2])) r = 1;
+        if ((t[0] == 3 || t[0] == 4) && (t[1] > y[1])) r = 1;
+        if ((t[0] == 5) && (t[1] > y[1] || (t[1]==y[1] && t[2] > y[2]))) r = 1;
       }
   
 }
@@ -206,7 +206,7 @@ void preenchejogada (MAO mao, int y[3]){
   int m, i;
   int naipe[4] = {0};
   int rank[13] = {0};
-  m = tipo_comb_five();
+  m = tipo_comb_five(mao MAO);
   y[0] = m;
   if (not (m==3 || m==4 || m==2))
     atualizastraight(mao, y);
