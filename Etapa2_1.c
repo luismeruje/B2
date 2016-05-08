@@ -183,7 +183,7 @@ int teste_fourofakind(int rank[13]) {
   }
   return r;
 }
-
+//O 3 de ouros tem que ser jogado na primeira jogada, está nas regras(?)
 //r: 1 => straight; 2 => flush; 3 => fullhouse; 4 => fourofakind; 5 => straightflush
 int tipo_comb_five(MAO mao) {
   int r = 0, c;
