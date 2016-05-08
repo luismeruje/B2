@@ -343,12 +343,14 @@ long long int fourofakindpos (MAO mao) {
   int i;
   int rank[13] = {0};
   separa_val(mao, rank);
-  for(i=0; rank[i]<4, i<13; i++);
+  for(i=0; i<13; i++) 
+    if(rank[i]==4) break;
   if(i!=13) {
     int c=0, n=0, p;
-    while(n<4)
+    while(n<4) {
       max = add_carta(max, n, i);
       n++;
+    }
     for(n=0; n<52; n++) {
       c = n/13;
       p = n%13;
@@ -357,6 +359,7 @@ long long int fourofakindpos (MAO mao) {
         break;
       }
     }
+    if(n==52) max = 0;
   }
   return max;
 }
