@@ -325,11 +325,10 @@ int check_jogada(DATABASE *data, int jog){
         r = 0;
     return r;
 }
+
 int determina_basico(DATABASE *data, int jog, int jogadas[][5]){
     int n, v, i, temp_naipe[4], count = 0, a;
     int max = maior_carta_jogada(data);
-    if (max == -1)
-        max = 0;
     for(v = max % 13; v < 13; v++){
         i = 0;
         for(n = 0; n < 4; n++)
@@ -597,6 +596,7 @@ void botao_continuar(DATABASE * data) {
     
     for(i=0; i < 4; i++)
         newdata.score[i] = data->score[i];
+    distribui(&newdata);
     newdata.play = 1;
     DATA2STR(script,newdata);
     printf("<a xlink:href = \"cartas?%s\"><image x = \"380\" y = \"500\" height = \"60\" width = \"170\" xlink:href = \"%s/botao_continuar.svg\" /></a>\n", script, BARALHO);
@@ -608,6 +608,12 @@ void botao_novojogo() {
 
 //TODO: podemos simplificar isto com um for..
 void imprime_fim (DATABASE *data){
+    printf("<svg height = \"680\" width = \"1200\">\n");
+    printf("<image x = \"-155\" y = \"0\" height = \"900\" width = \"1500\" xlink:href = \"%s/floor.svg\" />\n", BARALHO);
+    printf("<circle cx=\"450\" cy=\"350\" r=\"290\" stroke=\"maroon\" stroke-width=\"20\" style = \"fill:#007700\"/>\n");
+    printf("<circle cx=\"750\" cy=\"350\" r=\"290\" stroke=\"maroon\" stroke-width=\"20\" style = \"fill:#007700\"/>\n");
+    printf("<rect x = \"450\" y = \"60\" height = \"580\" width = \"300\" stroke=\"maroon\" stroke-width=\"20\" style = \"fill:#007700\"/>\n");
+    printf("<rect x = \"440\" y = \"70\" height = \"560\" width = \"320\" style = \"fill:#007700\"/>\n");
     data->score[0] += calcula_score(data->mao[0]);
     data->score[1] += calcula_score(data->mao[1]);
     data->score[2] += calcula_score(data->mao[2]);
@@ -620,6 +626,7 @@ void imprime_fim (DATABASE *data){
     printf("<text x = \"400\" y = \"430\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:40px;\">Diogo - %d</text>\n", data->score[3]);
     botao_continuar(data);
     botao_novojogo();
+    printf("</svg>");
 }
 
 //data.play = 1 está na imprime_start
@@ -795,8 +802,9 @@ void Game_Lobby(DATABASE data){
 void parse (char * query) {
     DATABASE data = {{0},0,{0},0,0,0,0,{0},{0}}; //vale a pena inicializar tudo a 0's sempre?
     
-    if((query!=NULL && strlen(query) != 0)) //meter condição adicional, para novo jogo e continuar, talvez data.play = 5 e depois já n é preciso aquela função enorme, basta mandar para baixo e manter os scores ou não, conforme o que se queira.
+    if(query!=NULL && strlen(query) != 0) //meter condição adicional, para novo jogo e continuar, talvez data.play = 5 e depois já n é preciso aquela função enorme, basta mandar para baixo e manter os scores ou não, conforme o que se queira.
         data = STR2DATA(query);
+    
     else{
         distribui(&data);
         data.play = 1;
