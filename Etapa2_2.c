@@ -504,8 +504,8 @@ int check_jogada(DATABASE *data, int jog){
         if(count < 5)
         	r = check_basico(data,cartas);
     	else
-            if(tipo_comb_five(jogada) != 0)
-                r = 1;
+            if (data.passar==3 && tipo_comb_five(data.selected) >0) r=1;
+            else if(tipo_comb_five(data.selected)>0  && cmpplay(data.selected, data.combination)==1) r=1;
     }
     else
         r = 0;
