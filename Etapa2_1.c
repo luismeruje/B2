@@ -364,6 +364,13 @@ long long int fourofakindpos (MAO mao) {
   return max;
 }
 
+long long int straightflushpos (MAO mao) {
+  MAO max;
+  int rank[13] = {0};
+  separa_val(mao, rank);
+  return max;
+}
+
 /* à priori vai ser a mais dificil de fazer de todas, para tratar amanha terca
 int teste_straighflush(MAO mao){
 
