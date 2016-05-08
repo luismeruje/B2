@@ -272,6 +272,192 @@ int tipo_comb_five(MAO mao) {
     return r;
 } 
 
+void atualizastraight(MAO mao, int y[3]) {
+  MAO m = mao;
+  int ind, n, v, r = 0;
+    for (n=0, v=11; n!=4; n++)
+      ind = v+1;
+      if ((carta_existe(m, n, v)) && (carta_existe(m, n, ind))) {
+        rem_carta(m, n, v);
+        rem_carta(m, n, ind);
+        n = 4;
+    }
+   ind = maior_carta_mao(m);
+   y[1] = ind/13;
+   y[2] = ind%13;
+}
+
+void preenchejogada (MAO mao, int y[3]){
+  int m, i,ind;
+  int naipe[4] = {0};
+  int rank[13] = {0};
+  m = tipo_comb_five(mao);
+  y[0] = m;
+  if (m==1 && m==5) atualizastraight(mao, y);
+  else {
+    if (m==2) {
+      ind = maior_carta_mao(m);
+      y[1] = ind/13;
+      y[2] = ind%13;
+    }
+    else {
+      separa_val(mao, rank);
+      for(i=0; i<13; i++) {
+        if (rank[i] >=3) break;
+      }
+      y[1] = i;
+    }
+  }
+}
+
+int cmpplay (MAO mao, int y[3]){
+  int r=0;
+  int t[3];
+  preenchejogada (mao,t);
+    if (t[0] > y[0]) r=1;
+      else if (t[0] == y[0]){
+        if ((t[0] == 2) && (t[2] > y[2])) r = 1;
+        if ((t[0] == 3 || t[0] == 4) && (t[1] > y[1])) r = 1;
+        if ((t[0] == 5) && (t[1] > y[1] || (t[1]==y[1] && t[2] > y[2]))) r = 1;
+      }
+  return r;
+}
+
+long long int straightpos (MAO mao) {
+  int i, r, c=0, n=0;
+  MAO max = 0;
+  int rank[13] = {0};
+  separa_val(mao, rank);
+  if(teste_straight(rank)) {
+    for(i=11; i<13; i--) {
+      if(rank[i]>0) c+=1;
+      else c = 0;
+      if(c==5) break;
+      if(i==0) i=13;
+    }
+    c = 0;
+    while (c<5) {
+      if(carta_existe(mao, n, i)) {
+        max = add_carta(max, n, i);
+        c+=1;
+        n=0;
+        if(i==0) i=12;
+        else i--;
+      }
+      else n++;
+    }
+  }
+  else max = 0;
+  return max;
+}
+
+long long int flushpos (MAO mao) {
+  MAO max = 0;
+  int i;
+  int naipe[4] = {0};
+  separa_nap(mao, naipe);
+  for (i=4; i>=0; i--) {
+    if(naipe[i]>4) break;
+  }
+  if(i!=4) {
+    int v = 12;
+    int c = 0;
+    while(c<5) {
+      if(carta_existe(mao, i, v)) {
+        max = add_carta(max, i, v);
+        c+=1;
+      }
+      v--;
+    }
+  }
+  return max;
+}
+
+long long int fullhousepos (MAO mao) {
+  MAO max = 0;
+  int rank[13] = {0};
+  separa_val(mao, rank);
+  int i, p=0;
+  for (i=13; i>=0; i--)
+    if (rank[i]>=3) break;
+  if(i==0) p=1;
+  for (; p<13; p++) {
+    if (rank[p]>=2) break;
+    if ((p+1)==i) p = p+1;
+  }
+  if(i!=-1 && p!=13) {
+    int n=0, c=0;
+    while(c<3) {
+      if(carta_existe(mao, n, i)) {
+        max = add_carta(max, n, i);
+        n++;
+        c++;
+      }
+      else n++;
+    }
+    n=0;
+    c=0;
+    while(c<2) {
+      if(carta_existe(mao, n, p)) {
+        max = add_carta(max, n ,p);
+        n++;
+        c++;
+      }
+      else n++;
+    }
+  }
+  return max;
+}
+
+long long int fourofakindpos (MAO mao) {
+  MAO max = 0;
+  int i;
+  int rank[13] = {0};
+  separa_val(mao, rank);
+  for(i=13; i>=0; i--) 
+    if(rank[i]==4) break;
+  if(i!=-1) {
+    int c=0, n=0, p;
+    while(n<4) {
+      max = add_carta(max, n, i);
+      n++;
+    }
+    for(n=0; n<52; n++) {
+      c = n/13;
+      p = n%13;
+      if(carta_existe(mao, c, p) && p!=i) {
+        max = add_carta(max, c, p);
+        break;
+      }
+    }
+    if(n==52) max = 0;
+  }
+  return max;
+}
+//provavelmente temos de corrigir esta...
+long long int straightflushpos (MAO mao) {
+  MAO max = 0, temp = 0;
+  int n=3;
+  int naipe[4] = {0};
+  separa_nap(mao, naipe);
+  while(n>=0) {
+    if(naipe[n]>4) {
+      int v;
+      for(v=13; v>=0; v--) {
+        if(carta_existe(mao, n, v)) temp = add_carta(temp, n, v);
+      }
+      temp = straightpos(temp);
+      if(temp==0) n--;
+      else {
+        max = temp;
+        n = -1;
+      }
+    }
+    else n--;
+  }
+  return max;
+}
+
 
 
 int check_basico(DATABASE * data, int cartas[]){
