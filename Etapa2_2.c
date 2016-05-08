@@ -917,14 +917,14 @@ void bot_continua(DATABASE *data,int m){
     }
     else {
         joga5(data,m);
-        for(i=0; i<52; i++){
-            n = i/13;
-            v = i%13;
-            if(carta_existe(data->jogadas[m], n, v))
-                data->mao[m] = rem_carta(data->mao[m], n, v);
-        }
         if(data->jogadas[m] != 0){
-            preenchejogada(data->jogadas[0],y);
+            for(i=0; i<52; i++){
+                n = i/13;
+                v = i%13;
+                if(carta_existe(data->jogadas[m], n, v))
+                    data->mao[m] = rem_carta(data->mao[m], n, v);
+            }
+            preenchejogada(data->jogadas[m],y);
             data->combination[0] = y[0];
             data->combination[1] = y[1];
             data->combination[2] = y[2];
@@ -955,7 +955,7 @@ void bot_comeca(DATABASE *data,int m){
             if(carta_existe(data->jogadas[m], n, v))
                 data->mao[m] = rem_carta(data->mao[m], n, v);
         }
-        preenchejogada(data->jogadas[0],y);
+        preenchejogada(data->jogadas[m],y);
         data->combination[0] = y[0];
         data->combination[1] = y[1];
         data->combination[2] = y[2];
