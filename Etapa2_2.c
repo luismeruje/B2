@@ -21,7 +21,7 @@
  */
 #define VALORES		"3456789TJQKA2"
 
-#define DATA "%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d"
+#define DATA "%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d"
 
 typedef long long int MAO;
 struct database{
@@ -33,7 +33,7 @@ struct database{
     int passar;
     int ordenar; //antigo baralhar.
     int score[4]; 
-    int combination[6];
+    int combination[3];
 };
 
 typedef struct database DATABASE;
@@ -44,12 +44,12 @@ typedef struct database DATABASE;
 //TODO: alterar de acordo com as alterações feitas à estrutura
 DATABASE STR2DATA(char * str){
     DATABASE data;
-    sscanf(str, DATA,&(data.mao[0]),&(data.mao[1]),&(data.mao[2]),&(data.mao[3]),&(data.selected),&(data.jogadas[0]),&(data.jogadas[1]),&(data.jogadas[2]),&(data.jogadas[3]),&data.play,&data.nc,&data.passar,&data.ordenar,&data.score[0],&data.score[1],&data.score[2],&data.score[3],&data.combination[0],&data.combination[1],&data.combination[2],&data.combination[3],&data.combination[4],&data.combination[5]);
+    sscanf(str, DATA,&(data.mao[0]),&(data.mao[1]),&(data.mao[2]),&(data.mao[3]),&(data.selected),&(data.jogadas[0]),&(data.jogadas[1]),&(data.jogadas[2]),&(data.jogadas[3]),&data.play,&data.nc,&data.passar,&data.ordenar,&data.score[0],&data.score[1],&data.score[2],&data.score[3],&data.combination[0],&data.combination[1],&data.combination[2]);
     return data;
 }
 
 void DATA2STR(char * str,DATABASE data){
-    sprintf(str,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc,data.passar,data.ordenar,data.score[0],data.score[1],data.score[2],data.score[3],data.combination[0],data.combination[1],data.combination[2],data.combination[3],data.combination[4],data.combination[5]);
+    sprintf(str,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc,data.passar,data.ordenar,data.score[0],data.score[1],data.score[2],data.score[3],data.combination[0],data.combination[1],data.combination[2]);
 }
 
 
