@@ -167,6 +167,112 @@ int quem_comeca(DATABASE * data){
     return jog;
 }
 
+//WARNING: se metermos um count que faz a função parar aos 5 fica mais eficiente, não percorre as cartas todas
+void separa_val (MAO ESTADO, int y[13]){
+    int i,n,v;
+    for(i=0;i<52;i++){
+        n = i/13;
+        v = i%13;
+        if(carta_existe(ESTADO,n,v)==1){
+            y[v]++;
+        }
+    }
+}
+
+//WARNING: se metermos um count que faz a função parar aos 5 fica mais eficiente, não percorre as cartas todas
+void separa_nap (MAO ESTADO, int y[4]){
+    int i,n,v;
+    for(i=0;i<52;i++){
+        n = i/13;
+        v = i%13;
+        if(carta_existe(ESTADO,n,v)==1){
+            y[n]++;
+        }
+    }
+}
+
+
+//acho que vai ser util criar um array de 6 na estrutura ou assim para as jogadas de 5 que diz os indices das cartas jogadas e na a[5] metemos o rank da jogada (se é straight flush e assim)
+//se o em baixo der problemas, tentar este
+ /*int teste_straight(int v[13]){
+    int r = 0, i = 0, count = 0;
+    for(i = 0; v[i] != 0; i++);
+    for(;v[i] == 0; i = (i + 1) % 13);
+    for(;v[i] != 0; i = (i + 1) % 13){
+        count++;
+    
+    }
+    if(count == 5)
+        r = 1;
+    return r;
+}
+  */
+
+int teste_straight(int sa[13]){
+    int r = 0, n = 0, c = 0;
+    int ca[14];
+    while (n < 12) {
+        ca[n+2] = sa[n];
+        n++;
+    }
+    ca[0] = sa[11];
+    ca[1] = sa[12];
+    for (n=0; n<15; n++) {
+        if((ca[n])==1) c+=1;
+        else c = 0;
+        if (c==5) {
+            n=15;
+            r++;
+        }
+    }
+    return r;
+}
+
+int teste_flush(int naipe[4]) {
+    int r = 0, n;
+    for (n=0; n<4; n++) {
+        if(naipe[n]==5) {
+            r = 1;
+            n = 4;
+        }
+    }
+    return r;
+}
+
+int teste_fullhouse(int rank[13]) {
+    int r = 1, v;
+    for (v=0; v<13; v++) {
+        if (rank[v]==4 || rank[v]==1) r = 0;
+    }
+    return r;
+}
+
+int teste_fourofakind(int rank[13]) {
+    int r = 0, v;
+    for (v=0; v<13; v++) {
+        if (rank[v]==4) r = 1;
+    }
+    return r;
+}
+//O 3 de ouros tem que ser jogado na primeira jogada, está nas regras(?)
+//r: 1 => straight; 2 => flush; 3 => fullhouse; 4 => fourofakind; 5 => straightflush
+int tipo_comb_five(MAO mao) {
+    int r = 0, c;
+    int n[4]={0};
+    int v[13] = {0};
+    separa_nap(mao, n);
+    separa_val(mao, v);
+    if(teste_straight(v)) {
+        if(teste_flush(n)) r = 5;
+        else r = 1;
+    }
+    if(r==0 && teste_flush(n)) r = 2;
+    if(r==0 && teste_fullhouse(v)) r = 3;
+    if(r==0 && teste_fourofakind(v)) r = 4;
+    return r;
+} 
+
+
 
 int check_basico(DATABASE * data, int cartas[]){
     int max = maior_carta_jogada(data);
@@ -203,8 +309,13 @@ int check_jogada(DATABASE *data, int jog){
             count++; //incorporar este incremento no indice da expressão imediatamente acima;
         }
     }
-    if(data->nc == count && count < 5)
-        r = check_basico(data,cartas);
+    if(data->nc == count && count < 6 && count != 4){
+        if(count < 5)
+        	r = check_basico(data,cartas);
+    	else
+            if(tipo_comb_five(jogada) != 0)
+                r = 1;
+    }
     else
         r = 0;
     return r;
@@ -231,6 +342,7 @@ int jogadas_possiveis(DATABASE *data, int jog, int jogadas[][5]){
     }
     return count;
 }
+
 /* 
                                                 ##################################--AUXILIARES_FIM--#####################################
  */
@@ -441,7 +553,7 @@ void botao_play (DATABASE data){
                 data.nc ++;
         }
     }
-    if(data.nc < 4 && check_jogada(&data,0)){ //TODO:alterar o limite do data.nc depois para 6
+    if(data.nc < 6 && check_jogada(&data,0)){ //TODO:alterar o limite do data.nc depois para 6
         for(ind=0;ind<52;ind++){
             n = ind/13;
             v = ind%13;
