@@ -365,9 +365,25 @@ long long int fourofakindpos (MAO mao) {
 }
 
 long long int straightflushpos (MAO mao) {
-  MAO max;
-  int rank[13] = {0};
-  separa_val(mao, rank);
+  MAO max = 0, temp = 0;
+  int n=0;
+  int naipe[4] = {0};
+  separa_nap(mao, naipe);
+  while(n<4) {
+    if(naipe[n]>4) {
+      int v;
+      for(v=0; v<13; v++) {
+        if(carta_existe(mao, n, v)) temp = add_carta(temp, n, v);
+      }
+      temp = straightpos(temp);
+      if(temp==0) n++;
+      else {
+        max = temp;
+        n = 4;
+      }
+    }
+    else n++;
+  }
   return max;
 }
 
