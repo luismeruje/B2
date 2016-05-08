@@ -337,7 +337,7 @@ int determina_basico(DATABASE *data, int jog, int jogadas[][5]){
                 i++; //meter este incremento em cima
             }
         if(i >= data->nc && (v > max % 13 || temp_naipe[i - 1] > max / 13)){
-            for(a = 0, i = i - data->nc; i < data->nc; i++, a++)
+            for(a = 0, i = i -1; a < data->nc; i--, a++)
                 jogadas[count][a] = temp_naipe[i] * 13 + v;
             count++;
         }
@@ -725,17 +725,13 @@ void bot_comeca(DATABASE *data,int m){
         total = jogadas_possiveis(data, m, jogadas); //NOTA: já sai com o data->nc certo, é para isso que se tem o outro data->nc antes do while.
     }
     
-    if(data->play == 3)
-        draw = 0;
-    else
-        draw = rand()%total;
-    if(total != 0)
-    	for(i = 0; i < data->nc; i++){
-        	n = jogadas[draw][i] / 13;
-        	v = jogadas[draw][i] % 13;
-    	    data->jogadas[m] = add_carta(data->jogadas[m],n,v);
-        	data->mao[m] = rem_carta(data->mao[m],n,v);
-    	}
+    draw = rand()%total;
+    for(i = 0; i < data->nc; i++){
+        n = jogadas[draw][i] / 13;
+        v = jogadas[draw][i] % 13;
+        data->jogadas[m] = add_carta(data->jogadas[m],n,v);
+        data->mao[m] = rem_carta(data->mao[m],n,v);
+    }
     
     if(data->mao[m]==0)
         data->play = 4;
@@ -789,6 +785,9 @@ void Game_Lobby(DATABASE data){
         case 1:
             imprime_start(data); //antigo check_start
             break;
+            
+        case 4:
+            imprime_fim(&data);
             
         default: // data.play == 2 -> jogo normal. data.play == 3 -> inicio do jogo. quem se preocupa com este 3 é a função jogo. 4 -> fim do jogo
             jogo(&data);
