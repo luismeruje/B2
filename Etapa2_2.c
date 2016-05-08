@@ -458,7 +458,7 @@ long long int straightflushpos (MAO mao) {
   return max;
 }
 
-
+MAO joga5 (MAO mao) {}
 
 int check_basico(DATABASE * data, int cartas[]){
     int max = maior_carta_jogada(data);
@@ -877,19 +877,38 @@ void bot_continua(DATABASE *data,int m){
     int jogadas[15][5]; //Primeiro elemento do array => número da jogada_possível; o 15 em vez de 13 é só por segurança. Segundo elemento do array => carta da jogada_possível. Exemplo: jogadas[0][0] e jogadas[0][1] dão o par da jogada possível nr. 1.
     
     data->jogadas[m] = 0;
-    total = jogadas_possiveis(data,m,jogadas);
-    if(total != 0){
-    	data->passar=0;
-        draw = rand() % total;
-        for(i = 0; i < data->nc; i++){
-            n = jogadas[draw][i] / 13;
-            v = jogadas[draw][i] % 13;
-            data->jogadas[m] = add_carta(data->jogadas[m],n,v);
-            data->mao[m] = rem_carta(data->mao[m],n,v);
+    if(data->nc!=5) {
+        total = jogadas_possiveis(data,m,jogadas);
+        if(total != 0){
+            draw = rand() % total;
+            for(i = 0; i < data->nc; i++){
+                n = jogadas[draw][i] / 13;
+                v = jogadas[draw][i] % 13;
+                data->jogadas[m] = add_carta(data->jogadas[m],n,v);
+                data->mao[m] = rem_carta(data->mao[m],n,v);
+            }
         }
     }
-    else
-        data->passar++;
+    else {
+        if (straightflushpos(data->mao[m])!=0) data->jogadas[m] = straightflushpos(data->mao[m]);
+        else if(fourofakindpos(data->mao[m])!=0) data->jogadas[m] = fourofakindpos(data->mao[m]);
+             else if(fullhousepos(data->mao[m])!=0) data.jogadas[m] = fullhousepos(data->mao[m]);
+                  else if(flushpos(data->mao[m])!=0) data.jogadas[m] = flushpos(data->mao[m]);
+                       else if(straightpos(data->mao[m])!=0) data.jogadas[m] = straightpos(data->mao[m]);
+    }
+
+
+    if(data->nc==5) {
+        for(i=0; i<52: i++){
+            n = i/13;
+            v = i%13;
+            if(carta_existe(data->jogadas[m]), n, v) data->mao[m] = rem_carta(data->mao[m], n, v);
+        }
+    }
+
+    if(data->jogadas[m]!=0) data->passar = 0;
+    else data->passar++;
+
     if(data->mao[m]==0)
         data->play = 4;
 }
@@ -904,21 +923,38 @@ void bot_comeca(DATABASE *data,int m){
     for(jog=0;jog<4;jog++)
         data->jogadas[jog]=0; //TODO: testar se é preciso, acho que nunca altera nada, basta data->jogadas[m] = 0 e depois substituir m por jog, para manter consistência nisto
     data->passar = 0;
-    data->nc = 4; //para começar a testar combinações de 3 primeiro, depois mudar para 6 para testar combinações de 5 primeiro
+    data->nc = 5; //para começar a testar combinações de 3 primeiro, depois mudar para 6 para testar combinações de 5 primeiro
+
+    if (straightflushpos(data->mao[m])!=0) data->jogadas[m] = straightflushpos(data->mao[m]);
+    else if(fourofakindpos(data->mao[m])!=0) data->jogadas[m] = fourofakindpos(data->mao[m]);
+         else if(fullhousepos(data->mao[m])!=0) data.jogadas[m] = fullhousepos(data->mao[m]);
+              else if(flushpos(data->mao[m])!=0) data.jogadas[m] = flushpos(data->mao[m]);
+                   else if(straightpos(data->mao[m])!=0) data.jogadas[m] = straightpos(data->mao[m]);
     
-    while(total == 0){
-        data->nc --;
-        total = jogadas_possiveis(data, m, jogadas); //NOTA: já sai com o data->nc certo, é para isso que se tem o outro data->nc antes do while.
+                        else {
+                            data->nc = 4;
+                            while(total == 0){
+                                data->nc --;
+                                total = jogadas_possiveis(data, m, jogadas); //NOTA: já sai com o data->nc certo, é para isso que se tem o outro data->nc antes do while.
+                            }
+                            
+                            draw = rand()%total;
+                            for(i = 0; i < data->nc; i++){
+                                n = jogadas[draw][i] / 13;
+                                v = jogadas[draw][i] % 13;
+                                data->jogadas[m] = add_carta(data->jogadas[m],n,v);
+                                data->mao[m] = rem_carta(data->mao[m],n,v);
+                                }
+                        }
+
+    if(data->nc==5) {
+        for(i=0; i<52: i++){
+            n = i/13;
+            v = i%13;
+            if(carta_existe(data->jogadas[m]), n, v) data->mao[m] = rem_carta(data->mao[m], n, v);
+        }
     }
-    
-    draw = rand()%total;
-    for(i = 0; i < data->nc; i++){
-        n = jogadas[draw][i] / 13;
-        v = jogadas[draw][i] % 13;
-        data->jogadas[m] = add_carta(data->jogadas[m],n,v);
-        data->mao[m] = rem_carta(data->mao[m],n,v);
-    }
-    
+
     if(data->mao[m]==0)
         data->play = 4;
 }
