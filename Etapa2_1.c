@@ -258,11 +258,11 @@ long long int straightpos (MAO mao) {
   int rank[13] = {0};
   separa_val(mao, rank);
   if(teste_straight(rank)) {
-    for(i=11; i<13; i++) {
+    for(i=11; i<13; i--) {
       if(rank[i]>0) c+=1;
       else c = 0;
       if(c==5) break;
-      if(i==12) i=-1;
+      if(i==0) i=13;
     }
     c = 0;
     while (c<5) {
@@ -285,18 +285,18 @@ long long int flushpos (MAO mao) {
   int i;
   int naipe[4] = {0};
   separa_nap(mao, naipe);
-  for (i=0; i<4; i++) {
+  for (i=4; i>=0; i--) {
     if(naipe[i]>4) break;
   }
   if(i!=4) {
-    int v = 0;
+    int v = 12;
     int c = 0;
     while(c<5) {
       if(carta_existe(mao, i, v)) {
         max = add_carta(max, i, v);
         c+=1;
       }
-      v++;
+      v--;
     }
   }
   return max;
@@ -307,14 +307,14 @@ long long int fullhousepos (MAO mao) {
   int rank[13] = {0};
   separa_val(mao, rank);
   int i, p=0;
-  for (i=0; i<13; i++)
+  for (i=13; i>=0; i--)
     if (rank[i]>=3) break;
   if(i==0) p=1;
   for (; p<13; p++) {
     if (rank[p]>=2) break;
     if ((p+1)==i) p = p+1;
   }
-  if(i!=13 && p!=13) {
+  if(i!=-1 && p!=13) {
     int n=0, c=0;
     while(c<3) {
       if(carta_existe(mao, n, i)) {
@@ -343,9 +343,9 @@ long long int fourofakindpos (MAO mao) {
   int i;
   int rank[13] = {0};
   separa_val(mao, rank);
-  for(i=0; i<13; i++) 
+  for(i=13; i>=0; i--) 
     if(rank[i]==4) break;
-  if(i!=13) {
+  if(i!=-1) {
     int c=0, n=0, p;
     while(n<4) {
       max = add_carta(max, n, i);
@@ -363,26 +363,26 @@ long long int fourofakindpos (MAO mao) {
   }
   return max;
 }
-
+//provavelmente temos de corrigir esta...
 long long int straightflushpos (MAO mao) {
   MAO max = 0, temp = 0;
-  int n=0;
+  int n=3;
   int naipe[4] = {0};
   separa_nap(mao, naipe);
-  while(n<4) {
+  while(n>=0) {
     if(naipe[n]>4) {
       int v;
-      for(v=0; v<13; v++) {
+      for(v=13; v>=0; v--) {
         if(carta_existe(mao, n, v)) temp = add_carta(temp, n, v);
       }
       temp = straightpos(temp);
-      if(temp==0) n++;
+      if(temp==0) n--;
       else {
         max = temp;
-        n = 4;
+        n = -1;
       }
     }
-    else n++;
+    else n--;
   }
   return max;
 }
