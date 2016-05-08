@@ -173,7 +173,7 @@ void separa_val (MAO ESTADO, int y[13]){
     for(i=0;i<52;i++){
         n = i/13;
         v = i%13;
-        if(carta_existe(ESTADO,n,v)==1){
+        if(carta_existe(ESTADO,n,v)){
             y[v]++;
         }
     }
@@ -185,7 +185,7 @@ void separa_nap (MAO ESTADO, int y[4]){
     for(i=0;i<52;i++){
         n = i/13;
         v = i%13;
-        if(carta_existe(ESTADO,n,v)==1){
+        if(carta_existe(ESTADO,n,v)){
             y[n]++;
         }
     }
@@ -262,10 +262,8 @@ int tipo_comb_five(MAO mao) {
     int v[13] = {0};
     separa_nap(mao, n);
     separa_val(mao, v);
-    if(teste_straight(v)) {
-        if(teste_flush(n)) r = 5;
-        else r = 1;
-    }
+    if(teste_straight(v) && teste_flush(n)) r = 5;
+    if(r == 0 && teste_straight(v)) r = 1;
     if(r==0 && teste_flush(n)) r = 2;
     if(r==0 && teste_fullhouse(v)) r = 3;
     if(r==0 && teste_fourofakind(v)) r = 4;
@@ -274,7 +272,7 @@ int tipo_comb_five(MAO mao) {
 
 void atualizastraight(MAO mao, int y[3]) {
   MAO m = mao;
-  int ind, n, v, r = 0;
+  int ind, n, v;
     for (n=0, v=11; n!=4; n++)
       ind = v+1;
       if ((carta_existe(m, n, v)) && (carta_existe(m, n, ind))) {
@@ -283,22 +281,23 @@ void atualizastraight(MAO mao, int y[3]) {
         n = 4;
     }
    ind = maior_carta_mao(m);
-   y[1] = ind/13;
-   y[2] = ind%13;
+   y[1] = ind%13;
+   y[2] = ind/13;
 }
 
 void preenchejogada (MAO mao, int y[3]){
   int m, i,ind;
-  int naipe[4] = {0};
   int rank[13] = {0};
+  
   m = tipo_comb_five(mao);
   y[0] = m;
-  if (m==1 && m==5) atualizastraight(mao, y);
+  printf("tipo:%d", y[0]);
+  if (m==1 || m==5) atualizastraight(mao, y);
   else {
     if (m==2) {
       ind = maior_carta_mao(m);
-      y[1] = ind/13;
-      y[2] = ind%13;
+      y[1] = ind%13;
+      y[2] = ind/13;
     }
     else {
       separa_val(mao, rank);
@@ -313,18 +312,25 @@ void preenchejogada (MAO mao, int y[3]){
 int cmpplay (MAO mao, int y[3]){
   int r=0;
   int t[3];
-  preenchejogada (mao,t);
-    if (t[0] > y[0]) r=1;
-      else if (t[0] == y[0]){
-        if ((t[0] == 2) && (t[2] > y[2])) r = 1;
-        if ((t[0] == 3 || t[0] == 4) && (t[1] > y[1])) r = 1;
-        if ((t[0] == 5) && (t[1] > y[1] || (t[1]==y[1] && t[2] > y[2]))) r = 1;
-      }
+  if(mao != 0){
+      	preenchejogada (mao,t);
+    	if (t[0] > y[0])
+            r=1;
+        else
+            if (t[0] == y[0]){
+                if ((t[0] == 2) && ((t[2] > y[2]) || (t[2] == y[2] && t[1] > y[1])))
+                    r = 1;
+                if ((t[0] == 3 || t[0] == 4) && (t[1] > y[1]))
+                    r = 1;
+                if ((t[0] == 5) && (t[1] > y[1] || (t[1]==y[1] && t[2] > y[2])))
+                    r = 1;
+          }
+  }
   return r;
 }
 
 long long int straightpos (MAO mao) {
-  int i, r, c=0, n=0;
+  int i, c=0, n=0;
   MAO max = 0;
   int rank[13] = {0};
   separa_val(mao, rank);
@@ -458,7 +464,19 @@ long long int straightflushpos (MAO mao) {
   return max;
 }
 
-MAO joga5 (MAO mao) {}
+int joga5 (DATABASE * data, int m) {
+    int r = 1;
+    if (cmpplay(straightflushpos(data->mao[m]),data->combination)) data->jogadas[m] = straightflushpos(data->mao[m]);
+    	else if(cmpplay(fourofakindpos(data->mao[m]),data->combination)) data->jogadas[m] = fourofakindpos(data->mao[m]);
+    		 else if(cmpplay(fullhousepos(data->mao[m]),data->combination)) data->jogadas[m] = fullhousepos(data->mao[m]);
+    			   else if(cmpplay(flushpos(data->mao[m]),data->combination)) data->jogadas[m] = flushpos(data->mao[m]);
+                        else if(cmpplay(straightpos(data->mao[m]), data->combination)) data->jogadas[m] = straightpos(data->mao[m]);
+                        else {
+                            data->jogadas[m] = 0;
+                            r = 0;
+                        } //Fail safe
+    return r;
+}
 
 int check_basico(DATABASE * data, int cartas[]){
     int max = maior_carta_jogada(data);
@@ -717,7 +735,7 @@ void botao_help(DATABASE * data){
     data->play = 0;
     data->nc = original;
     DATA2STR(script,* data);
-    printf("<a xlink:href = \"cartas?%s\"><image x = \"370\" y = \"560\" height = \"40\" width = \"40\" xlink:href = \"%s/botao_help.svg\" /><>\n", script, BARALHO);
+    printf("<a xlink:href = \"cartas?%s\"><image x = \"370\" y = \"560\" height = \"40\" width = \"40\" xlink:href = \"%s/botao_help.svg\" /></a>\n", script, BARALHO);
 }
 
 
@@ -740,7 +758,7 @@ void botao_passar (DATABASE data){
 void botao_play (DATABASE data){
     int n,v;
     int ind;
-    
+    int y[3];
     char script [52000];
     data.jogadas[0]=0;
     if(data.passar == 3||data.nc==0){ //WARNING\. acho que já não precisamos da segunda conição. data.nc == 0 significa que estámos na primeira jogada e somos nós a começar
@@ -763,10 +781,17 @@ void botao_play (DATABASE data){
         }
         data.selected = 0;
         data.passar = 0;
+        if(data.nc == 5){
+            preenchejogada(data.jogadas[0],y);
+            data.combination[0] = y[0];
+            data.combination[1] = y[1];
+            data.combination[2] = y[2];
+        }
         if(data.mao[0] == 0)
             data.play = 4; //4 -> fim do jogo
         else
             data.play = 2; //2 -> jogo normal
+        
         DATA2STR(script, data);
         printf("<a xlink:href = \"cartas?%s\"><image x = \"775\" y = \"510\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_play.svg\" /></a>\n", script, BARALHO);
     }
@@ -875,6 +900,7 @@ void imprime (DATABASE data){
 void bot_continua(DATABASE *data,int m){
     int draw, total, i, n, v;
     int jogadas[15][5]; //Primeiro elemento do array => número da jogada_possível; o 15 em vez de 13 é só por segurança. Segundo elemento do array => carta da jogada_possível. Exemplo: jogadas[0][0] e jogadas[0][1] dão o par da jogada possível nr. 1.
+    int y[3];
     
     data->jogadas[m] = 0;
     if(data->nc!=5) {
@@ -890,25 +916,22 @@ void bot_continua(DATABASE *data,int m){
         }
     }
     else {
-        if (straightflushpos(data->mao[m])!=0) data->jogadas[m] = straightflushpos(data->mao[m]);
-        else if(fourofakindpos(data->mao[m])!=0) data->jogadas[m] = fourofakindpos(data->mao[m]);
-             else if(fullhousepos(data->mao[m])!=0) data.jogadas[m] = fullhousepos(data->mao[m]);
-                  else if(flushpos(data->mao[m])!=0) data.jogadas[m] = flushpos(data->mao[m]);
-                       else if(straightpos(data->mao[m])!=0) data.jogadas[m] = straightpos(data->mao[m]);
-    }
-
-
-    if(data->nc==5) {
-        for(i=0; i<52: i++){
+        joga5(data,m);
+        for(i=0; i<52; i++){
             n = i/13;
             v = i%13;
-            if(carta_existe(data->jogadas[m]), n, v) data->mao[m] = rem_carta(data->mao[m], n, v);
+            if(carta_existe(data->jogadas[m], n, v))
+                data->mao[m] = rem_carta(data->mao[m], n, v);
+        }
+        if(data->jogadas[m] != 0){
+            preenchejogada(data->jogadas[0],y);
+            data->combination[0] = y[0];
+            data->combination[1] = y[1];
+            data->combination[2] = y[2];
         }
     }
-
     if(data->jogadas[m]!=0) data->passar = 0;
     else data->passar++;
-
     if(data->mao[m]==0)
         data->play = 4;
 }
@@ -919,40 +942,38 @@ void bot_comeca(DATABASE *data,int m){
     int jogadas[15][5];
     int draw;
     int n, v;
+    int y[3];
     
     for(jog=0;jog<4;jog++)
         data->jogadas[jog]=0; //TODO: testar se é preciso, acho que nunca altera nada, basta data->jogadas[m] = 0 e depois substituir m por jog, para manter consistência nisto
     data->passar = 0;
     data->nc = 5; //para começar a testar combinações de 3 primeiro, depois mudar para 6 para testar combinações de 5 primeiro
-
-    if (straightflushpos(data->mao[m])!=0) data->jogadas[m] = straightflushpos(data->mao[m]);
-    else if(fourofakindpos(data->mao[m])!=0) data->jogadas[m] = fourofakindpos(data->mao[m]);
-         else if(fullhousepos(data->mao[m])!=0) data.jogadas[m] = fullhousepos(data->mao[m]);
-              else if(flushpos(data->mao[m])!=0) data.jogadas[m] = flushpos(data->mao[m]);
-                   else if(straightpos(data->mao[m])!=0) data.jogadas[m] = straightpos(data->mao[m]);
-    
-                        else {
-                            data->nc = 4;
-                            while(total == 0){
-                                data->nc --;
-                                total = jogadas_possiveis(data, m, jogadas); //NOTA: já sai com o data->nc certo, é para isso que se tem o outro data->nc antes do while.
-                            }
-                            
-                            draw = rand()%total;
-                            for(i = 0; i < data->nc; i++){
-                                n = jogadas[draw][i] / 13;
-                                v = jogadas[draw][i] % 13;
-                                data->jogadas[m] = add_carta(data->jogadas[m],n,v);
-                                data->mao[m] = rem_carta(data->mao[m],n,v);
-                                }
-                        }
-
-    if(data->nc==5) {
-        for(i=0; i<52: i++){
+    if(joga5(data,m) != 0){
+        for(i=0; i<52; i++){
             n = i/13;
             v = i%13;
-            if(carta_existe(data->jogadas[m]), n, v) data->mao[m] = rem_carta(data->mao[m], n, v);
+            if(carta_existe(data->jogadas[m], n, v))
+                data->mao[m] = rem_carta(data->mao[m], n, v);
         }
+        preenchejogada(data->jogadas[0],y);
+        data->combination[0] = y[0];
+        data->combination[1] = y[1];
+        data->combination[2] = y[2];
+    }
+    else{
+         data->nc = 4;
+         while(total == 0){
+            data->nc --;
+            total = jogadas_possiveis(data, m, jogadas); //NOTA: já sai com o data->nc certo, é para isso que se tem o outro data->nc antes do while.
+         }
+                                
+          draw = rand()%total;
+          for(i = 0; i < data->nc; i++){
+                n = jogadas[draw][i] / 13;
+                v = jogadas[draw][i] % 13;
+                data->jogadas[m] = add_carta(data->jogadas[m],n,v);
+                data->mao[m] = rem_carta(data->mao[m],n,v);
+          }
     }
 
     if(data->mao[m]==0)
@@ -1030,7 +1051,6 @@ void parse (char * query) {
         distribui(&data);
         data.play = 1;
     }
-    printf("%d", data.play);
     Game_Lobby(data);
 }
 
