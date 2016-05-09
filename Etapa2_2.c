@@ -233,7 +233,7 @@ int teste_flush(int naipe[4]) {
     for (n=0; n<4; n++) {
         if(naipe[n]==5) {
             r = 1;
-            n = 4;
+            break;
         }
     }
     return r;
@@ -262,11 +262,11 @@ int tipo_comb_five(MAO mao) {
     int v[13] = {0};
     separa_nap(mao, n);
     separa_val(mao, v);
-    if(teste_straight(v) && teste_flush(n)) r = 5;
     if(r == 0 && teste_straight(v)) r = 1;
     if(r==0 && teste_flush(n)) r = 2;
     if(r==0 && teste_fullhouse(v)) r = 3;
     if(r==0 && teste_fourofakind(v)) r = 4;
+    if(r == 1 && teste_flush(n)) r = 5;
     return r;
 } 
 
@@ -280,7 +280,7 @@ void atualizastraight(MAO mao, int y[3]) {
         rem_carta(m, n, ind);
         n = 4;
     }
-   ind = maior_carta_mao(m);
+   ind = maior_carta_mao(mao);
    y[1] = ind%13;
    y[2] = ind/13;
 }
@@ -291,11 +291,10 @@ void preenchejogada (MAO mao, int y[3]){
   
   m = tipo_comb_five(mao);
   y[0] = m;
-  printf("tipo:%d", y[0]);
   if (m==1 || m==5) atualizastraight(mao, y);
   else {
     if (m==2) {
-      ind = maior_carta_mao(m);
+      ind = maior_carta_mao(mao);
       y[1] = ind%13;
       y[2] = ind/13;
     }
@@ -320,7 +319,7 @@ int cmpplay (MAO mao, int y[3]){
             if (t[0] == y[0]){
                 if ((t[0] == 2) && ((t[2] > y[2]) || (t[2] == y[2] && t[1] > y[1])))
                     r = 1;
-                if ((t[0] == 3 || t[0] == 4) && (t[1] > y[1]))
+                if ((t[0] == 3 || t[0] == 4) && (t[1] > y[1])) //e se t[1] == y[1], não é preciso ver os naipes?
                     r = 1;
                 if ((t[0] == 5) && (t[1] > y[1] || (t[1]==y[1] && t[2] > y[2])))
                     r = 1;
@@ -471,10 +470,10 @@ int joga5 (DATABASE * data, int m) {
     		 else if(cmpplay(fullhousepos(data->mao[m]),data->combination)) data->jogadas[m] = fullhousepos(data->mao[m]);
     			   else if(cmpplay(flushpos(data->mao[m]),data->combination)) data->jogadas[m] = flushpos(data->mao[m]);
                         else if(cmpplay(straightpos(data->mao[m]), data->combination)) data->jogadas[m] = straightpos(data->mao[m]);
-                        else {
-                            data->jogadas[m] = 0;
-                            r = 0;
-                        } //Fail safe
+                             else {
+                            	data->jogadas[m] = 0;
+                            	r = 0;
+                             } //Fail safe
     return r;
 }
 
@@ -761,7 +760,7 @@ void botao_play (DATABASE data){
     int y[3];
     char script [52000];
     data.jogadas[0]=0;
-    if(data.passar == 3||data.nc==0){ //WARNING\. acho que já não precisamos da segunda conição. data.nc == 0 significa que estámos na primeira jogada e somos nós a começar
+    if(data.passar == 3||data.nc==0){ //WARNING\. acho que já não precisamos da segunda condição. data.nc == 0 significa que estámos na primeira jogada e somos nós a começar
         data.nc = 0;
         for(ind=0;ind<52;ind++){
             n=ind/13;
@@ -872,7 +871,7 @@ void imprime_start(DATABASE data){
     printf("</svg>\n");
 }
 
-
+//http://127.0.0.1/cgi-bin/cartas?889681814618112_2843336513614_3611071097168640_3379070129_1099511627776_0_0_0_0_0_5_0_1_0_0_0_0_3_13_0 -> não consigo jogar nada
 void imprime (DATABASE data){
     printf("<svg height = \"680\" width = \"1200\">\n");
     printf("<image x = \"-155\" y = \"0\" height = \"900\" width = \"1500\" xlink:href = \"%s/floor.svg\" />\n", BARALHO);
@@ -930,8 +929,13 @@ void bot_continua(DATABASE *data,int m){
             data->combination[2] = y[2];
         }
     }
-    if(data->jogadas[m]!=0) data->passar = 0;
-    else data->passar++;
+    if(data->jogadas[m]!=0){
+        data->passar = 0;
+    }
+    else {
+        data->passar++;
+    }
+    printf(" "); // se n estiver aqui, isto -> http://127.0.0.1/cgi-bin/cartas?80401787798145_53360711565376_2213059507504_363614439434_0_0_4398315044868_0_0_2_5_3_1_0_0_0_0_3_2_0 não dá, passam os bots todos depois de eu passar, o passar não icrementa.
     if(data->mao[m]==0)
         data->play = 4;
 }
@@ -944,10 +948,12 @@ void bot_comeca(DATABASE *data,int m){
     int n, v;
     int y[3];
     
-    for(jog=0;jog<4;jog++)
-        data->jogadas[jog]=0; //TODO: testar se é preciso, acho que nunca altera nada, basta data->jogadas[m] = 0 e depois substituir m por jog, para manter consistência nisto
+    data->jogadas[m]=0; //TODO: tirei o loop que metia as jogadas de todos a 0
     data->passar = 0;
-    data->nc = 5; //para começar a testar combinações de 3 primeiro, depois mudar para 6 para testar combinações de 5 primeiro
+    data->nc = 5; //para começar a testar combinações de 5 primeiro
+    data->combination[0] = 0;
+    data->combination[1] = 0;
+    data->combination[2] = 0;
     if(joga5(data,m) != 0){
         for(i=0; i<52; i++){
             n = i/13;
@@ -983,7 +989,7 @@ void bot_comeca(DATABASE *data,int m){
 
 //WARNING: no if, tinha i = data.nc no inicio e data.nc = i no fim
 void joga_bots(DATABASE *data,int m){
-    if(data->passar != 3)
+    if(data->passar < 3)
         bot_continua(data,m);
     else
         bot_comeca(data,m);
