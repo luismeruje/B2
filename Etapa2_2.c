@@ -164,70 +164,52 @@ int quem_comeca(DATABASE * data){
     for(jog=0;;jog++)
         if(carta_existe(data->mao[jog],0,0))
             break;
+    printf("%d",jog);
     return jog;
 }
 
-//WARNING: se metermos um count que faz a função parar aos 5 fica mais eficiente, não percorre as cartas todas
-void separa_val (MAO ESTADO, int y[13]){
+
+void separa_val (MAO mao, int y[13]){
     int i,n,v;
     for(i=0;i<52;i++){
         n = i/13;
         v = i%13;
-        if(carta_existe(ESTADO,n,v)){
+        if(carta_existe(mao,n,v)){
             y[v]++;
         }
     }
 }
 
-//WARNING: se metermos um count que faz a função parar aos 5 fica mais eficiente, não percorre as cartas todas
-void separa_nap (MAO ESTADO, int y[4]){
+
+void separa_nap (MAO mao, int y[4]){
     int i,n,v;
     for(i=0;i<52;i++){
         n = i/13;
         v = i%13;
-        if(carta_existe(ESTADO,n,v)){
+        if(carta_existe(mao,n,v)){
             y[n]++;
         }
     }
 }
 
 
-//acho que vai ser util criar um array de 6 na estrutura ou assim para as jogadas de 5 que diz os indices das cartas jogadas e na a[5] metemos o rank da jogada (se é straight flush e assim)
-//se o em baixo der problemas, tentar este
- /*int teste_straight(int v[13]){
-    int r = 0, i = 0, count = 0;
+//WARNING: só passar array v relativo a uma mão que tenha apenas as cartas que se quer analisar, não mandar arrays v de maos inteiras para aqui
+int teste_straight(int v[13]){
+    int r = 0, i = 0, count = 0, flag = 0;
+    
     for(i = 0; v[i] != 0; i++);
     for(;v[i] == 0; i = (i + 1) % 13);
     for(;v[i] != 0; i = (i + 1) % 13){
         count++;
-    
+    	if(i == 11 && count != 1 && count != 5) //testa se o Ás não é o último nem o primeiro da sequencia
+            flag = 1;
     }
-    if(count == 5)
+    if(count == 5 && flag == 0)
         r = 1;
     return r;
 }
-  */
 
-int teste_straight(int sa[13]){
-    int r = 0, n = 0, c = 0;
-    int ca[14];
-    while (n < 12) {
-        ca[n+2] = sa[n];
-        n++;
-    }
-    ca[0] = sa[11];
-    ca[1] = sa[12];
-    for (n=0; n<15; n++) {
-        if((ca[n])==1) c+=1;
-        else c = 0;
-        if (c==5) {
-            n=15;
-            r++;
-        }
-    }
-    return r;
-}
-
+//WARNING: igual ao do teste straight
 int teste_flush(int naipe[4]) {
     int r = 0, n;
     for (n=0; n<4; n++) {
@@ -239,6 +221,7 @@ int teste_flush(int naipe[4]) {
     return r;
 }
 
+//WARNING: igual ao do teste straight
 int teste_fullhouse(int rank[13]) {
     int r = 1, v;
     for (v=0; v<13; v++) {
@@ -247,6 +230,7 @@ int teste_fullhouse(int rank[13]) {
     return r;
 }
 
+//WARNING: igual ao do teste straight
 int teste_fourofakind(int rank[13]) {
     int r = 0, v;
     for (v=0; v<13; v++) {
@@ -262,27 +246,39 @@ int tipo_comb_five(MAO mao) {
     int v[13] = {0};
     separa_nap(mao, n);
     separa_val(mao, v);
-    if(r == 0 && teste_straight(v)) r = 1;
-    if(r==0 && teste_flush(n)) r = 2;
-    if(r==0 && teste_fullhouse(v)) r = 3;
-    if(r==0 && teste_fourofakind(v)) r = 4;
-    if(r == 1 && teste_flush(n)) r = 5;
+    if(teste_straight(v)){
+    	if(teste_flush(n))
+            r = 5;
+    	else
+            r = 1;
+    }
+    else if(teste_flush(n)) r = 2;
+    	 else if(teste_fullhouse(v)) r = 3;
+              else if(teste_fourofakind(v)) r = 4;
     return r;
 } 
 
+//Soma-se um aos v's de cada carta, assim se o ás for última carta tem o maior v. Tbm conta com se o ás for a primeira carta
 void atualizastraight(MAO mao, int y[3]) {
-  MAO m = mao;
-  int ind, n, v;
-    for (n=0, v=11; n!=4; n++)
-      ind = v+1;
-      if ((carta_existe(m, n, v)) && (carta_existe(m, n, ind))) {
-        rem_carta(m, n, v);
-        rem_carta(m, n, ind);
-        n = 4;
+    int ind = 0, i;
+    int v[13] = {0};
+    separa_val(mao, v);
+    if (v[11] != 0 && v[12] != 0){ //temos um ás e é o primeiro da sequência, pq existe um 2
+        y[1] = 3; //5 de alguma coisa é obrigatoriamente a carta mais alta
+        for(i = 0; i < 4; i++)
+            if(carta_existe(mao, i, 2)){ //Determina o naipe do 5
+                y[2] = i;
+                break;
+            }
     }
-   ind = maior_carta_mao(mao);
-   y[1] = ind%13;
-   y[2] = ind/13;
+	else {
+        for(i = 0; i < 4; i++)
+            if(carta_existe(mao,i, 12))
+            	mao = rem_carta(mao, i, 12); //remove os 2's
+        ind = maior_carta_mao(mao);
+        y[1] = (ind % 13) + 1;
+        y[2] = ind / 13;
+    }
 }
 
 void preenchejogada (MAO mao, int y[3]){
@@ -304,6 +300,7 @@ void preenchejogada (MAO mao, int y[3]){
         if (rank[i] >=3) break;
       }
       y[1] = i;
+        y[2] = 0; //nunca é usado, mas para não deixa um valor aleatório...
     }
   }
 }
@@ -317,11 +314,13 @@ int cmpplay (MAO mao, int y[3]){
             r=1;
         else
             if (t[0] == y[0]){
-                if ((t[0] == 2) && ((t[2] > y[2]) || (t[2] == y[2] && t[1] > y[1])))
+                if ((t[0]==1) && ((t[1] > y[1]) || (t[1] == y[1] && t[2] >= y[2])))
                     r = 1;
-                if ((t[0] == 3 || t[0] == 4) && (t[1] > y[1])) //e se t[1] == y[1], não é preciso ver os naipes?
+                if ((t[0] == 2) && ((t[2] > y[2]) || (t[2] == y[2] && t[1] >= y[1])))
                     r = 1;
-                if ((t[0] == 5) && (t[1] > y[1] || (t[1]==y[1] && t[2] > y[2])))
+                if ((t[0] == 3 || t[0] == 4) && (t[1] >= y[1]))
+                    r = 1;
+                if ((t[0] == 5) && (t[1] >= y[1] || (t[1]==y[1] && t[2] >= y[2]))) //os >= é para quando combinations tá tudo a 0's permitir fazer jgadas com 3's em certos casos
                     r = 1;
           }
   }
@@ -329,31 +328,30 @@ int cmpplay (MAO mao, int y[3]){
 }
 
 long long int straightpos (MAO mao) {
-  int i, c=0, n=0;
-  MAO max = 0;
-  int rank[13] = {0};
-  separa_val(mao, rank);
-  if(teste_straight(rank)) {
-    for(i=11; i<13; i--) {
-      if(rank[i]>0) c+=1;
-      else c = 0;
-      if(c==5) break;
-      if(i==0) i=13;
+    int i, c=0, n, v;
+  	MAO max = 0;
+  	int rank[13] = {0};
+  	separa_val(mao, rank);
+    for(v = 11 ; v >= 0 ; v--){
+     	if(rank[v] != 0)
+            c++;
+		else
+            c = 0;
+        if (c == 5)
+            break;
     }
-    c = 0;
-    while (c<5) {
-      if(carta_existe(mao, n, i)) {
-        max = add_carta(max, n, i);
-        c+=1;
-        n=0;
-        if(i==0) i=12;
-        else i++;
-      }
-      else n++;
-    }
-  }
-  else max = 0;
-  return max;
+    if(c == 5 || (c == 4 && rank[12] != 0) || (c == 3 && rank[12] != 0 && rank[11] != 0))
+        if((c == 4 && rank[12] != 0))
+            v = 12;
+    	if (c == 3 && rank[12] != 0 && rank[11] != 0)
+            v = 11;
+        for(c = 0; c < 5; c++, v = (v + 1) % 13)
+            for(n = 0; n < 4; n++)
+                if(carta_existe(mao, n, v)){
+                    max = add_carta(max, n, v);
+                    n = 4;
+                }
+  	return max;
 }
 
 long long int flushpos (MAO mao) {
@@ -364,15 +362,15 @@ long long int flushpos (MAO mao) {
   for (i=3; i>=0; i--) {
     if(naipe[i]>4) break;
   }
-  if(i!=-1) {
+  if(i != -1) {
     int v = 12;
     int c = 0;
     while(c<5) {
-      if(carta_existe(mao, i, v)) {
-        max = add_carta(max, i, v);
-        c+=1;
-      }
-      v--;
+    	if(carta_existe(mao, i, v)) {
+        	max = add_carta(max, i, v);
+        	c+=1;
+      	}
+      	v--;
     }
   }
   return max;
@@ -381,8 +379,9 @@ long long int flushpos (MAO mao) {
 long long int fullhousepos (MAO mao) {
   MAO max = 0;
   int rank[13] = {0};
-  separa_val(mao, rank);
   int i, p=0;
+    
+  separa_val(mao, rank);
   for (i=12; i>=0; i--)
     if (rank[i]>=3) break;
   if(i==0) p=1;
@@ -405,10 +404,9 @@ long long int fullhousepos (MAO mao) {
     while(c<2) {
       if(carta_existe(mao, n, p)) {
         max = add_carta(max, n ,p);
-        n++;
         c++;
       }
-      else n++;
+      n++;
     }
   }
   return max;
@@ -419,7 +417,7 @@ long long int fourofakindpos (MAO mao) {
   int i;
   int rank[13] = {0};
   separa_val(mao, rank);
-  for(i=12; i>=0; i--) 
+  for(i=12; i>=0; i--)
     if(rank[i]==4) break;
   if(i!=-1) {
     int c=0, n=0, p;
@@ -579,7 +577,7 @@ void imprime_carta_back(int x, int y){
 void imprime_carta_link(int x, int y,DATABASE data,int n,int v){
     char *suit = NAIPES;
     char *rank = VALORES;
-    char script[52000]; // n sei quanto precisamos.
+    char script[1000]; // n sei quanto precisamos.
     if(carta_existe(data.selected,n,v)==0)
         data.selected = add_carta(data.selected,n,v);
     else
@@ -598,7 +596,7 @@ void imprime_jogadas(DATABASE data){
     int ind;
     
     for(x=550,y=210,jog=2;jog>=0;jog-=2,y+=175){
-        if (data.jogadas[jog]==0 && data.play != 3) {
+        if (data.jogadas[jog]==0 && data.play != 3)  {
             if (data.play || jog!=0) {
                 y -= 20;
                 printf("<image x = \"%d\" y = \"%d\" height = \"100\" width = \"100\" xlink:href = \"%s/passo_%d.svg\" />\n", x, y, BARALHO, jog);
@@ -688,7 +686,7 @@ void imprime_maos (DATABASE data){
 
 
 void botao_ordenar (DATABASE data){
-    char script [52000];
+    char script [1000];
     if (data.ordenar==0) {
         data.ordenar = 1;
         data.play = 0;
@@ -707,7 +705,7 @@ void botao_ordenar (DATABASE data){
 //TODO: Fazer com que dê todas as jogadas possíveis de forma seguida, pode ser preciso alterar a estrutura
 //WARNING: não alterar o data.nc
 void botao_help(DATABASE * data){
-    char script[52000];
+    char script[1000];
     int jogadas[13][5];
     int original = data->nc;
     int total = 0;
@@ -742,7 +740,7 @@ void botao_help(DATABASE * data){
 
 //TODO: meter botao a cinzento quando tem que jogar -> if(data.passar == 3)
 void botao_passar (DATABASE data){
-    char script[52000];
+    char script[1000];
     
     data.selected = 0;
     data.jogadas[0]=0;
@@ -758,7 +756,7 @@ void botao_play (DATABASE data){
     int n,v;
     int ind;
     int y[3];
-    char script [52000];
+    char script [1000];
     data.jogadas[0]=0;
     if(data.passar == 3||data.nc==0){ //WARNING\. acho que já não precisamos da segunda condição. data.nc == 0 significa que estámos na primeira jogada e somos nós a começar
         data.nc = 0;
@@ -782,6 +780,7 @@ void botao_play (DATABASE data){
         data.passar = 0;
         if(data.nc == 5){
             preenchejogada(data.jogadas[0],y);
+            printf("%d",y[2]);
             data.combination[0] = y[0];
             data.combination[1] = y[1];
             data.combination[2] = y[2];
@@ -801,7 +800,7 @@ void botao_play (DATABASE data){
 
 void botao_continuar(DATABASE * data) {
     int i;
-    char script[52000];
+    char script[1000];
     DATABASE newdata = {{0},0,{0},0,0,0,0,{0},{0}}; //TODO:tentar subsituir esta expressão com um define
     
     for(i=0; i < 4; i++)
@@ -841,7 +840,7 @@ void imprime_fim (DATABASE *data){
 
 //data.play = 1 está na imprime_start
 void botao_start(DATABASE data){
-    char script[52000]; //TODO: mudar o tamanho deste script, é demasiado grande
+    char script[1000]; //TODO: mudar o tamanho deste script, é demasiado grande
     
     DATA2STR(script, data);
     printf("<a xlink:href = \"cartas?%s\"><image x = \"510\" y = \"300\" height = \"60\" width = \"180\" xlink:href = \"%s/botao_start.svg\" /></a>\n", script, BARALHO);
@@ -935,7 +934,7 @@ void bot_continua(DATABASE *data,int m){
     else {
         data->passar++;
     }
- // se n estiver aqui, isto -> http://127.0.0.1/cgi-bin/cartas?80401787798145_53360711565376_2213059507504_363614439434_0_0_4398315044868_0_0_2_5_3_1_0_0_0_0_3_2_0 não dá, passam os bots todos depois de eu passar, o passar não icrementa.
+    printf(" "); // se n estiver aqui, isto -> http://127.0.0.1/cgi-bin/cartas?80401787798145_53360711565376_2213059507504_363614439434_0_0_4398315044868_0_0_2_5_3_1_0_0_0_0_3_2_0
     if(data->mao[m]==0)
         data->play = 4;
 }
@@ -1037,6 +1036,7 @@ void Game_Lobby(DATABASE data){
             
         case 4:
             imprime_fim(&data);
+            break;
             
         default: // data.play == 2 -> jogo normal. data.play == 3 -> inicio do jogo. quem se preocupa com este 3 é a função jogo. 4 -> fim do jogo
             jogo(&data);
