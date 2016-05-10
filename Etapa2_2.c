@@ -347,7 +347,7 @@ long long int straightpos (MAO mao) {
         c+=1;
         n=0;
         if(i==0) i=12;
-        else i--;
+        else i++;
       }
       else n++;
     }
@@ -361,10 +361,10 @@ long long int flushpos (MAO mao) {
   int i;
   int naipe[4] = {0};
   separa_nap(mao, naipe);
-  for (i=4; i>=0; i--) {
+  for (i=3; i>=0; i--) {
     if(naipe[i]>4) break;
   }
-  if(i!=4) {
+  if(i!=-1) {
     int v = 12;
     int c = 0;
     while(c<5) {
@@ -383,7 +383,7 @@ long long int fullhousepos (MAO mao) {
   int rank[13] = {0};
   separa_val(mao, rank);
   int i, p=0;
-  for (i=13; i>=0; i--)
+  for (i=12; i>=0; i--)
     if (rank[i]>=3) break;
   if(i==0) p=1;
   for (; p<13; p++) {
@@ -419,7 +419,7 @@ long long int fourofakindpos (MAO mao) {
   int i;
   int rank[13] = {0};
   separa_val(mao, rank);
-  for(i=13; i>=0; i--) 
+  for(i=12; i>=0; i--) 
     if(rank[i]==4) break;
   if(i!=-1) {
     int c=0, n=0, p;
@@ -448,7 +448,7 @@ long long int straightflushpos (MAO mao) {
   while(n>=0) {
     if(naipe[n]>4) {
       int v;
-      for(v=13; v>=0; v--) {
+      for(v=12; v>=0; v--) {
         if(carta_existe(mao, n, v)) temp = add_carta(temp, n, v);
       }
       temp = straightpos(temp);
@@ -935,7 +935,7 @@ void bot_continua(DATABASE *data,int m){
     else {
         data->passar++;
     }
-    printf(" "); // se n estiver aqui, isto -> http://127.0.0.1/cgi-bin/cartas?80401787798145_53360711565376_2213059507504_363614439434_0_0_4398315044868_0_0_2_5_3_1_0_0_0_0_3_2_0 não dá, passam os bots todos depois de eu passar, o passar não icrementa.
+ // se n estiver aqui, isto -> http://127.0.0.1/cgi-bin/cartas?80401787798145_53360711565376_2213059507504_363614439434_0_0_4398315044868_0_0_2_5_3_1_0_0_0_0_3_2_0 não dá, passam os bots todos depois de eu passar, o passar não icrementa.
     if(data->mao[m]==0)
         data->play = 4;
 }
