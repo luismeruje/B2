@@ -687,7 +687,7 @@ void imprime_jogadas(DATABASE data){
         if(carta_existe(data.jogadas[jog], 0, 0)) f = jog;
     }
     if(carta_existe(data.mao[0], 0, 0)) f = 0;
-    for(x=550,y=210,jog=2;jog>=0;jog-=2,y+=175){
+    for(x=550,y=220,jog=2;jog>=0;jog-=2,y+=165){
         if (data.jogadas[jog]==0 && ((f==1 && jog!=0) || f==-1))  {
             if (data.play || jog!=0) {
                 y -= 20;
@@ -708,7 +708,7 @@ void imprime_jogadas(DATABASE data){
         }
         x=550;
     }
-    for(x=350,y=250,jog=3;jog>0;jog-=2,x+=420){
+    for(x=360,y=250,jog=3;jog>0;jog-=2,x+=410){
         if (data.jogadas[jog]==0 && ((f>0 && jog!=1) || f==-1))
             printf("<image x = \"%d\" y = \"%d\" height = \"100\" width = \"100\" xlink:href = \"%s/passo_%d.svg\" />\n", x, y, BARALHO, jog);
         else
@@ -938,10 +938,10 @@ void imprime_fim (DATABASE *data){
     data->score[3] += calcula_score(data->mao[3]);
     printf("<text x = \"550\" y = \"170\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:55px;\">Fim</text>\n");
     printf("<text x = \"400\" y = \"240\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:45px;\">Pontuação:</text>\n");
-    printf("<text x = \"400\" y = \"310\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:40px;\">Jogador - %d</text>\n", data->score[0]);
-    printf("<text x = \"400\" y = \"350\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:40px;\">Jorge - %d</text>\n", data->score[1]);
-    printf("<text x = \"400\" y = \"390\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:40px;\">Luís - %d</text>\n", data->score[2]);
-    printf("<text x = \"400\" y = \"430\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:40px;\">Diogo - %d</text>\n", data->score[3]);
+    printf("<text x = \"400\" y = \"310\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:40px;\">Jogador : %d</text>\n", data->score[0]);
+    printf("<text x = \"400\" y = \"350\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:40px;\">Jorge : %d</text>\n", data->score[1]);
+    printf("<text x = \"400\" y = \"390\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:40px;\">Luís : %d</text>\n", data->score[2]);
+    printf("<text x = \"400\" y = \"430\" style=\"font-family:Arial; fill:#ffffff; stroke:#000000; font-size:40px;\">Diogo : %d</text>\n", data->score[3]);
     botao_continuar(data);
     botao_novojogo();
     printf("</svg>");
