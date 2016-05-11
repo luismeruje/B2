@@ -476,13 +476,13 @@ int joga5 (DATABASE * data, int m) {
     return r;
 }
 
-void primeira_jogada(DATABASE * data, int jog){
+void primeira_jogada(DATABASE * data, int m){
     long long int temp = data->mao[m];
     int ind;
     int n, v;
     int count = 0;
-    int rank[3];
-    
+    int rank[13];
+    separa_val(data->mao[m],rank);
     data->nc = 5;
     //eliminar todas as cartas que não podem estar num straight com 3 de ouros, incluindo outros 3, que n sejam o de ouros
     for(ind = 0; ind < 52; ind++){
@@ -492,44 +492,75 @@ void primeira_jogada(DATABASE * data, int jog){
             temp = rem_carta(temp, n, v);
     }
     data->jogadas[m] = straightflushpos(temp);
-    if(data->jogadas == 0){
+    if(data->jogadas[m] == 0){
         data->jogadas[m] = straightpos(temp);
     }
-    if(data->jogadas == 0){ //neste em vez de tirar cartas ao temp, só lhe dou os 3 e mais uma carta qualquer
+    if(data->jogadas[m] == 0){ //neste em vez de tirar cartas ao temp, só lhe dou os 3 e mais uma carta qualquer
         temp = 0;
-        for(n = 0; n < 4; n++)
-            if(carta_existe(data->mao[m],n,0))
-                temp = add_carta(data->mao[m],n,0);
-        for(ind = 0; ind < 52; ind++){
-            n = ind / 13;
-            v = ind % 13;
-            if(carta_existe(data->mao[m],n,v) && v != 0){
-                temp = add_carta(data->mao[m],n,v);
-            	break;
+        if(rank[0]==4) {
+            for(n = 0; n < 4; n++)
+                if(carta_existe(data->mao[m],n,0))
+                    temp = add_carta(temp,n,0);
+            for(ind = 0; ind < 52; ind++){
+                n = ind / 13;
+                v = ind % 13;
+                if(carta_existe(data->mao[m],n,v) && v != 0){
+                    temp = add_carta(temp,n,v);
+                	break;
+                }
+            }
+        }
+        else {
+            for(v=1; v<13; v++) {
+                if(rank[v]==4) break;
+            }
+            if(v!=13) {
+                for(n = 0; n < 4; n++)
+                    if(carta_existe(data->mao[m],n,v))
+                        temp = add_carta(temp,n,v);
+                temp = add_carta(temp, 0, 0);
             }
         }
         data->jogadas[m] = fourofakindpos(temp);
     }
-    if(data->jogadas == 0){ //deu mais jeito fazer aqui a fullhouse
+    if(data->jogadas[m] == 0){ //deu mais jeito fazer aqui a fullhouse
         temp = 0;
-        for(n = 0; n < 4; n++)
-            if(carta_existe(data->mao[m],n,0)){
-                temp = add_carta(data->mao[m],n,0); //adiciona no máximo 3 3's, já que testamos antes o four of a kind.
-            }
-        separa_val(data->mao[m],rank);
-        for(v = 1; v < 13; v++)
-            if(rank[v] >= 2){
-                for(n = 0; n < 4 && count < 2; n++)
-                    if(carta_existe(data->mao[m],n,v)){
-                        temp = add_carta(temp,n,v);
-                        count++ ;
-                    }
-                break;
-            }
-        if(count == 2)
-            data->jogadas[m] = temp;
+        if(rank[0]==3) {
+            for(n = 0; n < 4; n++)
+                if(carta_existe(data->mao[m],n,0)){
+                    temp = add_carta(temp,n,0); //adiciona no máximo 3 3's, já que testamos antes o four of a kind.
+                }
+            for(v = 1; v < 13; v++)
+                if(rank[v] >= 2){
+                    for(n = 0; n < 4 && count < 2; n++)
+                        if(carta_existe(data->mao[m],n,v)){
+                            temp = add_carta(temp,n,v);
+                            count++ ;
+                        }
+                    break;
+                }
+            if(count == 2)
+                data->jogadas[m] = temp;
+        }
+        else if(rank[0]==2) {
+            for(n = 0; n < 4; n++)
+                if(carta_existe(data->mao[m],n,0)){
+                    temp = add_carta(temp,n,0); //adiciona no máximo 3 3's, já que testamos antes o four of a kind.
+                }
+            for(v = 1; v < 13; v++)
+                if(rank[v] >= 3){
+                    for(n = 0; n < 4 && count < 3; n++)
+                        if(carta_existe(data->mao[m],n,v)){
+                            temp = add_carta(temp,n,v);
+                            count++ ;
+                        }
+                    break;
+                }
+            if(count == 3)
+                data->jogadas[m] = temp;
+        }
     }
-    if(data->jogadas == 0){ // e a flush tbm
+    if(data->jogadas[m] == 0){ // e a flush tbm
         count = 0;
         temp = 0;
         for(v = 0; v < 13 && count < 5; v++){
@@ -538,7 +569,16 @@ void primeira_jogada(DATABASE * data, int jog){
                 count++;
             }
         }
+        if(count==5) data->jogadas[m] = temp;
     } //se não der nada disto, nas outras funções metam o draw = 0 e testem a ver se tem o 3 de ouros, se n tiver reduzem o data->nc
+    if(data->jogadas[m] == 0){
+            for(n=0, count=0; n<4; n++)
+                if(carta_existe(data->mao[m], n, 0)) {
+                    data->jogadas[m] = add_carta(data->jogadas[m], n, 0);
+                    count++;
+                }
+        data->nc = count;
+    }
 }
 
 int check_basico(DATABASE * data, int cartas[]){
@@ -1019,7 +1059,7 @@ void bot_comeca(DATABASE *data,int m){
     data->combination[0] = 0;
     data->combination[1] = 0;
     data->combination[2] = 0;
-    if(data.inicio!= 3){
+    if(data->play!= 3){
         if(joga5(data,m) != 0){
             for(i=0; i<52; i++){
                 n = i/13;
