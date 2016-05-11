@@ -697,14 +697,12 @@ void imprime_jogadas(DATABASE data){
         }
         else {
             if (data.play!=0 || jog!=0)
-                for(ind=0;ind<52;ind++){
-                    n = ind/13;
-                    v = ind%13;
-                    if(carta_existe(data.jogadas[jog],n,v)){
-                        imprime_carta_imagem(x,y,n,v);
-                        x +=20;
-                    }
-                }
+                for(v=0; v<13; v++)
+                    for(n=0;n<4;n++)
+                        if(carta_existe(data.jogadas[jog],n,v)){
+                            imprime_carta_imagem(x,y,n,v);
+                            x +=20;
+                        }
         }
         x=550;
     }
@@ -712,14 +710,12 @@ void imprime_jogadas(DATABASE data){
         if (data.jogadas[jog]==0 && ((f>0 && jog!=1) || f==-1))
             printf("<image x = \"%d\" y = \"%d\" height = \"100\" width = \"100\" xlink:href = \"%s/passo_%d.svg\" />\n", x, y, BARALHO, jog);
         else
-            for(ind=0;ind<52;ind++){
-                n = ind/13;
-                v = ind%13;
+            for(v=0; v<13; v++)
+                    for(n=0;n<4;n++)
                 if(carta_existe(data.jogadas[jog],n,v)){
                     imprime_carta_imagem(x,y,n,v);
                     y +=20;
                 }
-            }
         y=250;
     }
 }
