@@ -7,6 +7,7 @@ cartas: Etapa2.c
 instalar : $(EXEC)
 	sudo cp $(EXEC) /usr/lib/cgi-bin/
 	sudo cp -r images  /var/www/html/cards/
+	touch instalar
 
 $(EXEC): Etapa2.c
 	gcc -o $(EXEC) Etapa2.c 
