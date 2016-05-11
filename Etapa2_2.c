@@ -317,7 +317,7 @@ int cmpplay (MAO mao, int y[3]){
 }
 
 long long int straightpos (MAO mao) {
-    int i, c=0, n, v;
+    int c=0, n, v;
   	MAO max = 0;
   	int rank[13] = {0};
   	separa_val(mao, rank);
@@ -680,7 +680,6 @@ void imprime_jogadas(DATABASE data){
     int x,y;
     int n,v;
     int jog;
-    int ind;
     int f = -1;
     
     for(jog = 1; jog < 4; jog++) {
@@ -1046,7 +1045,7 @@ void bot_continua(DATABASE *data,int m){
 
 
 void bot_comeca(DATABASE *data,int m){
-    int jog, total = 0, i; //total => número total de jogadas possíveis
+    int total = 0, i; //total => número total de jogadas possíveis
     int jogadas[15][5];
     int draw;
     int n, v;
