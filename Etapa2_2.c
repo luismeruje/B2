@@ -320,7 +320,7 @@ int cmpplay (MAO mao, int y[3]){
                     r = 1;
                 if ((t[0] == 3 || t[0] == 4) && (t[1] >= y[1]))
                     r = 1;
-                if ((t[0] == 5) && (t[1] >= y[1] || (t[1]==y[1] && t[2] >= y[2]))) //os >= é para quando combinations tá tudo a 0's permitir fazer jgadas com 3's em certos casos
+                if ((t[0] == 5) && (t[1] > y[1] || (t[1]==y[1] && t[2] >= y[2]))) //os >= é para quando combinations tá tudo a 0's permitir fazer jgadas com 3's em certos casos
                     r = 1;
           }
   }
