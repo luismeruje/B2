@@ -31,7 +31,7 @@ struct database{
     int play;
     int nc; //número de cartas da ronda
     int passar;
-    int ordenar; //antigo baralhar.
+    int ordenar;
     int score[4]; 
     int combination[3];
 };
@@ -42,7 +42,6 @@ typedef struct database DATABASE;
                                                     ##################################--AUXILIARES--#####################################
 */
 
-//TODO: alterar de acordo com as alterações feitas à estrutura
 DATABASE STR2DATA(char * str){
     DATABASE data;
     sscanf(str, DATA,&(data.mao[0]),&(data.mao[1]),&(data.mao[2]),&(data.mao[3]),&(data.selected),&(data.jogadas[0]),&(data.jogadas[1]),&(data.jogadas[2]),&(data.jogadas[3]),&data.play,&data.nc,&data.passar,&data.ordenar,&data.score[0],&data.score[1],&data.score[2],&data.score[3],&data.combination[0],&data.combination[1],&data.combination[2]);
@@ -126,8 +125,6 @@ int calcula_score(MAO mao){
     return -r;
 }
 
-//TODO: melhorar as duas abaixo
-
 int maior_carta_mao(MAO mao){
     int ind;
     int max=-1;
@@ -165,10 +162,8 @@ int quem_comeca(DATABASE * data){
     for(jog=0;;jog++)
         if(carta_existe(data->mao[jog],0,0))
             break;
-    printf("%d",jog);
     return jog;
 }
-
 
 void separa_val (MAO mao, int y[13]){
     int i,n,v;
@@ -181,7 +176,6 @@ void separa_val (MAO mao, int y[13]){
     }
 }
 
-
 void separa_nap (MAO mao, int y[4]){
     int i,n,v;
     for(i=0;i<52;i++){
@@ -193,8 +187,6 @@ void separa_nap (MAO mao, int y[4]){
     }
 }
 
-
-//WARNING: só passar array v relativo a uma mão que tenha apenas as cartas que se quer analisar, não mandar arrays v de maos inteiras para aqui
 int teste_straight(int v[13]){
     int r = 0, i = 0, count = 0, flag = 0;
     
@@ -210,7 +202,6 @@ int teste_straight(int v[13]){
     return r;
 }
 
-//WARNING: igual ao do teste straight
 int teste_flush(int naipe[4]) {
     int r = 0, n;
     for (n=0; n<4; n++) {
@@ -222,7 +213,6 @@ int teste_flush(int naipe[4]) {
     return r;
 }
 
-//WARNING: igual ao do teste straight
 int teste_fullhouse(int rank[13]) {
     int r = 1, v;
     for (v=0; v<13; v++) {
@@ -231,7 +221,6 @@ int teste_fullhouse(int rank[13]) {
     return r;
 }
 
-//WARNING: igual ao do teste straight
 int teste_fourofakind(int rank[13]) {
     int r = 0, v;
     for (v=0; v<13; v++) {
@@ -239,7 +228,7 @@ int teste_fourofakind(int rank[13]) {
     }
     return r;
 }
-//O 3 de ouros tem que ser jogado na primeira jogada, está nas regras(?)
+
 //r: 1 => straight; 2 => flush; 3 => fullhouse; 4 => fourofakind; 5 => straightflush
 int tipo_comb_five(MAO mao) {
     int r = 0;
@@ -285,7 +274,6 @@ void atualizastraight(MAO mao, int y[3]) {
 void preenchejogada (MAO mao, int y[3]){
   int m, i,ind;
   int rank[13] = {0};
-  
   m = tipo_comb_five(mao);
   y[0] = m;
   if (m==1 || m==5) atualizastraight(mao, y);
@@ -301,7 +289,7 @@ void preenchejogada (MAO mao, int y[3]){
         if (rank[i] >=3) break;
       }
       y[1] = i;
-        y[2] = 0; //nunca é usado, mas para não deixa um valor aleatório...
+        y[2] = 0;
     }
   }
 }
@@ -321,7 +309,7 @@ int cmpplay (MAO mao, int y[3]){
                     r = 1;
                 if ((t[0] == 3 || t[0] == 4) && (t[1] >= y[1]))
                     r = 1;
-                if ((t[0] == 5) && (t[1] > y[1] || (t[1]==y[1] && t[2] >= y[2]))) //os >= é para quando combinations tá tudo a 0's permitir fazer jgadas com 3's em certos casos
+                if ((t[0] == 5) && (t[1] > y[1] || (t[1]==y[1] && t[2] >= y[2])))
                     r = 1;
           }
   }
@@ -439,7 +427,7 @@ long long int fourofakindpos (MAO mao) {
   }
   return max;
 }
-//provavelmente temos de corrigir esta...
+
 long long int straightflushpos (MAO mao) {
   MAO max = 0, temp = 0;
   int n=3;
@@ -473,7 +461,7 @@ int joga5 (DATABASE * data, int m) {
                              else {
                             	data->jogadas[m] = 0;
                             	r = 0;
-                             } //Fail safe
+                             }
     return r;
 }
 
@@ -485,7 +473,7 @@ void primeira_jogada(DATABASE * data, int m){
     int rank[13] = {0};
     separa_val(data->mao[m],rank);
     data->nc = 5;
-    //eliminar todas as cartas que não podem estar num straight com 3 de ouros, incluindo outros 3, que n sejam o de ouros
+    //eliminar todas as cartas que não podem estar num straight com 3 de ouros, incluindo outros 3, que não sejam o de ouros
     for(ind = 0; ind < 52; ind++){
         n = ind / 13;
         v = ind %13;
@@ -496,7 +484,7 @@ void primeira_jogada(DATABASE * data, int m){
     if(data->jogadas[m] == 0){
         data->jogadas[m] = straightpos(temp);
     }
-    if(data->jogadas[m] == 0){ //neste em vez de tirar cartas ao temp, só lhe dou os 3 e mais uma carta qualquer
+    if(data->jogadas[m] == 0){ //FOUR OF A KIND
         temp = 0;
         if(rank[0]==4) {
             for(n = 0; n < 4; n++)
@@ -524,12 +512,12 @@ void primeira_jogada(DATABASE * data, int m){
         }
         data->jogadas[m] = fourofakindpos(temp);
     }
-    if(data->jogadas[m] == 0){ //deu mais jeito fazer aqui a fullhouse
+    if(data->jogadas[m] == 0){ // FULLHOUSE
         temp = 0;
         if(rank[0]==3) {
             for(n = 0; n < 4; n++)
                 if(carta_existe(data->mao[m],n,0)){
-                    temp = add_carta(temp,n,0); //adiciona no máximo 3 3's, já que testamos antes o four of a kind.
+                    temp = add_carta(temp,n,0);
                 }
             for(v = 1; v < 13; v++)
                 if(rank[v] >= 2){
@@ -546,7 +534,7 @@ void primeira_jogada(DATABASE * data, int m){
         else if(rank[0]==2) {
             for(n = 0; n < 4; n++)
                 if(carta_existe(data->mao[m],n,0)){
-                    temp = add_carta(temp,n,0); //adiciona no máximo 3 3's, já que testamos antes o four of a kind.
+                    temp = add_carta(temp,n,0);
                 }
             for(v = 1; v < 13; v++)
                 if(rank[v] >= 3){
@@ -571,7 +559,7 @@ void primeira_jogada(DATABASE * data, int m){
             }
         }
         if(count==5) data->jogadas[m] = temp;
-    } //se não der nada disto, nas outras funções metam o draw = 0 e testem a ver se tem o 3 de ouros, se n tiver reduzem o data->nc
+    }
     if(data->jogadas[m] == 0){
         for(n=0, count=0; n<4; n++)
             if(carta_existe(data->mao[m], n, 0)) {
@@ -605,21 +593,18 @@ int check_basico(DATABASE * data, int cartas[]){
 int check_jogada(DATABASE *data, int jog){
     int ind, r = 0, count = 0;
     int n, v;
-    
     MAO jogada;
     int cartas[5];
     if(jog != 0)
         jogada = data->jogadas[jog];
     else
         jogada = data->selected;
-    //Quando metermos as cinco, podemos dividir em duas funções, com a condição data.nc == 5, check_combinacões e check_basico ou algo do género
-    //Pesquisar: existem algoritmos que contam números de bits a 1, num conjunto de bits, para saber o número de cartas numa mao.
     for(ind = 0; ind < 52 && count < 5; ind++){
         n = ind / 13;
         v = ind % 13;
         if (carta_existe(jogada,n,v)){
             cartas[count] = ind;
-            count++; //incorporar este incremento no indice da expressão imediatamente acima;
+            count++;
         }
     }
     if(data->nc == count && count < 6 && count != 4){
@@ -628,16 +613,23 @@ int check_jogada(DATABASE *data, int jog){
     	else
             if (data->passar==3 && tipo_comb_five(jogada) >0) r=1;
             else if(tipo_comb_five(jogada)>0  && cmpplay(jogada, data->combination)==1) r=1;
+        if(data->play==3) {
+            if(carta_existe(jogada, 0, 0)) r=1;
+            else r = 0;
+        }
     }
     else
         r = 0;
     return r;
 }
 
-int determina_basico(DATABASE *data, int jog, int jogadas[][5]){
+// Determina jogadas com entre 1 a 3 cartas
+int jogadas_possiveis(DATABASE *data, int jog, int jogadas[][5]){
     int n, v, i, temp_naipe[4], count = 0, a;
     int max = maior_carta_jogada(data);
-    for(v = max % 13; v < 13; v++){
+    if (max==-1) v=0;
+    else v=max%13;
+    for(; v < 13; v++){
         i = 0;
         for(n = 0; n < 4; n++)
             if(carta_existe(data->mao[jog],n,v)){
@@ -650,17 +642,6 @@ int determina_basico(DATABASE *data, int jog, int jogadas[][5]){
             count++;
         }
     }
-    return count;
-}
-
-//TODO: separar em duas funções, uma para se data->nc = 5 e outra para as restantes, que irá ser igual a esta
-//TODO: não testa direito entre pares com valores iguais, os naipes se são mais altos ou não
-int jogadas_possiveis(DATABASE *data, int jog, int jogadas[][5]){
-    int count = 0;
-    if(data->nc != 5)
-        count = determina_basico(data,jog,jogadas);
-    //else
-	//  ...  //WARNING: fazer dar logo zero se o data->nc for 4, depois quando metermos para as 5
     return count;
 }
 
@@ -684,26 +665,30 @@ void imprime_carta_back(int x, int y){
 void imprime_carta_link(int x, int y,DATABASE data,int n,int v){
     char *suit = NAIPES;
     char *rank = VALORES;
-    char script[1000]; // n sei quanto precisamos.
+    char script[1000];
     if(carta_existe(data.selected,n,v)==0)
         data.selected = add_carta(data.selected,n,v);
     else
         data.selected = rem_carta(data.selected,n,v);
-    data.play = 0;
+    if (data.play!=3) data.play = 0;
     
     DATA2STR(script,data);
     printf("<a xlink:href = \"cartas?%s\"><image x = \"%d\" y = \"%d\" height = \"110\" width = \"80\" xlink:href = \"%s/%c%c.svg\" /></a>\n", script, x, y, BARALHO, rank[v], suit[n]);
 }
 
-//WARNING: não imprime os passo na primeira jogada
 void imprime_jogadas(DATABASE data){
     int x,y;
     int n,v;
     int jog;
     int ind;
+    int f = -1;
     
+    for(jog = 1; jog < 4; jog++) {
+        if(carta_existe(data.jogadas[jog], 0, 0)) f = jog;
+    }
+    if(carta_existe(data.mao[0], 0, 0)) f = 0;
     for(x=550,y=210,jog=2;jog>=0;jog-=2,y+=175){
-        if (data.jogadas[jog]==0 && data.play != 3)  {
+        if (data.jogadas[jog]==0 && ((f==1 && jog!=0) || f==-1))  {
             if (data.play || jog!=0) {
                 y -= 20;
                 printf("<image x = \"%d\" y = \"%d\" height = \"100\" width = \"100\" xlink:href = \"%s/passo_%d.svg\" />\n", x, y, BARALHO, jog);
@@ -724,7 +709,7 @@ void imprime_jogadas(DATABASE data){
         x=550;
     }
     for(x=350,y=250,jog=3;jog>0;jog-=2,x+=420){
-        if (data.jogadas[jog]==0 && data.play != 3) //WARNING: verificar se é suposto ser 3
+        if (data.jogadas[jog]==0 && ((f>0 && jog!=1) || f==-1))
             printf("<image x = \"%d\" y = \"%d\" height = \"100\" width = \"100\" xlink:href = \"%s/passo_%d.svg\" />\n", x, y, BARALHO, jog);
         else
             for(ind=0;ind<52;ind++){
@@ -759,7 +744,7 @@ void imprime_maos (DATABASE data){
                     imprime_carta_link(x,y,data,n,v);
                     x += 20;
                 }
-                if(carta_existe(data.selected,n,v)==1)//anula o desvio, para n ficarem todas levantadas
+                if(carta_existe(data.selected,n,v)==1)//anula o desvio, para não ficarem todas levantadas
                     y += 20;
             }
             else{
@@ -796,20 +781,20 @@ void botao_ordenar (DATABASE data){
     char script [1000];
     if (data.ordenar==0) {
         data.ordenar = 1;
-        data.play = 0;
+        if(data.play!=3) data.play = 0;
         DATA2STR(script, data);
         printf("<a xlink:href = \"cartas?%s\"><image x = \"350\" y = \"510\" height = \"40\" width = \"40\" xlink:href = \"%s/baralhar_por_valor.svg\" /></a>\n", script, BARALHO);
     }
     else {
         data.ordenar = 0;
-        data.play = 0;
+        if(data.play!=3) data.play = 0;
         DATA2STR(script, data);
         printf("<a xlink:href = \"cartas?%s\"><image x = \"350\" y = \"510\" height = \"40\" width = \"40\" xlink:href = \"%s/baralhar_por_naipe.svg\" /></a>\n", script, BARALHO);
     }
 }
 
 void botao_help(DATABASE * data){
-    char script[52000];
+    char script[1000];
     int jogadas[13][5];
     int total = 0;
     int n, v, draw, i;
@@ -825,7 +810,7 @@ void botao_help(DATABASE * data){
             else {
                 jogadas_possiveis(data, 0, jogadas);
                 draw = 0;
-                for(i = 0; i <= data->nc; i++){
+                for(i = 0; i < data->nc; i++){
                     n = jogadas[draw][i] / 13;
                     v = jogadas[draw][i] % 13;
                     data->selected = add_carta(data->selected,n,v);
@@ -842,7 +827,7 @@ void botao_help(DATABASE * data){
                     total = jogadas_possiveis(data, 0, jogadas);
                 }
                 draw = 0;
-                for(i = 0; i <= data->nc; i++){
+                for(i = 0; i < data->nc; i++){
                     n = jogadas[draw][i] / 13;
                     v = jogadas[draw][i] % 13;
                     data->selected = add_carta(data->selected,n,v);
@@ -864,66 +849,26 @@ void botao_help(DATABASE * data){
     printf("<a xlink:href = \"cartas?%s\"><image x = \"370\" y = \"560\" height = \"40\" width = \"40\" xlink:href = \"%s/botao_help.svg\" /></a>\n", script, BARALHO);
 }
 
-//http://127.0.0.1/cgi-bin/cartas?1104092078080_2748779069568_1411772997304576_8796093038592_16777216_0_0_32_35184372088832_0_1_0_1_0_0_0_0_0_0_0
-//http://127.0.0.1/cgi-bin/cartas?1104092078080_2748779069568_1411772997304576_8796093038592_16777217_0_0_32_35184372088832_0_1_0_1_0_0_0_0_0_0_0
-
-//TODO: Fazer com que dê todas as jogadas possíveis de forma seguida, pode ser preciso alterar a estrutura
-//WARNING: não alterar o data.nc
-// void botao_help(DATABASE * data){
-//     char script[1000];
-//     int jogadas[13][5];
-//     int original = data->nc;
-//     int total = 0;
-//     int n, v, draw, i;
-//     if(data->passar != 3)
-//     	jogadas_possiveis(data, 0, jogadas);
-//     else{
-//         data->nc = rand() % 4;//TODO: alterar para 6 quando for com 5 cartas
-//         while(total == 0 && data->nc > 0){
-//             total = jogadas_possiveis(data, 0, jogadas);
-//             data->nc--;
-//         }
-//     }
-//     data->selected = 0;
-//     if(total != 0){
-//         draw = rand() % total;
-//         for(i = 0; i <= data->nc; i++){
-//             n = jogadas[draw][i] / 13;
-//             v = jogadas[draw][i] % 13;
-//             data->selected = add_carta(data->selected,n,v);
-            
-//         }
-//     }
-//     data->play = 0;
-//     data->nc = original;
-//     DATA2STR(script,* data);
-//     printf("<a xlink:href = \"cartas?%s\"><image x = \"370\" y = \"560\" height = \"40\" width = \"40\" xlink:href = \"%s/botao_help.svg\" /></a>\n", script, BARALHO);
-// }
-
-
-
-
-//TODO: meter botao a cinzento quando tem que jogar -> if(data.passar == 3)
 void botao_passar (DATABASE data){
     char script[1000];
-    
-    data.selected = 0;
-    data.jogadas[0]=0;
-    data.play = 2;
-    data.passar++;
-    DATA2STR(script, data);
-    printf("<a xlink:href = \"cartas?%s\"><image x = \"775\" y = \"550\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_pass.svg\" /></a>\n", script, BARALHO);
+    if(data.passar!=3) {
+        data.selected = 0;
+        data.jogadas[0]=0;
+        data.play = 2;
+        data.passar++;
+        DATA2STR(script, data);
+        printf("<a xlink:href = \"cartas?%s\"><image x = \"775\" y = \"550\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_pass.svg\" /></a>\n", script, BARALHO);
+    }
+    else printf("<image x = \"775\" y = \"550\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_pass_cinza.svg\" />\n", BARALHO);
 }
 
-
-//melhorar esta função
 void botao_play (DATABASE data){
     int n,v;
     int ind;
     int y[3];
     char script [1000];
     data.jogadas[0]=0;
-    if(data.passar == 3||data.nc==0){ //WARNING\. acho que já não precisamos da segunda condição. data.nc == 0 significa que estámos na primeira jogada e somos nós a começar
+    if(data.passar == 3){
         data.nc = 0;
         for(ind=0;ind<52;ind++){
             n=ind/13;
@@ -945,7 +890,6 @@ void botao_play (DATABASE data){
         data.passar = 0;
         if(data.nc == 5){
             preenchejogada(data.jogadas[0],y);
-            printf("%d",y[2]);
             data.combination[0] = y[0];
             data.combination[1] = y[1];
             data.combination[2] = y[2];
@@ -966,7 +910,7 @@ void botao_play (DATABASE data){
 void botao_continuar(DATABASE * data) {
     int i;
     char script[1000];
-    DATABASE newdata = {{0},0,{0},0,0,0,0,{0},{0}}; //TODO:tentar subsituir esta expressão com um define
+    DATABASE newdata = {{0},0,{0},0,0,0,0,{0},{0}}; 
     
     for(i=0; i < 4; i++)
         newdata.score[i] = data->score[i];
@@ -980,7 +924,7 @@ void botao_novojogo() {
     printf("<a xlink:href = \"cartas\"><image x = \"630\" y = \"500\" height = \"60\" width = \"170\" xlink:href = \"%s/botao_novo_jogo.svg\" /></a>\n", BARALHO);
 }
 
-//TODO: podemos simplificar isto com um for..
+
 void imprime_fim (DATABASE *data){
     printf("<svg height = \"680\" width = \"1200\">\n");
     printf("<image x = \"-155\" y = \"0\" height = \"900\" width = \"1500\" xlink:href = \"%s/floor.svg\" />\n", BARALHO);
@@ -1003,9 +947,8 @@ void imprime_fim (DATABASE *data){
     printf("</svg>");
 }
 
-//data.play = 1 está na imprime_start
 void botao_start(DATABASE data){
-    char script[1000]; //TODO: mudar o tamanho deste script, é demasiado grande
+    char script[1000];
     
     DATA2STR(script, data);
     printf("<a xlink:href = \"cartas?%s\"><image x = \"510\" y = \"300\" height = \"60\" width = \"180\" xlink:href = \"%s/botao_start.svg\" /></a>\n", script, BARALHO);
@@ -1035,7 +978,6 @@ void imprime_start(DATABASE data){
     printf("</svg>\n");
 }
 
-//http://127.0.0.1/cgi-bin/cartas?889681814618112_2843336513614_3611071097168640_3379070129_1099511627776_0_0_0_0_0_5_0_1_0_0_0_0_3_13_0 -> não consigo jogar nada
 void imprime (DATABASE data){
     printf("<svg height = \"680\" width = \"1200\">\n");
     printf("<image x = \"-155\" y = \"0\" height = \"900\" width = \"1500\" xlink:href = \"%s/floor.svg\" />\n", BARALHO);
@@ -1047,7 +989,7 @@ void imprime (DATABASE data){
     imprime_jogadas(data);
     botao_play(data);
     botao_passar(data);
-    botao_ordenar(data);//antigo imprime_baralhar
+    botao_ordenar(data);
     botao_help(&data);
 }
 
@@ -1059,7 +1001,6 @@ void imprime (DATABASE data){
  												#################################--FUNCOES_DOS_BOTS--####################################
  */
 
-//TODO: substituir o m por jog, para manter igual isto em todas as funções
 void bot_continua(DATABASE *data,int m){
     int draw, total, i, n, v;
     int jogadas[15][5]; //Primeiro elemento do array => número da jogada_possível; o 15 em vez de 13 é só por segurança. Segundo elemento do array => carta da jogada_possível. Exemplo: jogadas[0][0] e jogadas[0][1] dão o par da jogada possível nr. 1.
@@ -1111,7 +1052,7 @@ void bot_comeca(DATABASE *data,int m){
     int n, v;
     int y[3];
     
-    data->jogadas[m]=0; //TODO: tirei o loop que metia as jogadas de todos a 0
+    data->jogadas[m]=0;
     data->passar = 0;
     data->nc = 5; //para começar a testar combinações de 5 primeiro
     data->combination[0] = 0;
@@ -1166,8 +1107,6 @@ void bot_comeca(DATABASE *data,int m){
         data->play = 4;
 }
 
-
-//WARNING: no if, tinha i = data.nc no inicio e data.nc = i no fim
 void joga_bots(DATABASE *data,int m){
     if(data->passar < 3)
         bot_continua(data,m);
@@ -1201,10 +1140,6 @@ void jogo(DATABASE *data){
  											    ##################################--FUNCOES_DOS_BOTS_FIM--##############################
  */
 
-
-
-//Adicionar imprime_fim aqui?
-//Fazer passar o endereço da estrutura em vez de cópias?
 void Game_Lobby(DATABASE data){
     switch (data.play) {
         case 0:
@@ -1212,26 +1147,25 @@ void Game_Lobby(DATABASE data){
             break;
             
         case 1:
-            imprime_start(data); //antigo check_start
+            imprime_start(data);
             break;
             
         case 4:
             imprime_fim(&data);
             break;
             
-        default: // data.play == 2 -> jogo normal. data.play == 3 -> inicio do jogo. quem se preocupa com este 3 é a função jogo. 4 -> fim do jogo
+        default: // data.play == 2 -> jogo normal. data.play == 3 -> inicio do jogo. 4 -> fim do jogo
             jogo(&data);
             if(data.play != 4)
             	imprime(data);
-            break; //WARNING: acho que se pode tirar este break
     }
 }
 
 
 void parse (char * query) {
-    DATABASE data = {{0},0,{0},0,0,0,0,{0},{0}}; //vale a pena inicializar tudo a 0's sempre?
+    DATABASE data = {{0},0,{0},0,0,0,0,{0},{0}};
     
-    if(query!=NULL && strlen(query) != 0) //meter condição adicional, para novo jogo e continuar, talvez data.play = 5 e depois já n é preciso aquela função enorme, basta mandar para baixo e manter os scores ou não, conforme o que se queira.
+    if(query!=NULL && strlen(query) != 0)
         data = STR2DATA(query);
     
     else{
