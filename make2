@@ -1,0 +1,9 @@
+EXEC = cartas
+
+instalar: $(EXEC)
+	sudo cp $(EXEC) /Library/WebServer/CGI-Executables/
+	sudo cp ./images/* /Library/WebServer/Documents/cards/
+	touch instalar
+
+$(EXEC): Etapa2.c
+	gcc -o $(EXEC) Etapa2.c
