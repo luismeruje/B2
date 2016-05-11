@@ -341,7 +341,7 @@ long long int straightpos (MAO mao) {
         if (c == 5)
             break;
     }
-    if(c == 5 || (c == 4 && rank[12] != 0) || (c == 3 && rank[12] != 0 && rank[11] != 0))
+    if(c == 5 || (c == 4 && rank[12] != 0) || (c == 3 && rank[12] != 0 && rank[11] != 0)) {
         if((c == 4 && rank[12] != 0))
             v = 12;
     	if (c == 3 && rank[12] != 0 && rank[11] != 0)
@@ -352,6 +352,7 @@ long long int straightpos (MAO mao) {
                     max = add_carta(max, n, v);
                     n = 4;
                 }
+    }
   	return max;
 }
 
@@ -481,7 +482,7 @@ void primeira_jogada(DATABASE * data, int m){
     int ind;
     int n, v;
     int count = 0;
-    int rank[13];
+    int rank[13] = {0};
     separa_val(data->mao[m],rank);
     data->nc = 5;
     //eliminar todas as cartas que não podem estar num straight com 3 de ouros, incluindo outros 3, que n sejam o de ouros
@@ -572,11 +573,11 @@ void primeira_jogada(DATABASE * data, int m){
         if(count==5) data->jogadas[m] = temp;
     } //se não der nada disto, nas outras funções metam o draw = 0 e testem a ver se tem o 3 de ouros, se n tiver reduzem o data->nc
     if(data->jogadas[m] == 0){
-            for(n=0, count=0; n<4; n++)
-                if(carta_existe(data->mao[m], n, 0)) {
-                    data->jogadas[m] = add_carta(data->jogadas[m], n, 0);
-                    count++;
-                }
+        for(n=0, count=0; n<4; n++)
+            if(carta_existe(data->mao[m], n, 0)) {
+                data->jogadas[m] = add_carta(data->jogadas[m], n, 0);
+                count++;
+            }
         data->nc = count;
     }
 }
@@ -807,39 +808,97 @@ void botao_ordenar (DATABASE data){
     }
 }
 
-
-//TODO: Fazer com que dê todas as jogadas possíveis de forma seguida, pode ser preciso alterar a estrutura
-//WARNING: não alterar o data.nc
 void botao_help(DATABASE * data){
-    char script[1000];
+    char script[52000];
     int jogadas[13][5];
-    int original = data->nc;
     int total = 0;
     int n, v, draw, i;
-    if(data->passar != 3)
-    	jogadas_possiveis(data, 0, jogadas);
-    else{
-        data->nc = rand() % 4;//TODO: alterar para 6 quando for com 5 cartas
-        while(total == 0 && data->nc > 0){
-            total = jogadas_possiveis(data, 0, jogadas);
-            data->nc--;
-        }
-    }
     data->selected = 0;
-    if(total != 0){
-        draw = rand() % total;
-        for(i = 0; i <= data->nc; i++){
-            n = jogadas[draw][i] / 13;
-            v = jogadas[draw][i] % 13;
-            data->selected = add_carta(data->selected,n,v);
-            
+
+    if(data->play!=3) {
+        if(data->passar != 3){
+            if ((data->nc) == 5) {
+                joga5(data,0);
+                data->selected = data->jogadas[0];
+                data->jogadas[0] = 0;
+            }
+            else {
+                jogadas_possiveis(data, 0, jogadas);
+                draw = 0;
+                for(i = 0; i <= data->nc; i++){
+                    n = jogadas[draw][i] / 13;
+                    v = jogadas[draw][i] % 13;
+                    data->selected = add_carta(data->selected,n,v);
+                }
+            }
+        }
+        else {
+            data->nc = 5;
+            total = joga5(data,0);
+            if (total == 0){
+                data->nc = 4;
+                while(total == 0 && data->nc > 0){
+                    data->nc--;
+                    total = jogadas_possiveis(data, 0, jogadas);
+                }
+                draw = 0;
+                for(i = 0; i <= data->nc; i++){
+                    n = jogadas[draw][i] / 13;
+                    v = jogadas[draw][i] % 13;
+                    data->selected = add_carta(data->selected,n,v);
+                }
+            }
+            else {
+                data->selected = data->jogadas[0];
+                data->jogadas[0] = 0;
+            }
         }
     }
-    data->play = 0;
-    data->nc = original;
+    else {
+        primeira_jogada(data, 0);
+        data->selected = data->jogadas[0];
+        data->jogadas[0] = 0;
+    }
+    if (data->play!=3) data->play = 0;
     DATA2STR(script,* data);
     printf("<a xlink:href = \"cartas?%s\"><image x = \"370\" y = \"560\" height = \"40\" width = \"40\" xlink:href = \"%s/botao_help.svg\" /></a>\n", script, BARALHO);
 }
+
+//http://127.0.0.1/cgi-bin/cartas?1104092078080_2748779069568_1411772997304576_8796093038592_16777216_0_0_32_35184372088832_0_1_0_1_0_0_0_0_0_0_0
+//http://127.0.0.1/cgi-bin/cartas?1104092078080_2748779069568_1411772997304576_8796093038592_16777217_0_0_32_35184372088832_0_1_0_1_0_0_0_0_0_0_0
+
+//TODO: Fazer com que dê todas as jogadas possíveis de forma seguida, pode ser preciso alterar a estrutura
+//WARNING: não alterar o data.nc
+// void botao_help(DATABASE * data){
+//     char script[1000];
+//     int jogadas[13][5];
+//     int original = data->nc;
+//     int total = 0;
+//     int n, v, draw, i;
+//     if(data->passar != 3)
+//     	jogadas_possiveis(data, 0, jogadas);
+//     else{
+//         data->nc = rand() % 4;//TODO: alterar para 6 quando for com 5 cartas
+//         while(total == 0 && data->nc > 0){
+//             total = jogadas_possiveis(data, 0, jogadas);
+//             data->nc--;
+//         }
+//     }
+//     data->selected = 0;
+//     if(total != 0){
+//         draw = rand() % total;
+//         for(i = 0; i <= data->nc; i++){
+//             n = jogadas[draw][i] / 13;
+//             v = jogadas[draw][i] % 13;
+//             data->selected = add_carta(data->selected,n,v);
+            
+//         }
+//     }
+//     data->play = 0;
+//     data->nc = original;
+//     DATA2STR(script,* data);
+//     printf("<a xlink:href = \"cartas?%s\"><image x = \"370\" y = \"560\" height = \"40\" width = \"40\" xlink:href = \"%s/botao_help.svg\" /></a>\n", script, BARALHO);
+// }
 
 
 
@@ -1040,7 +1099,6 @@ void bot_continua(DATABASE *data,int m){
     else {
         data->passar++;
     }
-    printf(" "); // se n estiver aqui, isto -> http://127.0.0.1/cgi-bin/cartas?80401787798145_53360711565376_2213059507504_363614439434_0_0_4398315044868_0_0_2_5_3_1_0_0_0_0_3_2_0
     if(data->mao[m]==0)
         data->play = 4;
 }
@@ -1103,6 +1161,7 @@ void bot_comeca(DATABASE *data,int m){
             data->combination[2] = y[2];
         }
     }
+    data->play = 2;
     if(data->mao[m]==0)
         data->play = 4;
 }
