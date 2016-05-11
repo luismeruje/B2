@@ -41,6 +41,7 @@ typedef struct database DATABASE;
 /*
                                                     ##################################--AUXILIARES--#####################################
 */
+
 //TODO: alterar de acordo com as alterações feitas à estrutura
 DATABASE STR2DATA(char * str){
     DATABASE data;
