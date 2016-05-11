@@ -123,7 +123,7 @@ int calcula_score(MAO mao){
         else
             r=r*2;
     }
-    return r;
+    return -r;
 }
 
 //TODO: melhorar as duas abaixo
@@ -474,6 +474,71 @@ int joga5 (DATABASE * data, int m) {
                             	r = 0;
                              } //Fail safe
     return r;
+}
+
+void primeira_jogada(DATABASE * data, int jog){
+    long long int temp = data->mao[m];
+    int ind;
+    int n, v;
+    int count = 0;
+    int rank[3];
+    
+    data->nc = 5;
+    //eliminar todas as cartas que não podem estar num straight com 3 de ouros, incluindo outros 3, que n sejam o de ouros
+    for(ind = 0; ind < 52; ind++){
+        n = ind / 13;
+        v = ind %13;
+        if(carta_existe(temp, n, v) && ((v > 4 && v < 11) || (v == 0 && n != 0)))
+            temp = rem_carta(temp, n, v);
+    }
+    data->jogadas[m] = straightflushpos(temp);
+    if(data->jogadas == 0){
+        data->jogadas[m] = straightpos(temp);
+    }
+    if(data->jogadas == 0){ //neste em vez de tirar cartas ao temp, só lhe dou os 3 e mais uma carta qualquer
+        temp = 0;
+        for(n = 0; n < 4; n++)
+            if(carta_existe(data->mao[m],n,0))
+                temp = add_carta(data->mao[m],n,0);
+        for(ind = 0; ind < 52; ind++){
+            n = ind / 13;
+            v = ind % 13;
+            if(carta_existe(data->mao[m],n,v) && v != 0){
+                temp = add_carta(data->mao[m],n,v);
+            	break;
+            }
+        }
+        data->jogadas[m] = fourofakindpos(temp);
+    }
+    if(data->jogadas == 0){ //deu mais jeito fazer aqui a fullhouse
+        temp = 0;
+        for(n = 0; n < 4; n++)
+            if(carta_existe(data->mao[m],n,0)){
+                temp = add_carta(data->mao[m],n,0); //adiciona no máximo 3 3's, já que testamos antes o four of a kind.
+            }
+        separa_val(data->mao[m],rank);
+        for(v = 1; v < 13; v++)
+            if(rank[v] >= 2){
+                for(n = 0; n < 4 && count < 2; n++)
+                    if(carta_existe(data->mao[m],n,v)){
+                        temp = add_carta(temp,n,v);
+                        count++ ;
+                    }
+                break;
+            }
+        if(count == 2)
+            data->jogadas[m] = temp;
+    }
+    if(data->jogadas == 0){ // e a flush tbm
+        count = 0;
+        temp = 0;
+        for(v = 0; v < 13 && count < 5; v++){
+            if(carta_existe(data->mao[m],0,v)){
+                temp = add_carta(temp, 0, v);
+                count++;
+            }
+        }
+    } //se não der nada disto, nas outras funções metam o draw = 0 e testem a ver se tem o 3 de ouros, se n tiver reduzem o data->nc
 }
 
 int check_basico(DATABASE * data, int cartas[]){
@@ -954,34 +1019,50 @@ void bot_comeca(DATABASE *data,int m){
     data->combination[0] = 0;
     data->combination[1] = 0;
     data->combination[2] = 0;
-    if(joga5(data,m) != 0){
+    if(data.inicio!= 3){
+        if(joga5(data,m) != 0){
+            for(i=0; i<52; i++){
+                n = i/13;
+                v = i%13;
+                if(carta_existe(data->jogadas[m], n, v))
+                    data->mao[m] = rem_carta(data->mao[m], n, v);
+            }
+            preenchejogada(data->jogadas[m],y);
+            data->combination[0] = y[0];
+            data->combination[1] = y[1];
+            data->combination[2] = y[2];
+        }
+        else{
+             data->nc = 4;
+             while(total == 0){
+                data->nc --;
+                total = jogadas_possiveis(data, m, jogadas); //NOTA: já sai com o data->nc certo, é para isso que se tem o outro data->nc antes do while.
+             }
+                                    
+              draw = rand()%total;
+              for(i = 0; i < data->nc; i++){
+                    n = jogadas[draw][i] / 13;
+                    v = jogadas[draw][i] % 13;
+                    data->jogadas[m] = add_carta(data->jogadas[m],n,v);
+                    data->mao[m] = rem_carta(data->mao[m],n,v);
+              }
+        }
+    }
+    else{
+        primeira_jogada(data, m);
         for(i=0; i<52; i++){
             n = i/13;
             v = i%13;
             if(carta_existe(data->jogadas[m], n, v))
                 data->mao[m] = rem_carta(data->mao[m], n, v);
         }
-        preenchejogada(data->jogadas[m],y);
-        data->combination[0] = y[0];
-        data->combination[1] = y[1];
-        data->combination[2] = y[2];
+        if(data->nc == 5){
+            preenchejogada(data->jogadas[m],y);
+            data->combination[0] = y[0];
+            data->combination[1] = y[1];
+            data->combination[2] = y[2];
+        }
     }
-    else{
-         data->nc = 4;
-         while(total == 0){
-            data->nc --;
-            total = jogadas_possiveis(data, m, jogadas); //NOTA: já sai com o data->nc certo, é para isso que se tem o outro data->nc antes do while.
-         }
-                                
-          draw = rand()%total;
-          for(i = 0; i < data->nc; i++){
-                n = jogadas[draw][i] / 13;
-                v = jogadas[draw][i] % 13;
-                data->jogadas[m] = add_carta(data->jogadas[m],n,v);
-                data->mao[m] = rem_carta(data->mao[m],n,v);
-          }
-    }
-
     if(data->mao[m]==0)
         data->play = 4;
 }
