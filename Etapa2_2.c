@@ -788,6 +788,7 @@ void botao_ordenar (DATABASE data){
     }
 }
 
+//TODO: Pôr combination a zeros quando o data passar está a 3
 void botao_help(DATABASE * data){
     char script[1000];
     int jogadas[13][5];
