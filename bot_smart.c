@@ -160,14 +160,20 @@ MAO converte_s_m (char * s) {
 	MAO r = 0;
 	int i,n,v;
 	if (s[0]=='M') {
-        data.mao[0]=0;
+        data.mao[0]=0;add_carta
 		for(i=4; i<41; i+=3){
             v= valor(s[i]);
             n= naipe(s[i+1]);
             add_carta(r,n,v);
         }
-
 	}
+    for (i=0; i<52; i++){}
+        v= i %13;
+        n= i /13;
+        if carta_existe(r,n,v)
+            rem_carta (data->mao[1],n,v);
+    }
+    return r;
 }
 
 int main() {
