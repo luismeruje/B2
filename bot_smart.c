@@ -158,9 +158,14 @@ int valor (char c) {
 
 MAO converte_s_m (char * s) {
 	MAO r = 0;
-	int i;
+	int i,n,v;
 	if (s[0]=='M') {
-		for(i=4; )
+        data.mao[0]=0;
+		for(i=4; i<41; i+=3){
+            v= valor(s[i]);
+            n= naipe(s[i+1]);
+            add_carta(r,n,v);
+        }
 
 	}
 }
