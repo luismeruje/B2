@@ -15,12 +15,14 @@ typedef long long int MAO;
 
 typedef struct database{
     MAO mao[4]; //n sei se é preciso
-    int nc;
+    int nc; //vai até 4, sendo o 4 5 cartas
     MAO jogada;
+    int passar;
+    MAO usadas[4];
 } DATABASE;
 
 typedef struct searchtree{
-    long long int estado;
+    MAO estado;
     long int t;
     float r; //reward
     int play;
@@ -230,12 +232,86 @@ long long int straightflushpos (MAO mao) {
     }
     return max;
 }
+void simula_maos(DATABASE * data){
+    int ind, jog;
+    int i,n,v;
+    int num[4] = {0};
+    MAO atribuir=0xffffffffffffffff; // cartas para serem atribuídas
+    for(jog = 0; jog<3; jog++)
+        data->mao[jog] = 0;
+    
+    for(ind = 0;ind < 52; ind ++){
+        n = ind / 13;
+        v = ind % 13;
+        for(i = 0; i < 3; i++){
+            if(carta_existe(data->usadas[i],n,v) || carta_existe(data->mao[3],n,v))
+                atribuir = rem_carta(atribuir, n, v);
+            num[i]++;
+        }
+    }
+    
+    
+    for (ind = 0; ind < 52 ; ind ++){
+        n = ind / 13;
+        v = ind % 13;
+        if(carta_existe(atribuir,n,v)){ //n esquecer srand
+            jog = rand()%3;
+            if(num[jog] > 0){
+                data->mao[jog] = add_carta(data->mao[jog],n,v);
+                num[jog]--;
+            }
+        }
+    }
+}
+int jogadas5(DATABASE * simulacao, int counter[4], int jog, MAO jogadas[40]){
+
+}
+int jogadasN(DATABASE * simulacao, int counter[4], int jog, MAO jogadas [4][40], int nc){//TODO: testar se simualcao->nc== 0 , pôr logo v = 0;
+    int n, v, i, temp_naipe[4], count = 0, a;
+    MAO estado = simulacao->mao[jog]; //depois mudar conforme o jog
+    int max = maior_carta_mao(simulacao->jogada);
+    if (max==-1) v=0;
+    else v=max%13;
+    for(; v < 13; v++){
+        i = 0;
+        for(n = 0; n < 4; n++)
+            if(carta_existe(estado,n,v)){
+                temp_naipe[i] =n;
+                i++; //meter este incremento em cima
+            }
+        if(i >= nc && (v > max % 13 || temp_naipe[i - 1] > max / 13)){//TODO: alterar, dar rand à segunda, terceira... carta
+            for(a = 0; a < 40; a++)
+                jogadas[nc][a] = 0;
+            for(a = 0, i = i -1; a < nc; i--, a++)
+                jogadas[nc][count] = add_carta(jogadas[simulacao->nc + 1][count], temp_naipe[i], v);
+            count++;
+        }
+    }
+    return count;
+}
+
+void jogadas_possiveis(DATABASE * simulacao, int counter[4], int jog, MAO jogadas[4][40]){
+    int nc;
+    if(simulacao->nc == 0){
+   	 	counter[3] = jogadas5(simulacao, counter, jog, jogadas[3]);
+        for(nc = 1; nc < 4; nc++)
+    		counter[nc - 1] = jogadasN(simulacao, counter, jog, jogadas, nc);
+    }
+    else{
+    	if(simulacao->nc == 4)
+        	counter[3] = jogadas5(simulacao, counter, jog, jogadas[3]);
+    	else
+    		counter[simulacao->nc - 1] = jogadasN(simulacao, counter, jog, jogadas, simulacao -> nc);
+    }
+}
 
 /*
 
 #####################################################################################################################################
 
  */
+
+
 MCtree createTree(MAO mao){
     int i, nc;
     MCtree tree = malloc(sizeof(searchTree));
@@ -286,6 +362,7 @@ void rewardF(MCtree temp, DATABASE * simulacao){
 }
 
 
+
 //tem uma cópia do data própria para poder manipulá-la
 //UCT : UCT_value[i] = (((tree->nextN[i])->r) / ((tree->nextN[i])->t)) + 1.4142136 * (sqrt(log(tree->t) / ((tree->nextN[i])->r))); //check poss. erros
 MCtree treePolicy(MCtree tree, DATABASE * simulacao){
@@ -317,38 +394,76 @@ MCtree treePolicy(MCtree tree, DATABASE * simulacao){
     }
 }
 
-//TODO: jogadas_possiveis, preenche o array com as jogadas e conta as jogadas para cada nc
+//TODO: simular maos dos restantes jogadores para fazer simulacao.//ADICIONAR as jogadas às usadas
 int defaultPolicy(MCtree node, DATABASE * simulacao){
-    int jogo = 0, jog[4] = {0}, flag = 0, j = 0, passar; //TODO: implementar o passar para ver se se mete o nc = 0 e testar se estamos num nodo que é para simular até ao fim ou só um passo
-    MAO jogadas[5][40] = {-1};//WARNING: o -1 pode dar problema com o operador binário, meter a 0 primeiro a jogada na jogadas_possiveis//TODO: tentar baixar o 40
-    int i, nc;
-    while(jogo == 0){
-    	if(simulacao->nc == 0){
-        	jogadas_possiveis(node->estado, simulacao, jog, j);
-        	nc = rand() % 4;
-        	i = rand() % jog[nc];
-        	while(jogadas[nc][i] <= 0){ //WARNING: e se for passar?
-           	 	nc = rand() % 4;
-            	i = rand() % jog[nc];
-            }
+    int jogo = 0, counter[4] = {0}, flag = 0, j = 0, passar; //TODO: implementar o passar para ver se se mete o nc = 0 e testar se estamos num nodo que é para simular até ao fim ou só um passo
+    MAO jogadas[4][40] = {-1};//WARNING: o -1 pode dar problema com o operador binário, meter a 0 primeiro a jogada na jogadas_possiveis//TODO: tentar baixar o 40
+    int i, nc, round = 0;
+    if((node->prev)->prev == NULL)
+        simula_maos(simulacao);
+    for(;j<4; j++)
+        if(simulacao->mao[j] == 0)
+            return 1;
+    j = 0;
+    if(node->nextN[0][0] !=NULL)
+        jogo = 1;
+    do{
+        if(j == 3)
+            round = 1; //quer dizer que completou uma ronda
+        jogadas_possiveis(simulacao, counter, j, jogadas);
+        if(simulacao->nc == 0){
+            do{ //WARNING: 0 corresponde a passar
+                nc = (rand() % 3) + 1; //WARNING: problemas com os nc's, o que é que corresponde ao quê
+                i = rand() % counter[nc];
+            }while(jogadas[nc][i] <= 0);
+            
             simulacao->mao[j] = simulacao->mao[j]  ^ jogadas[nc][i];
-            if(simulacao->mao[j] == 0)
+            if(simulacao->mao[j] == 0){
                 jogo = 1;
+                flag = 1;
+            }
             else{
                 j = (j + 1) % 4;
                 simulacao->jogada = jogadas[nc][i];
-                simulacao->nc = nc;
+                simulacao->nc = nc + 1;
+                simulacao->usadas[j] = simulacao->usadas[j] | simulacao->jogada;
             }
+            simulacao -> passar = 0;
         }
         else{
-        
+            nc = simulacao->nc - 1;
+            i = rand() % counter[nc];
+            do{
+                i = rand() % counter[nc];
+            }while(jogadas[nc][i]<0);
+            if(jogadas[nc][i] == 0){
+                simulacao->passar++;
+                if(simulacao->passar == 3){
+                    simulacao -> nc = 0;
+                    simulacao -> jogada = 0;
+                }
+            }
+            else{
+                simulacao->mao[j] = simulacao->mao[j] ^ jogadas[nc][i];
+                if(simulacao->mao[j] == 0){
+                    jogo = 1;
+                    flag = 1;
+                }
+                else{
+                    j = (j + 1) % 4;
+                    simulacao->jogada = jogadas[nc][i];
+                    simulacao->usadas[j] = simulacao->usadas[j] | simulacao->jogada;
+                }
+                simulacao->passar = 0;
+            }
         }
-    }
-        
+    }while(jogo == 0 || round == 0);
+    if (node->nextN[0][0] == NULL)//estámos num nodo que é preciso backpropagation
+        rewardF(node, simulacao);
     return flag;
 }
 
-
+//TODO: controlar, se tiver 3 passos nc passa para zero, jogadas tbm
 int main(){
     char input[100];
     int flag = 0;
@@ -358,7 +473,7 @@ int main(){
     //só é para executar isto uma vez
     MCtree tree; //para usar com o create tree
     
-    scanf("%s", &input);
+    scanf("%s", input);
     while(strcmp(input, "FIM") == 0){
         //Pôr outros casos, se der outras coisas mudar o data, senão fazer o que está abaixo, se for o que dá a mão, executar create tree
         while(flag == 0){
@@ -367,7 +482,7 @@ int main(){
         }
         flag = 0;
         simulacao = data;
-        scanf("%s", &input);
+        scanf("%s", input); //WARNING: ver se isto está correto
     }
     return 0;
 }
