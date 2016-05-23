@@ -165,14 +165,10 @@ MAO converte_s_m (char * s) {
             v= valor(s[i]);
             n= naipe(s[i+1]);
             add_carta(r,n,v);
+            rem_carta (data->mao[1],n,v);
         }
 	}
-    for (i=0; i<52; i++){}
-        v= i %13;
-        n= i /13;
-        if carta_existe(r,n,v)
-            rem_carta (data->mao[1],n,v);
-    }
+
     return r;
 }
 
