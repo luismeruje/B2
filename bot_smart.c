@@ -70,6 +70,22 @@ void separa_nap (MAO mao, int y[4]){
     }
 }
 
+int maior_carta_mao(MAO mao){
+    int ind;
+    int max=-1;
+    int n,v;
+    
+    for(ind=0;ind<52;ind++){
+        n=ind/13;
+        v=ind%13;
+        if(carta_existe(mao,n,v)){
+            if((v>max%13||(v==max%13&&n>max/13)) || max == -1)
+                max = ind;
+        }
+    }
+    return max;
+}
+
 int teste_straight(int v[13]){
     int r = 0, i = 0, count = 0, flag = 0;
     
@@ -155,6 +171,32 @@ int valor (char c) {
 	}
 	return r;
 }
+int calcontrols (MAO mao, MAO restantes){
+    int rank[13]={0};
+    int m,mn,mv,n,v;
+    int r=0;
+    m= maior_carta_mao (restantes);
+    mn= m / 13;
+    mv= m % 13;
+
+    for(i=12,n=3; (i>mv || (i==mv && n>mn));){
+        if n<0{ 
+            n=3;
+            i--;
+        }
+        if(carta_existe(mao,n,i)) r+=1;
+        n--;
+    }
+    while (carta_existe(mao,n,i)){
+        r+=1
+        if n=0{
+            n=3;
+            i--;
+        }
+        else n--;
+
+    }
+}
 
 MAO converte_s_m (char * s) {
 	MAO r = 0;
@@ -165,14 +207,10 @@ MAO converte_s_m (char * s) {
             v= valor(s[i]);
             n= naipe(s[i+1]);
             add_carta(r,n,v);
+            rem_carta (data->mao[1],n,v);
         }
 	}
-    for (i=0; i<52; i++){}
-        v= i %13;
-        n= i /13;
-        if carta_existe(r,n,v)
-            rem_carta (data->mao[1],n,v);
-    }
+
     return r;
 }
 

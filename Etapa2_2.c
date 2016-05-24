@@ -28,10 +28,10 @@ struct database{
     MAO mao[4];
     MAO selected;
     MAO jogadas[4];
-    int play;
+    int play; // 1 -> START  2 -> jogo normal 3 -> inicio do jogo. 4 -> fim do jogo
     int nc; //número de cartas da ronda
     int passar;
-    int ordenar;
+    int ordenar; //tipo de ordena: 0 -> naipe 1-> valor
     int score[4]; 
     int combination[3];
 };
@@ -89,6 +89,7 @@ int carta_existe(MAO ESTADO, int naipe, int valor) {
     return (ESTADO >> idx) & 1;
 }
 
+// Distribui cartas pelas 4 mãos
 void distribui(DATABASE * data){
     int maoCount[4]={0};
     int n,v,j;
@@ -105,6 +106,7 @@ void distribui(DATABASE * data){
     }
 }
 
+// Calcula score da mão no fim do jogo
 int calcula_score(MAO mao){
     int ind;
     int n,v;
@@ -125,6 +127,7 @@ int calcula_score(MAO mao){
     return -r;
 }
 
+// Retorna o indice da maior carta da mão
 int maior_carta_mao(MAO mao){
     int ind;
     int max=-1;
@@ -141,6 +144,7 @@ int maior_carta_mao(MAO mao){
     return max;
 }
 
+// Retorna o indice da maior carta jogada
 int maior_carta_jogada(DATABASE * data){
     int jog;
     int n,v;
@@ -157,6 +161,7 @@ int maior_carta_jogada(DATABASE * data){
     return max;
 }
 
+// Verifica quem tem o 3 de ouros e retorna o jogador que a possui para comecar a jogar
 int quem_comeca(DATABASE * data){
     int jog;
     for(jog=0;;jog++)
@@ -165,9 +170,10 @@ int quem_comeca(DATABASE * data){
     return jog;
 }
 
+// Funcao que cria um array de 13 elementos que "separa" a mao por valores com nº de ocorrencias de cada um
 void separa_val (MAO mao, int y[13]){
     int i,n,v;
-    for(i=0;i<52;i++){
+    for(i=0;i<52;i++){com nº de ocorrencias de cada um
         n = i/13;
         v = i%13;
         if(carta_existe(mao,n,v)){
@@ -176,6 +182,7 @@ void separa_val (MAO mao, int y[13]){
     }
 }
 
+// Funcao que cria um array de 13 elementos que "separa" a mao por naipe com nº de ocorrencias de cada um
 void separa_nap (MAO mao, int y[4]){
     int i,n,v;
     for(i=0;i<52;i++){
@@ -187,12 +194,13 @@ void separa_nap (MAO mao, int y[4]){
     }
 }
 
+// Testa se a combinacão é um Straight
 int teste_straight(int v[13]){
     int r = 0, i = 0, count = 0, flag = 0;
     
     for(i = 0; v[i] != 0; i++);
-    for(;v[i] == 0; i = (i + 1) % 13);
-    for(;v[i] != 0; i = (i + 1) % 13){
+    for(;v[i] == 0; i = (i + 1) % 13); // mete no inicio da sequencia
+    for(;v[i] != 0; i = (i + 1) % 13){ // testa até ao fim da sequencia
         count++;
     	if(i == 11 && count != 1 && count != 5) //testa se o Ás não é o último nem o primeiro da sequencia
             flag = 1;
@@ -202,6 +210,7 @@ int teste_straight(int v[13]){
     return r;
 }
 
+// Testa se a combinacão é um Flush
 int teste_flush(int naipe[4]) {
     int r = 0, n;
     for (n=0; n<4; n++) {
@@ -213,6 +222,7 @@ int teste_flush(int naipe[4]) {
     return r;
 }
 
+// Testa se a combinacão é um Full House
 int teste_fullhouse(int rank[13]) {
     int r = 1, v;
     for (v=0; v<13; v++) {
@@ -221,6 +231,7 @@ int teste_fullhouse(int rank[13]) {
     return r;
 }
 
+// Testa se a combinacão é um Four of a Kind
 int teste_fourofakind(int rank[13]) {
     int r = 0, v;
     for (v=0; v<13; v++) {
@@ -229,6 +240,7 @@ int teste_fourofakind(int rank[13]) {
     return r;
 }
 
+// Dá o tipo da combinacão de 5 cartas
 //r: 1 => straight; 2 => flush; 3 => fullhouse; 4 => fourofakind; 5 => straightflush
 int tipo_comb_five(MAO mao) {
     int r = 0;
@@ -248,7 +260,8 @@ int tipo_comb_five(MAO mao) {
     return r;
 } 
 
-//Soma-se um aos v's de cada carta, assim se o ás for última carta tem o maior v. Tbm conta com se o ás for a primeira carta
+// Atualiza o array data->combination caso seja jogado um straight
+// Soma-se um aos v's de cada carta, assim se o ás for última carta tem o maior v. Tbm conta com se o ás for a primeira carta
 void atualizastraight(MAO mao, int y[3]) {
     int ind = 0, i;
     int v[13] = {0};
@@ -271,6 +284,7 @@ void atualizastraight(MAO mao, int y[3]) {
     }
 }
 
+// Atualiza o data->combination após uma jogada de 5 cartas
 void preenchejogada (MAO mao, int y[3]){
   int m, i,ind;
   int rank[13] = {0};
@@ -294,6 +308,7 @@ void preenchejogada (MAO mao, int y[3]){
   }
 }
 
+// Compara a jogada de 5 cartas com a ultima. Retorna 1 se a combinacão for maior
 int cmpplay (MAO mao, int y[3]){
   int r=0;
   int t[3];
@@ -316,6 +331,7 @@ int cmpplay (MAO mao, int y[3]){
   return r;
 }
 
+// Dá o maior Straight possível da mão
 long long int straightpos (MAO mao) {
     int c=0, n, v;
   	MAO max = 0;
@@ -344,6 +360,7 @@ long long int straightpos (MAO mao) {
   	return max;
 }
 
+// Dá o maior Flush possível da mão
 long long int flushpos (MAO mao) {
   MAO max = 0;
   int i;
@@ -366,6 +383,7 @@ long long int flushpos (MAO mao) {
   return max;
 }
 
+// Dá o maior Full House possível da mão
 long long int fullhousepos (MAO mao) {
   MAO max = 0;
   int rank[13] = {0};
@@ -401,7 +419,7 @@ long long int fullhousepos (MAO mao) {
   }
   return max;
 }
-
+// Dá o maior Four of a Kind possivel da mão
 long long int fourofakindpos (MAO mao) {
   MAO max = 0;
   int i;
@@ -428,6 +446,7 @@ long long int fourofakindpos (MAO mao) {
   return max;
 }
 
+// Dá o maior Straight Flush possivel da mão
 long long int straightflushpos (MAO mao) {
   MAO max = 0, temp = 0;
   int n=3;
@@ -451,6 +470,7 @@ long long int straightflushpos (MAO mao) {
   return max;
 }
 
+// Responsável pela jogadas do bot de combinacoes de 5 cartas
 int joga5 (DATABASE * data, int m) {
     int r = 1;
     if (cmpplay(straightflushpos(data->mao[m]),data->combination)) data->jogadas[m] = straightflushpos(data->mao[m]);
@@ -465,6 +485,7 @@ int joga5 (DATABASE * data, int m) {
     return r;
 }
 
+// Responsável pela primeira jogada dos bots
 void primeira_jogada(DATABASE * data, int m){
     long long int temp = data->mao[m];
     int ind;
@@ -589,7 +610,7 @@ int check_basico(DATABASE * data, int cartas[]){
     return r;
 }
 
-
+// Determina se uma jogada é valida 
 int check_jogada(DATABASE *data, int jog){
     int ind, r = 0, count = 0;
     int n, v;
@@ -623,7 +644,7 @@ int check_jogada(DATABASE *data, int jog){
     return r;
 }
 
-// Determina jogadas com entre 1 a 3 cartas
+// Determina jogadas de 1 a 3 cartas
 int jogadas_possiveis(DATABASE *data, int jog, int jogadas[][5]){
     int n, v, i, temp_naipe[4], count = 0, a;
     int max = maior_carta_jogada(data);
@@ -771,7 +792,7 @@ void imprime_maos (DATABASE data){
     
 }
 
-
+// ordenar == 0 -> naipe , ordenar == 1 -> valor
 void botao_ordenar (DATABASE data){
     char script [1000];
     if (data.ordenar==0) {
@@ -858,6 +879,7 @@ void botao_passar (DATABASE data){
     else printf("<image x = \"775\" y = \"550\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_pass_cinza.svg\" />\n", BARALHO);
 }
 
+// Funcao que nos diz se podemos jogar e em caso positivo imprime o botão play verde, senão é imprimido o botão play cinza
 void botao_play (DATABASE data){
     int n,v;
     int ind;
@@ -920,7 +942,7 @@ void botao_novojogo() {
     printf("<a xlink:href = \"cartas\"><image x = \"630\" y = \"500\" height = \"60\" width = \"170\" xlink:href = \"%s/botao_novo_jogo.svg\" /></a>\n", BARALHO);
 }
 
-
+// Imprime Fim do Jogo Com Scores
 void imprime_fim (DATABASE *data){
     printf("<svg height = \"680\" width = \"1200\">\n");
     printf("<image x = \"-155\" y = \"0\" height = \"900\" width = \"1500\" xlink:href = \"%s/floor.svg\" />\n", BARALHO);
@@ -1001,6 +1023,7 @@ void imprime (DATABASE data){
  												#################################--FUNCOES_DOS_BOTS--####################################
  */
 
+// Funcão responsavel pelas jogadas dos bots
 void bot_continua(DATABASE *data,int m){
     int draw, total, i, n, v;
     int jogadas[15][5]; //Primeiro elemento do array => número da jogada_possível; o 15 em vez de 13 é só por segurança. Segundo elemento do array => carta da jogada_possível. Exemplo: jogadas[0][0] e jogadas[0][1] dão o par da jogada possível nr. 1.
@@ -1044,7 +1067,7 @@ void bot_continua(DATABASE *data,int m){
         data->play = 4;
 }
 
-
+// Responsavel pelo inicio da ronda dos bots
 void bot_comeca(DATABASE *data,int m){
     int total = 0, i; //total => número total de jogadas possíveis
     int jogadas[15][5];
@@ -1114,7 +1137,7 @@ void joga_bots(DATABASE *data,int m){
         bot_comeca(data,m);
 }
 
-
+// Responsavel pela continuacao do jogo
 void jogo(DATABASE *data){
     int jog;
     if(data->play != 3)
