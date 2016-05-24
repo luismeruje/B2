@@ -28,6 +28,7 @@ typedef struct searchtree{
     int play;
     struct searchtree * nextN[4][40]; //TODO: tentar diminuir o 40
     struct searchtree * prev;
+    int selected;
 } searchTree;
 
 typedef searchTree* MCtree;
@@ -72,165 +73,376 @@ int carta_existe(MAO ESTADO, int naipe, int valor) {
     return (ESTADO >> idx) & 1;
 }
 
-
-
-
-
-int cmpplay (MAO mao, int y[3]){
-    int r=0;
-    int t[3];
-    if(mao != 0){
-        preenchejogada (mao,t);
-        if (t[0] > y[0])
-            r=1;
-        else
-            if (t[0] == y[0]){
-                if ((t[0]==1) && ((t[1] > y[1]) || (t[1] == y[1] && t[2] >= y[2])))
-                    r = 1;
-                if ((t[0] == 2) && ((t[2] > y[2]) || (t[2] == y[2] && t[1] >= y[1])))
-                    r = 1;
-                if ((t[0] == 3 || t[0] == 4) && (t[1] >= y[1]))
-                    r = 1;
-                if ((t[0] == 5) && (t[1] > y[1] || (t[1]==y[1] && t[2] >= y[2])))
-                    r = 1;
-            }
+int maior_carta_mao(MAO mao){
+    int ind;
+    int max=-1;
+    int n,v;
+    
+    for(ind=0;ind<52;ind++){
+        n=ind/13;
+        v=ind%13;
+        if(carta_existe(mao,n,v)){
+            if((v>max%13||(v==max%13&&n>max/13)) || max == -1)
+                max = ind;
+        }
     }
-    return r;
+    return max;
 }
 
-long long int straightpos (MAO mao) {
-    int c=0, n, v;
-    MAO max = 0;
+void separa_val (MAO mao, int y[13]){
+    int i,n,v;
+    for(i=0;i<52;i++){
+        n = i/13;
+        v = i%13;
+        if(carta_existe(mao,n,v)){
+            y[v]++;
+        }
+    }
+}
+
+void separa_nap (MAO mao, int y[4]){
+    int i,n,v;
+    for(i=0;i<52;i++){
+        n = i/13;
+        v = i%13;
+        if(carta_existe(mao,n,v)){
+            y[n]++;
+        }
+    }
+}
+
+void atualizastraight(int v[13], MAO mao, int y[2]) {
+    int ind = 0, i;
+    if (v[11] != 0 && v[12] != 0){ //temos um ás e é o primeiro da sequência, pq existe um 2
+        y[0] = 3; //5 de alguma coisa é obrigatoriamente a carta mais alta
+        for(i = 0; i < 4; i++)
+            if(carta_existe(mao, i, 2)){ //Determina o naipe do 5
+                y[1] = i;
+                break;
+            }
+    }
+    else {
+        for(i = 0; i < 4; i++)
+            if(carta_existe(mao,i, 12))
+                mao = rem_carta(mao, i, 12); //remove os 2's
+        ind = maior_carta_mao(mao);
+        y[0] = (ind % 13) + 1;
+        y[1] = ind / 13;
+    }
+}
+
+//warning:pode calhar de dar um straighflush, e n dá todos os straights  possiveis se houver cartas com mm valor e naipe diferente.
+//Objetivo: usar atualiza straight para determinar onde começa,a partir daí, ir andando à volta até arranjar 5 seguidos, gravar inicial dessa sequ~encia e recomeçar do a seguir a esse.
+int straightpos (DATABASE * simulacao, int jog, int sametype, MAO jogadas[40], int count) {
+    int c=0, n, v = 11, vn[2], i= 0,count2, maxi; //vn->valor e naipe
+    int straights[15]={-1};
     int rank[13] = {0};
+    int tempN[15] = {-1};
+    separa_val(simulacao->mao[jog], rank);
+    if(sametype != 0){
+        atualizastraight(rank, simulacao->jogada, vn);
+        v = vn[0];
+    }//WARNING:ao identificar um straight, enquanto que ouverem mais ranks != 0 a segur temos mais straights, podemos aproveitar isso
+    for(; v != 7; v = (v + 1) % 13){
+        if(rank[v] > 0)
+            c++;
+    	else
+            c = 0;
+        if(c == 5){
+            if(sametype != 0){
+                if(v > vn[0]){
+                    straights[i] = v - 4;
+                    v = v - 4;//WARNING : o for loop soma um, deve estar certo assim
+                    i++;
+                    c = 0;
+                }
+                else{
+                    for(n = 3; n >= 0; n--)
+                        if(carta_existe(simulacao->mao[jog],n,v))
+                            break;
+                    if(n > vn[1]){
+                        tempN[i] = n;
+                        straights[i] = v - 4;
+                        v = v - 4;
+                        i++;
+                        c = 0;
+                    }
+                    else{
+                        c = 0;
+                    }
+                }
+        	}
+            else{
+                straights[i] = v - 4;
+                v = v - 4;//WARNING : o for loop soma um, deve estar certo assim
+                i++;
+                c = 0;
+            }
+        }
+    }
+    if(i > 0)
+        for(count2 = 0; count2 < i ; count2++){
+            jogadas[count] = 0;
+            for(v = straights[count2], maxi = straights[count2] + 4 ; v <= maxi; v++){
+                if (v != maxi){
+                    for(n = 0; n<4;n++)
+                        if(carta_existe(simulacao->mao[jog],n,v)){
+                            jogadas[count] = add_carta(jogadas[count],n,v);
+                            n = 4;
+                        }
+                }
+                else{
+                    if(sametype != 0){
+                      	jogadas[count] = add_carta(jogadas[count], tempN[count2],v);
+                    	count++;
+                    }
+                    else{
+                        for(n = 0; n<4;n++)
+                            if(carta_existe(simulacao->mao[jog],n,v)){
+                                jogadas[count] = add_carta(jogadas[count],n,v);
+                                n = 4;
+                                count++;
+                            }
+                    }
+                }
+            }
+        }
+    return count;
+}
+
+//Objetivo: usar atualiza straight para determinar onde começa,a partir daí, ir andando à volta até arranjar 5 seguidos, gravar inicial dessa sequ~encia e recomeçar do a seguir a esse.
+int straightpos2 (MAO mao, DATABASE * simulacao, int jog, int sametype, MAO jogadas[40], int count) {
+    int c=0, n, v = 11, vn[2], i= 0,count2, maxi; //vn->valor e naipe
+    int straights[15]={-1};
+    int rank[13] = {0};
+    int tempN[15] = {-1};
     separa_val(mao, rank);
-    for(v = 11 ; v >= 0 ; v--){
-        if(rank[v] != 0)
+    if(sametype != 0){
+        atualizastraight(rank, simulacao->jogada, vn);
+        v = vn[0];
+    }//WARNING:ao identificar um straight, enquanto que ouverem mais ranks != 0 a segur temos mais straights, podemos aproveitar isso
+    for(; v != 7; v = (v + 1) % 13){
+        if(rank[v] > 0)
             c++;
         else
             c = 0;
-        if (c == 5)
-            break;
-    }
-    if(c == 5 || (c == 4 && rank[12] != 0) || (c == 3 && rank[12] != 0 && rank[11] != 0)) {
-        if((c == 4 && rank[12] != 0))
-            v = 12;
-        if (c == 3 && rank[12] != 0 && rank[11] != 0)
-            v = 11;
-        for(c = 0; c < 5; c++, v = (v + 1) % 13)
-            for(n = 0; n < 4; n++)
-                if(carta_existe(mao, n, v)){
-                    max = add_carta(max, n, v);
-                    n = 4;
+        if(c == 5){
+            if(sametype != 0){
+                if(v > vn[0]){
+                    straights[i] = v - 4;
+                    v = v - 4;//WARNING : o for loop soma um, deve estar certo assim
+                    i++;
+                    c = 0;
                 }
+                else{
+                    for(n = 3; n >= 0; n--)
+                        if(carta_existe(simulacao->mao[jog],n,v))
+                            break;
+                    if(n > vn[1]){
+                        tempN[i] = n;
+                        straights[i] = v - 4;
+                        v = v - 4;
+                        i++;
+                        c = 0;
+                    }
+                    else{
+                        c = 0;
+                    }
+                }
+            }
+            else{
+                straights[i] = v - 4;
+                v = v - 4;//WARNING : o for loop soma um, deve estar certo assim
+                i++;
+                c = 0;
+            }
+        }
     }
-    return max;
+    if(i > 0)
+        for(count2 = 0; count2 < i ; count2++){
+            jogadas[count] = 0;
+            for(v = straights[count2], maxi = straights[count2] + 4 ; v <= maxi; v++){
+                if (v != maxi){
+                    for(n = 0; n<4;n++)
+                        if(carta_existe(simulacao->mao[jog],n,v)){
+                            jogadas[count] = add_carta(jogadas[count],n,v);
+                            n = 4;
+                        }
+                }
+                else{
+                    if(sametype != 0){
+                        jogadas[count] = add_carta(jogadas[count], tempN[count2],v);
+                        count++;
+                    }
+                    else{
+                        for(n = 0; n<4;n++)
+                            if(carta_existe(simulacao->mao[jog],n,v)){
+                                jogadas[count] = add_carta(jogadas[count],n,v);
+                                n = 4;
+                                count++;
+                            }
+                    }
+                }
+            }
+        }
+    return count;
 }
 
-long long int flushpos (MAO mao) {
-    MAO max = 0;
-    int i;
+
+//TODO: se tiver 5, é adicionar todas, senão tem que se ver
+long long int flushpos (DATABASE * simulacao, int jog, int sametype, MAO jogadas[40], int count) {
+    int i = 0;
     int naipe[4] = {0};
-    separa_nap(mao, naipe);
-    for (i=3; i>=0; i--) {
-        if(naipe[i]>4) break;
-    }
-    if(i != -1) {
-        int v = 12;
-        int c = 0;
-        while(c<5) {
-            if(carta_existe(mao, i, v)) {
-                max = add_carta(max, i, v);
-                c+=1;
+    int max = 0;
+    int c = 0;
+    int n, v;
+    MAO temp = simulacao->mao[jog];
+    separa_nap(temp, naipe);
+    if(sametype != 0){
+        max= maior_carta_mao(simulacao->jogada);
+        i = max / 13;
+        if(naipe[i]>4){
+            for(v = 12; v >= 0; v--)
+                if (carta_existe(temp,i,v)){
+                    if(v > max % 13){
+                        jogadas[count] = add_carta(0,i,v);
+                        c = 1;
+                        for(v--; v >= 0; v--)
+                            if(carta_existe(temp,i,v)){
+                                jogadas[count] = add_carta(jogadas[count],i,v);
+                                c++;
+                                if(c == 5){
+                                    c = 0;
+                                    i++;
+                                    count++;
+                                    break;
+                                }
+                            }
+                    }
+                	else
+                        i++;
+                }
+        }
+        else{
+            i++;
+        }
+        for(; i< 4; i++){
+            if(naipe[i] > 4){
+                jogadas[count] = 0;
+                for(v = 0; v < 13; v++){ //vê se existe, se tirar e ainda existirem 5 cartas ver
+                    if (carta_existe(temp,i,v)){
+                        jogadas[count] = add_jogadas(jogadas[count],i,v);
+                        c++;
+                        if(c==5){
+                            count++;
+                            c = 0;
+                            break;
+                        }
+                    }
+                }
             }
-            v--;
         }
     }
-    return max;
+    return count;
 }
 
-long long int fullhousepos (MAO mao) {
-    MAO max = 0;
+//TODO: é sempre mais vantajoso ter o par mais pequeno possível com o triplo, exeto se pertencer a outro triplo
+int fullhousepos (DATABASE * simulacao, int jog, int sametype, MAO jogadas[40], int count) {
     int rank[13] = {0};
-    int i, p=0;
-    
+    int rank2[13] = {0};
+    int i = 0, v, n;
+    int c = 0;
+    MAO mao = simulacao->mao[jog], temp = 0;
     separa_val(mao, rank);
-    for (i=12; i>=0; i--)
-        if (rank[i]>=3) break;
-    if(i==0) p=1;
-    for (; p<13; p++) {
-        if (rank[p]>=2) break;
-        if ((p+1)==i) p = p+1;
-    }
-    if(i!=-1 && p!=13) {
-        int n=0, c=0;
-        while(c<3) {
-            if(carta_existe(mao, n, i)) {
-                max = add_carta(max, n, i);
-                n++;
-                c++;
-            }
-            else n++;
-        }
-        n=0;
-        c=0;
-        while(c<2) {
-            if(carta_existe(mao, n, p)) {
-                max = add_carta(max, n ,p);
-                c++;
-            }
-            n++;
-        }
-    }
-    return max;
-}
-
-long long int fourofakindpos (MAO mao) {
-    MAO max = 0;
-    int i;
-    int rank[13] = {0};
-    separa_val(mao, rank);
-    for(i=12; i>=0; i--)
-        if(rank[i]==4) break;
-    if(i!=-1) {
-        int c=0, n=0, p;
-        while(n<4) {
-            max = add_carta(max, n, i);
-            n++;
-        }
-        for(n=0; n<52; n++) {
-            c = n/13;
-            p = n%13;
-            if(carta_existe(mao, c, p) && p!=i) {
-                max = add_carta(max, c, p);
+    if(sametype != 0){
+        separa_val(simulacao->jogada, rank2);
+        for(i = 0; i < 13; i++)
+            if(rank2[i] == 3){
+                ++i;
                 break;
             }
-        }
-        if(n==52) max = 0;
     }
-    return max;
+    for(; i < 13; i++)
+        if(rank[i] > 2){
+            for(n = 0; n < 4; n++)
+                if(carta_existe(mao, n, i)){
+                    add_carta(temp,n,i);
+            		c++;
+                    if(c == 3){
+                        c = 0;
+                        n = 4;
+                    }
+                }
+            for(v = 0; v < 13; v++)
+                if(rank[v] > 1 && v != i){
+                    jogadas[count] = 0;
+                    for(n = 0; n<4; n++)
+                        if(carta_existe(mao,n,v)){
+                            add_carta(jogadas[count],n,v);
+                            c++;
+                            if(c == 2){
+                                c = 0;
+                                count++;
+                                n = 4;
+                            }
+                        }
+                }
+        }
+    return count;
 }
 
-long long int straightflushpos (MAO mao) {
-    MAO max = 0, temp = 0;
+//WARNiNG: cria muitas combinações para si, pode favorecer esta jogada
+int fourofakindpos (DATABASE * simulacao, int jog, int sametype,MAO jogadas[40], int count) { //sametype: 1-> a última jogada foi um four of a kind 0: foi uma jogada de rank inferior
+    MAO temp = 0;
+    int n,v, ind;
+    int i = 0;
+    int rank[13] = {0};
+    separa_val(simulacao->mao[jog], rank);
+    if(sametype != 0){
+        i = (maior_carta_mao(simulacao->jogada) % 13) + 1;
+    }
+    for(; i < 13; i++)
+        if(rank[i] == 4){
+            jogadas[count] = 0;
+            temp = add_carta(temp,0,i);
+            temp = add_carta(temp,1,i);
+            temp = add_carta(temp,2,i);
+            temp = add_carta(temp,3,i);
+            for(ind = 0; ind < 52;ind++){
+                n = ind / 13;
+                v = ind % 13;
+                if(carta_existe(simulacao->mao[jog],n,v) && v != i){
+                    jogadas[count] = add_carta(temp,n,v);
+                    count++;
+                }
+            }
+        }
+    return count;
+}
+
+
+long long int straightflushpos (DATABASE * simulacao, int jog, int sametype,MAO jogadas[40], int count) {
+    MAO temp = 0;
     int n=3;
+    int c = 0;
     int naipe[4] = {0};
-    separa_nap(mao, naipe);
+    separa_nap(simulacao->mao[jog], naipe);
     while(n>=0) {
         if(naipe[n]>4) {
             int v;
             for(v=12; v>=0; v--) {
-                if(carta_existe(mao, n, v)) temp = add_carta(temp, n, v);
+                if(carta_existe(simulacao->mao[jog], n, v)) temp = add_carta(temp, n, v);
             }
-            temp = straightpos(temp);
+             c = straightpos2(temp,simulacao,jog,sametype,jogadas,0);
             if(temp==0) n--;
             else {
-                max = temp;
+                count += c;
                 n = -1;
             }
         }
         else n--;
     }
-    return max;
+    return count;
 }
 void simula_maos(DATABASE * data){
     int ind, jog;
@@ -263,8 +475,49 @@ void simula_maos(DATABASE * data){
         }
     }
 }
-int jogadas5(DATABASE * simulacao, int counter[4], int jog, MAO jogadas[40]){
 
+
+int jogadas5(DATABASE * simulacao, int jog, MAO jogadas[40]){
+    int r = 0;
+    int count = 0;
+    int sametype = 0;
+    if(simulacao->jogada != 0)
+        r = tipo_comb_five(simulacao->jogada);
+    if(r <= 1){
+        if(r==1)
+    		count = straightpos(simulacao,jog,1, jogadas, count);
+    	else
+            count = straightpos(simulacao,jog,0, jogadas, count);
+    }
+    
+    if(r<=2){
+        if(r==2)
+            count = flushpos(simulacao,jog,1, jogadas, count);
+        else
+            count = flushpos(simulacao,jog,0, jogadas, count);
+    }
+    if(r<=3){
+        if(r==3)
+            count = fullhousepos(simulacao,jog,1, jogadas, count);
+        else
+            count = fullhousepos(simulacao,jog,0, jogadas, count);
+    }
+    if(r<=4){
+        if(r==4)
+            count = fourofakindpos(simulacao,jog,1, jogadas, count);
+        else
+            count = fourofakindpos(simulacao,jog,0, jogadas, count);
+    }
+    if(r<=5){
+        if(r==5)
+            count = straightflushpos(simulacao,jog,1, jogadas, count);
+        else
+            count = straightflushpos(simulacao,jog,0, jogadas, count);
+    }
+
+    jogadas[count] = 0; //passar;
+    count++;
+    return count;
 }
 int jogadasN(DATABASE * simulacao, int counter[4], int jog, MAO jogadas [4][40], int nc){//TODO: testar se simualcao->nc== 0 , pôr logo v = 0;
     int n, v, i, temp_naipe[4], count = 0, a;
@@ -293,13 +546,13 @@ int jogadasN(DATABASE * simulacao, int counter[4], int jog, MAO jogadas [4][40],
 void jogadas_possiveis(DATABASE * simulacao, int counter[4], int jog, MAO jogadas[4][40]){
     int nc;
     if(simulacao->nc == 0){
-   	 	counter[3] = jogadas5(simulacao, counter, jog, jogadas[3]);
+   	 	counter[3] = jogadas5(simulacao, jog, jogadas[3]);
         for(nc = 1; nc < 4; nc++)
     		counter[nc - 1] = jogadasN(simulacao, counter, jog, jogadas, nc);
     }
     else{
     	if(simulacao->nc == 4)
-        	counter[3] = jogadas5(simulacao, counter, jog, jogadas[3]);
+        	counter[3] = jogadas5(simulacao, jog, jogadas[3]);
     	else
     		counter[simulacao->nc - 1] = jogadasN(simulacao, counter, jog, jogadas, simulacao -> nc);
     }
@@ -362,28 +615,58 @@ void rewardF(MCtree temp, DATABASE * simulacao){
 }
 
 
-
+//TODO: tem que alterar o parâmetro jogada e o passar se necessário, quando passa ao nodo seguinte, para funcionar certo com o default poplicy, temos que ver quais os caminhos que podem ser tomados com a simulaçao corrente, ai ai ai.
+//TODO: n está a ter em conta se chegámos a um nodo final
 //tem uma cópia do data própria para poder manipulá-la
 //UCT : UCT_value[i] = (((tree->nextN[i])->r) / ((tree->nextN[i])->t)) + 1.4142136 * (sqrt(log(tree->t) / ((tree->nextN[i])->r))); //check poss. erros
+//DATABASE * simulacao, int counter[4], int jog, MAO jogadas[4][40]
 MCtree treePolicy(MCtree tree, DATABASE * simulacao){
-    int i, jog[4] = {0}, UCT_value[100] = {0};//posso meter else em baixo, que mete a zero o que n for play = 1
+    int i, jog[4] = {0}, UCT_value[100] = {0},counter[4] = {0};//posso meter else em baixo, que mete a zero o que n for play = 1
     int max = 0, nc;
+    int i2=0;
+    MAO jogadas[4][40]; //WARNING: ver se isto está a ser posto a zeros como deve ser quando é necessário
+    MAO temp = 0;
     if(tree->nextN[0] == NULL){
         add_jogadas(tree->estado, jog); //adiciona jogadas ao array nextN e devolve o número de jogadas para cada nc.
+        jogadas_possiveis(simulacao, counter, 0, jogadas);//TODO:n deixar passar aqui
         if(simulacao -> nc == 0){
+            for(nc = 0;nc<3;nc++)
+                for(i2 = 0, i = 0; i2 < counter[i] && i < 40 ;i++){
+                    temp = simulacao->mao[0] ^ jogadas[nc][i2];
+                    if(temp == ((tree->nextN[nc][i])->estado) && jogadas[nc][i2] > 0){
+                        (tree->nextN[nc][i])->selected = 1;
+                        i2++;
+                    }
+                }
+        	//do while aqui
         	nc = rand() % 4;
             i = rand() % jog[nc];
-            while(tree->nextN[nc][i]==NULL){
+            while((tree->nextN[nc][i]==NULL)|| ((tree->nextN[nc][i]) -> selected == 0)){
             	nc = rand() % 4;
                 i = rand() % jog[nc];
             }
+            simulacao->nc = nc + 1;
             return tree->nextN[nc][i];
         }
-        i = rand() % jog[simulacao->nc];
+        //TODO: falta o temp
+        for(i2 = 0,i = 0; i2 < counter[(simulacao->nc)-1] && i < 40 ;i++)
+            if(temp == ((tree->nextN[simulacao->nc - 1][i])->estado)){
+                (tree->nextN[(simulacao->nc)-1][i])->selected = 1;
+                i2++;
+            }
+        do{
+        	i = rand() % jog[simulacao->nc]; // Assim não funciona, precisa de marcar as que pode jogar com a simulacao atual
+        }while((tree->nextN[simulacao->nc][i])->selected == 0);
         return tree -> nextN[simulacao -> nc][i];
     }
     else{
-        for(i = 0; tree->nextN[simulacao -> nc][i]!= NULL && i < 100; i++){
+    //TODO: falta o temp
+        for(i2 = 0,i = 0; i2 < counter[(simulacao->nc)-1] && i < 40 ;i++)
+            if(temp == ((tree->nextN[simulacao->nc - 1][i])->estado)){
+                (tree->nextN[(simulacao->nc)-1][i])->selected = 1;
+                i2++;
+            }
+        for(i = 0; tree->nextN[simulacao -> nc][i]!= NULL && i < 40; i++){
             if((tree->nextN[simulacao -> nc][i]) -> t == 0) //TODO: se mais do que um for zero, fazer rand, para este n deve ser preciso mas para se o UCT for igaul em baixo é melhor fazer
                 return tree->nextN[simulacao -> nc][i];
             UCT_value[i] = (((tree->nextN[nc][i])->r) / ((tree->nextN[nc][i])->t)) + 1.4142136 * (sqrt(log(tree->t) / ((tree->nextN[nc][i])->r)));
@@ -394,11 +677,13 @@ MCtree treePolicy(MCtree tree, DATABASE * simulacao){
     }
 }
 
-//TODO: simular maos dos restantes jogadores para fazer simulacao.//ADICIONAR as jogadas às usadas
+
+//TODO: fazer outro Bot, mais inteligente, para usar aqui em vez disto tudo eeee ver das que já existem quais são compatíveis em vex de calcular possiveis againk
 int defaultPolicy(MCtree node, DATABASE * simulacao){
-    int jogo = 0, counter[4] = {0}, flag = 0, j = 0, passar; //TODO: implementar o passar para ver se se mete o nc = 0 e testar se estamos num nodo que é para simular até ao fim ou só um passo
-    MAO jogadas[4][40] = {-1};//WARNING: o -1 pode dar problema com o operador binário, meter a 0 primeiro a jogada na jogadas_possiveis//TODO: tentar baixar o 40
+    int jogo = 0, counter[4] = {0}, flag = 0, j = 0; //TODO: implementar o passar para ver se se mete o nc = 0 e testar se estamos num nodo que é para simular até ao fim ou só um passo
+    MAO jogadas[4][40];//WARNING: o -1 pode dar problema com o operador binário, meter a 0 primeiro a jogada na jogadas_possiveis//TODO: tentar baixar o 40
     int i, nc, round = 0;
+    memset(jogadas,0,sizeof jogadas); //Ver se podemos usat C99, n funciona com C89.
     if((node->prev)->prev == NULL)
         simula_maos(simulacao);
     for(;j<4; j++)
@@ -463,12 +748,13 @@ int defaultPolicy(MCtree node, DATABASE * simulacao){
     return flag;
 }
 
+//NOTA: para acabar stdin, ctrl + D
 //TODO: controlar, se tiver 3 passos nc passa para zero, jogadas tbm
 int main(){
     char input[100];
     int flag = 0;
     MCtree temp;
-    DATABASE data; //data precisa de ser controlado a partir do input
+    DATABASE data; //data precisa de ser controlado a partir do input, por a zeros os 1's dos nodos em selected
     DATABASE simulacao = data;
     //só é para executar isto uma vez
     MCtree tree; //para usar com o create tree
