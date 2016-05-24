@@ -70,6 +70,22 @@ void separa_nap (MAO mao, int y[4]){
     }
 }
 
+int maior_carta_mao(MAO mao){
+    int ind;
+    int max=-1;
+    int n,v;
+    
+    for(ind=0;ind<52;ind++){
+        n=ind/13;
+        v=ind%13;
+        if(carta_existe(mao,n,v)){
+            if((v>max%13||(v==max%13&&n>max/13)) || max == -1)
+                max = ind;
+        }
+    }
+    return max;
+}
+
 int teste_straight(int v[13]){
     int r = 0, i = 0, count = 0, flag = 0;
     
@@ -154,6 +170,22 @@ int valor (char c) {
 			case 65: r = 12;
 	}
 	return r;
+}
+int calculacontrolsdt (MAO mao, MAO restantes){
+    int rank[13]={0};
+    int m;
+    int r=0;
+    m= maior_carta_mao (restantes);
+    mn= m / 13;
+    mv= m % 13;
+    i= maior_carta_mao (mao);
+    in= i / 13;
+    iv= i % 13;
+
+    separa_val(mao, rank);
+    if (iv > mv || (iv== mv && in > mn ) r+= 1;
+    if (rank[mv]>1) r += (mv-1);
+
 }
 
 MAO converte_s_m (char * s) {
