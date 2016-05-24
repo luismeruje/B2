@@ -614,6 +614,12 @@ void rewardF(MCtree temp, DATABASE * simulacao){
     }
 }
 
+//TODO: precisa de uma simulacao
+//TODO: n esquecer que no início tem que se começar com 3 de ouros
+void add_jogadas(MAO mao, int jog[4]){
+	
+}
+
 
 //TODO: tem que alterar o parâmetro jogada e o passar se necessário, quando passa ao nodo seguinte, para funcionar certo com o default poplicy, temos que ver quais os caminhos que podem ser tomados com a simulaçao corrente, ai ai ai.
 //TODO: n está a ter em conta se chegámos a um nodo final
@@ -621,7 +627,7 @@ void rewardF(MCtree temp, DATABASE * simulacao){
 //UCT : UCT_value[i] = (((tree->nextN[i])->r) / ((tree->nextN[i])->t)) + 1.4142136 * (sqrt(log(tree->t) / ((tree->nextN[i])->r))); //check poss. erros
 //DATABASE * simulacao, int counter[4], int jog, MAO jogadas[4][40]
 MCtree treePolicy(MCtree tree, DATABASE * simulacao){
-    int i, jog[4] = {0}, UCT_value[100] = {0},counter[4] = {0};//posso meter else em baixo, que mete a zero o que n for play = 1
+    int i, jog[4] = {0}, UCT_value[100] = {0},counter[4] = {0};//WARNING:ver se o jog é usado em algum ado
     int max = 0, nc;
     int i2=0;
     MAO jogadas[4][40]; //WARNING: ver se isto está a ser posto a zeros como deve ser quando é necessário
@@ -648,7 +654,13 @@ MCtree treePolicy(MCtree tree, DATABASE * simulacao){
             simulacao->nc = nc + 1;
             return tree->nextN[nc][i];
         }
-        //TODO: falta o temp
+        for(i2 = 0, i = 0; i2 < counter[simulacao->nc-1] && i < 40 ;i++){
+            temp = simulacao->mao[0] ^ jogadas[nc][i2];
+            if(temp == ((tree->nextN[nc][i])->estado) && jogadas[nc][i2] >= 0){
+                (tree->nextN[nc][i])->selected = 1;
+                i2++;
+            }
+        }
         for(i2 = 0,i = 0; i2 < counter[(simulacao->nc)-1] && i < 40 ;i++)
             if(temp == ((tree->nextN[simulacao->nc - 1][i])->estado)){
                 (tree->nextN[(simulacao->nc)-1][i])->selected = 1;
@@ -660,7 +672,14 @@ MCtree treePolicy(MCtree tree, DATABASE * simulacao){
         return tree -> nextN[simulacao -> nc][i];
     }
     else{
-    //TODO: falta o temp
+        for(i2 = 0, i = 0; i2 < counter[simulacao->nc-1] && i < 40 ;i++){
+            temp = simulacao->mao[0] ^ jogadas[nc][i2];
+            if(temp == ((tree->nextN[nc][i])->estado) && jogadas[nc][i2] >= 0){
+                (tree->nextN[nc][i])->selected = 1;
+                i2++;
+            }
+        }
+
         for(i2 = 0,i = 0; i2 < counter[(simulacao->nc)-1] && i < 40 ;i++)
             if(temp == ((tree->nextN[simulacao->nc - 1][i])->estado)){
                 (tree->nextN[(simulacao->nc)-1][i])->selected = 1;
