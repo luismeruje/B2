@@ -171,9 +171,36 @@ int valor (char c) {
 	}
 	return r;
 }
+
+int calculalixosdt (MAO mao, MAO restantes){
+int i,n,v,r=0;
+int rank[13]={0};
+separa_val(mao,rank);
+for (i=0; i<5 ; i++)
+    if rank[i] ==1 r+=1
+    if rank[i] ==2 {
+        for (z = 0; z<13;z++)
+            if rank [z] >= 3 break;
+        if (z == 13) r+= 2
+    }
+    if rank[i] == 3
+    {
+        for (z = 0; z<13;z++)
+            if ((rank [z] >= 2) && (z !=i)) break;
+        if (z == 13) r+= 3
+    }
+    if rank[i]==4{
+        for (z = 0; z<13;z++)
+            if ((rank [z] !=0) && (z !=i)) break;
+        if (z == 13) r+= 4
+    }
+    
+
+
+}
 int calcontrols (MAO mao, MAO restantes){
     int rank[13]={0};
-    int m,mn,mv,n,v;
+    int i,m,mn,mv,n,v;
     int r=0;
     m= maior_carta_mao (restantes);
     mn= m / 13;
@@ -192,7 +219,7 @@ int calcontrols (MAO mao, MAO restantes){
         i--;
     }
     else n---
-    while (carta_existe(mao,n,i)){   //da para meter isto mais jeitoso ta um bocado meeeeeeeeh
+    while (carta_existe(mao,n,i)){   //da para meter isto mais jeitoso ta um bocado meeeeeeeeh 
         if n=0{
             n=3;
             i--;
