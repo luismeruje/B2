@@ -171,21 +171,31 @@ int valor (char c) {
 	}
 	return r;
 }
-int calculacontrolsdt (MAO mao, MAO restantes){
+int calcontrols (MAO mao, MAO restantes){
     int rank[13]={0};
-    int m;
+    int m,mn,mv,n,v;
     int r=0;
     m= maior_carta_mao (restantes);
     mn= m / 13;
     mv= m % 13;
-    i= maior_carta_mao (mao);
-    in= i / 13;
-    iv= i % 13;
 
-    separa_val(mao, rank);
-    if (iv > mv || (iv== mv && in > mn ) r+= 1;
-    if (rank[mv]>1) r += (mv-1);
+    for(i=12,n=3; (i>mv || (i==mv && n>mn));){
+        if n<0{ 
+            n=3;
+            i--;
+        }
+        if(carta_existe(mao,n,i)) r+=1;
+        n--;
+    }
+    while (carta_existe(mao,n,i)){
+        r+=1
+        if n=0{
+            n=3;
+            i--;
+        }
+        else n--;
 
+    }
 }
 
 MAO converte_s_m (char * s) {
