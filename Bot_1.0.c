@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#define MAO_INICIAL "MAO %c%c %c%c %c%c %c%c %c%c %c%c %c%c %c%c %c%c %c%c %c%c %c%c %c%c"
 
 typedef long long int MAO;
 
@@ -109,6 +110,67 @@ void separa_nap (MAO mao, int y[4]){
             y[n]++;
         }
     }
+}
+
+int teste_straight(int v[13]){
+    int r = 0, i = 0, count = 0, flag = 0;
+    
+    for(i = 0; v[i] != 0; i++);
+    for(;v[i] == 0; i = (i + 1) % 13);
+    for(;v[i] != 0; i = (i + 1) % 13){
+        count++;
+        if(i == 11 && count != 1 && count != 5) //testa se o Ás não é o último nem o primeiro da sequencia
+            flag = 1;
+    }
+    if(count == 5 && flag == 0)
+        r = 1;
+    return r;
+}
+
+int teste_flush(int naipe[4]) {
+    int r = 0, n;
+    for (n=0; n<4; n++) {
+        if(naipe[n]==5) {
+            r = 1;
+            break;
+        }
+    }
+    return r;
+}
+
+int teste_fullhouse(int rank[13]) {
+    int r = 1, v;
+    for (v=0; v<13; v++) {
+        if (rank[v]==4 || rank[v]==1) r = 0;
+    }
+    return r;
+}
+
+int teste_fourofakind(int rank[13]) {
+    int r = 0, v;
+    for (v=0; v<13; v++) {
+        if (rank[v]==4) r = 1;
+    }
+    return r;
+}
+
+//r: 1 => straight; 2 => flush; 3 => fullhouse; 4 => fourofakind; 5 => straightflush
+int tipo_comb_five(MAO mao) {
+    int r = 0;
+    int n[4]={0};
+    int v[13] = {0};
+    separa_nap(mao, n);
+    separa_val(mao, v);
+    if(teste_straight(v)){
+        if(teste_flush(n))
+            r = 5;
+        else
+            r = 1;
+    }
+    else if(teste_flush(n)) r = 2;
+    else if(teste_fullhouse(v)) r = 3;
+    else if(teste_fourofakind(v)) r = 4;
+    return r;
 }
 
 void atualizastraight(int v[13], MAO mao, int y[2]) {
@@ -295,7 +357,7 @@ long long int flushpos (DATABASE * simulacao, int jog, int sametype, MAO jogadas
     int naipe[4] = {0};
     int max = 0;
     int c = 0;
-    int n, v;
+    int v;
     MAO temp = simulacao->mao[jog];
     separa_nap(temp, naipe);
     if(sametype != 0){
@@ -331,7 +393,7 @@ long long int flushpos (DATABASE * simulacao, int jog, int sametype, MAO jogadas
                 jogadas[count] = 0;
                 for(v = 0; v < 13; v++){ //vê se existe, se tirar e ainda existirem 5 cartas ver
                     if (carta_existe(temp,i,v)){
-                        jogadas[count] = add_jogadas(jogadas[count],i,v);
+                        jogadas[count] = add_carta(jogadas[count],i,v);
                         c++;
                         if(c==5){
                             count++;
@@ -480,7 +542,6 @@ void simula_maos(DATABASE * data){
 int jogadas5(DATABASE * simulacao, int jog, MAO jogadas[40]){
     int r = 0;
     int count = 0;
-    int sametype = 0;
     if(simulacao->jogada != 0)
         r = tipo_comb_five(simulacao->jogada);
     if(r <= 1){
@@ -519,7 +580,7 @@ int jogadas5(DATABASE * simulacao, int jog, MAO jogadas[40]){
     count++;
     return count;
 }
-int jogadasN(DATABASE * simulacao, int counter[4], int jog, MAO jogadas [4][40], int nc){//TODO: testar se simualcao->nc== 0 , pôr logo v = 0;
+int jogadasN(DATABASE * simulacao, int jog, MAO jogadas [4][40], int nc){//TODO: testar se simualcao->nc== 0 , pôr logo v = 0;
     int n, v, i, temp_naipe[4], count = 0, a;
     MAO estado = simulacao->mao[jog]; //depois mudar conforme o jog
     int max = maior_carta_mao(simulacao->jogada);
@@ -548,13 +609,13 @@ void jogadas_possiveis(DATABASE * simulacao, int counter[4], int jog, MAO jogada
     if(simulacao->nc == 0){
    	 	counter[3] = jogadas5(simulacao, jog, jogadas[3]);
         for(nc = 1; nc < 4; nc++)
-    		counter[nc - 1] = jogadasN(simulacao, counter, jog, jogadas, nc);
+    		counter[nc - 1] = jogadasN(simulacao, jog, jogadas, nc);
     }
     else{
     	if(simulacao->nc == 4)
         	counter[3] = jogadas5(simulacao, jog, jogadas[3]);
     	else
-    		counter[simulacao->nc - 1] = jogadasN(simulacao, counter, jog, jogadas, simulacao -> nc);
+    		counter[simulacao->nc - 1] = jogadasN(simulacao, jog, jogadas, simulacao -> nc);
     }
 }
 
@@ -588,7 +649,7 @@ void addNodo(MAO mao,MCtree tree, MCtree previous){
     tree -> estado = mao;
     for(i = 0; i < 40; i++)
         for(nc = 0; nc < 4; nc++)
-            tree -> nextN[nc][i] = NULL;
+            tree -> nextN[nc][i] = NULL; //TODO: no futuro isto n deve ser preciso
     tree->prev = previous;
 }
 
@@ -614,12 +675,22 @@ void rewardF(MCtree temp, DATABASE * simulacao){
     }
 }
 
+//DATABASE * simulacao, int jog, int sametype,MAO jogadas[40], int count
 //TODO: precisa de uma simulacao
 //TODO: n esquecer que no início tem que se começar com 3 de ouros
-void add_jogadas(MAO mao, int jog[4]){
-	
+void add_jogadas(MCtree tree, int counter[4]){
+    DATABASE data = {{tree->estado,0,0,0},0,0,0,{0}};
+    MAO jogadas[4][40];
+    int nc, i;
+    MAO new = 0;
+    memset(jogadas,0,sizeof (jogadas[0][0]) * 4 * 40);//WARNING: ver se este sizeof está certo
+    jogadas_possiveis(&data,counter,0,jogadas);
+    for(nc = 0; nc < 3; nc++)
+        for(i = 0; i < counter[nc];i++){
+            new = jogadas[nc][i] ^ tree->estado;
+            addNodo(new,(tree->nextN[nc][i]),tree);
+        }
 }
-
 
 //TODO: tem que alterar o parâmetro jogada e o passar se necessário, quando passa ao nodo seguinte, para funcionar certo com o default poplicy, temos que ver quais os caminhos que podem ser tomados com a simulaçao corrente, ai ai ai.
 //TODO: n está a ter em conta se chegámos a um nodo final
@@ -628,12 +699,12 @@ void add_jogadas(MAO mao, int jog[4]){
 //DATABASE * simulacao, int counter[4], int jog, MAO jogadas[4][40]
 MCtree treePolicy(MCtree tree, DATABASE * simulacao){
     int i, jog[4] = {0}, UCT_value[100] = {0},counter[4] = {0};//WARNING:ver se o jog é usado em algum ado
-    int max = 0, nc;
+    int max = 0, nc = 0;
     int i2=0;
     MAO jogadas[4][40]; //WARNING: ver se isto está a ser posto a zeros como deve ser quando é necessário
     MAO temp = 0;
     if(tree->nextN[0] == NULL){
-        add_jogadas(tree->estado, jog); //adiciona jogadas ao array nextN e devolve o número de jogadas para cada nc.
+        add_jogadas(tree, jog); //adiciona jogadas ao array nextN e devolve o número de jogadas para cada nc.
         jogadas_possiveis(simulacao, counter, 0, jogadas);//TODO:n deixar passar aqui
         if(simulacao -> nc == 0){
             for(nc = 0;nc<3;nc++)
@@ -702,7 +773,7 @@ int defaultPolicy(MCtree node, DATABASE * simulacao){
     int jogo = 0, counter[4] = {0}, flag = 0, j = 0; //TODO: implementar o passar para ver se se mete o nc = 0 e testar se estamos num nodo que é para simular até ao fim ou só um passo
     MAO jogadas[4][40];//WARNING: o -1 pode dar problema com o operador binário, meter a 0 primeiro a jogada na jogadas_possiveis//TODO: tentar baixar o 40
     int i, nc, round = 0;
-    memset(jogadas,0,sizeof jogadas); //Ver se podemos usat C99, n funciona com C89.
+    memset(jogadas,0,sizeof (jogadas[0][0]) * 4 * 40); //Ver se podemos usar C99, n funciona com C89.
     if((node->prev)->prev == NULL)
         simula_maos(simulacao);
     for(;j<4; j++)
@@ -771,23 +842,133 @@ int defaultPolicy(MCtree node, DATABASE * simulacao){
 //TODO: controlar, se tiver 3 passos nc passa para zero, jogadas tbm
 int main(){
     char input[100];
-    int flag = 0;
+    int flag = 0, i;
+    int n, v;
+    int io_count = 0;
+    int jog = 0;
+    int nc = 0;
     MCtree temp;
-    DATABASE data; //data precisa de ser controlado a partir do input, por a zeros os 1's dos nodos em selected
-    DATABASE simulacao = data;
+    char mao[13][2];
+    DATABASE data = {{0},0,0,0,{0}}; //data precisa de ser controlado a partir do input, por a zeros os 1's dos nodos em selected
+    DATABASE simulacao;
     //só é para executar isto uma vez
-    MCtree tree; //para usar com o create tree
-    
-    scanf("%s", input);
-    while(strcmp(input, "FIM") == 0){
-        //Pôr outros casos, se der outras coisas mudar o data, senão fazer o que está abaixo, se for o que dá a mão, executar create tree
-        while(flag == 0){
-        	temp = treePolicy(tree, &simulacao);
-    		flag = defaultPolicy(temp, &simulacao);
+    MCtree tree = NULL; //para usar com o create tree
+    memset(mao,0,26);
+    fgets(input, 100, stdin);
+    while(input[0] != 'A'){
+        switch(input[0]){
+            case 'J':
+                if(input[3] == 'A'){
+                    while(iterations < 10){
+                        while(flag == 0){
+                            temp = treePolicy(tree, &simulacao);
+                            flag = defaultPolicy(temp, &simulacao);
+                        }
+                        flag = 0;
+                        simulacao = data;
+                    }
+                    jog = 1;
+                    for()
+                    for(i = 0; tree->nextN[]i < 100)
+                }
+                else{
+                    io_count = sscanf(input, MAO_INICIAL, &mao[0][0],&mao[0][1],&mao[1][0],&mao[1][1],&mao[2][0],&mao[2][1],&mao[3][0],&mao[3][1],&mao[4][0],&mao[4][1],&mao[5][0],&mao[5][1],&mao[6][0],&mao[6][1],&mao[7][0],&mao[7][1],&mao[8][0],&mao[8][1],&mao[9][0],&mao[9][1],&mao[10][0],&mao[10][1],&mao[11][0],&mao[11][1],&mao[12][0],&mao[12][1]);
+                    for(i = 0; i < io_count; i++){
+                        if(mao[i][0] >= '3' && mao[i][0] <='9')
+                            v = mao[i][0] - '3';
+                        else{
+                            switch(mao[i][0]){
+                                case '2':
+                                    v = 12;
+                                    break;
+                                case 'A':
+                                    v = 11;
+                                    break;
+                                case 'K':
+                                    v = 10;
+                                    break;
+                                case 'Q':
+                                    v = 9;
+                                    break;
+                                case 'J':
+                                    v = 8;
+                                    break;
+                                case 'T':
+                                    v = 7;
+                                    break;
+                            }
+                        }
+                        switch (mao[i][1]){
+                            case 'D':
+                                n = 0;
+                                break;
+                            case 'C':
+                                n = 1;
+                                break;
+                            case 'H':
+                                n = 2;
+                                break;
+                            case 'S':
+                                n = 3;
+                                break;
+                        }
+                        data.usadas[jog] = add_carta(data.usadas[jog],n,v);
+                    }
+                }
+                jog = (jog + 1) % 4;
+                break;
+            case 'P':
+                data.passar++;
+                jog = (jog + 1) % 4;
+                break;
+            case 'M': //TODO: meter alternativa para se vier em %d em vez de %c? -> ver fóruns
+                sscanf(input, MAO_INICIAL, &mao[0][0],&mao[0][1],&mao[1][0],&mao[1][1],&mao[2][0],&mao[2][1],&mao[3][0],&mao[3][1],&mao[4][0],&mao[4][1],&mao[5][0],&mao[5][1],&mao[6][0],&mao[6][1],&mao[7][0],&mao[7][1],&mao[8][0],&mao[8][1],&mao[9][0],&mao[9][1],&mao[10][0],&mao[10][1],&mao[11][0],&mao[11][1],&mao[12][0],&mao[12][1]);
+                for(i = 0; i < 13; i++){
+                    if(mao[i][0] >= '3' && mao[i][0] <='9')
+                        v = mao[i][0] - '3';
+                    else{
+                        switch(mao[i][0]){
+                        	case '2':
+                                v = 12;
+                                break;
+                            case 'A':
+                                v = 11;
+                                break;
+                            case 'K':
+                                v = 10;
+                                break;
+                            case 'Q':
+                                v = 9;
+                                break;
+                            case 'J':
+                                v = 8;
+                                break;
+                            case 'T':
+                                v = 7;
+                                break;
+                        }
+                    }
+                    switch (mao[i][1]){
+                        case 'D':
+                            n = 0;
+                            break;
+                        case 'C':
+                            n = 1;
+                            break;
+                        case 'H':
+                            n = 2;
+                            break;
+                        case 'S':
+                            n = 3;
+                            break;
+                    }
+                    data.mao[0] = add_carta(data.mao[0],n,v);
+                }
+                jog = 1;
+                break;
+            
         }
-        flag = 0;
-        simulacao = data;
-        scanf("%s", input); //WARNING: ver se isto está correto
+    	fgets(input, 100, stdin);
     }
     return 0;
 }
