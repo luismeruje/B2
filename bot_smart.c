@@ -187,13 +187,18 @@ int calcontrols (MAO mao, MAO restantes){
         if(carta_existe(mao,n,i)) r+=1;
         n--;
     }
-    while (carta_existe(mao,n,i)){
-        r+=1
+    if n<0 {
+        n=3;
+        i--;
+    }
+    else n---
+    while (carta_existe(mao,n,i)){   //da para meter isto mais jeitoso ta um bocado meeeeeeeeh
         if n=0{
             n=3;
             i--;
         }
         else n--;
+        if (carta_existe(mao,n,i)) r+=1;
 
     }
 }
