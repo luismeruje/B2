@@ -224,27 +224,28 @@ int valor (char c) {
 }
 
 int calculalixosdt (MAO mao, MAO restantes){
-int i,n,v,r=0;
-int rank[13]={0};
-separa_val(mao,rank);
-for (i=0; i<5 ; i++)
-    if rank[i] ==1 r+=1
-    if rank[i] ==2 {
-        for (z = 0; z<13;z++)
-            if rank [z] >= 3 break;
-        if (z == 13) r+= 2
-    }
-    if rank[i] == 3
-    {
-        for (z = 0; z<13;z++)
-            if ((rank [z] >= 2) && (z !=i)) break;
-        if (z == 13) r+= 3
-    }
-    if rank[i]==4{
-        for (z = 0; z<13;z++)
-            if ((rank [z] !=0) && (z !=i)) break;
-        if (z == 13) r+= 4
-    }
+    int i,n,v, z,r=0;
+    int rank[13]={0};
+    separa_val(mao,rank);
+    for (i=0; i<5 ; i++)
+        if (rank[i] ==1) r+=1;
+        if (rank[i] ==2) {
+            for (z = 0; z<13; z++)
+                if (rank[z] >= 3) break;
+            if (z == 13) r += 2;
+        }
+        if (rank[i] == 3)
+        {
+            for (z = 0; z<13;z++)
+                if ((rank [z] >= 2) && (z !=i)) break;
+            if (z == 13) r += 3;
+        }
+        if (rank[i]==4) {
+            for (z = 0; z<13;z++)
+                if ((rank [z] !=0) && (z !=i)) break;
+            if (z == 13) r += 4;
+        }
+    return r;
 }
 
 int calcontrolt (MAO mao, MAO restantes){
@@ -304,11 +305,11 @@ int calcontrols (MAO mao, MAO restantes){
     return r;
 }
 
-void conv_jog (char * s, database * data, int c) {
-    int i;
+void conv_jog (char * s, DATABASE * data, int c) {
+    int i, n, v;
     MAO last_play = 0;
     data->nc = 0;
-    for(i=6; s[i] != \0; i += 3) {
+    for(i=6; s[i] != '\0'; i += 3) {
         v = valor(s[i]);
         n = naipe(s[i+1]);
         last_play = add_carta(last_play, n, v);
@@ -319,7 +320,7 @@ void conv_jog (char * s, database * data, int c) {
     preenchejogada(last_play, data->combination, data->nc);
 }
 
-void converte_s_m (char * s, database * data) {
+void converte_s_m (char * s, DATABASE * data) {
 	int i, n, v;
 	for(i=4; i<41; i+=3){
         v = valor(s[i]);
@@ -330,7 +331,7 @@ void converte_s_m (char * s, database * data) {
 }
 
 int main() {
-    database data = {{0,4503599627370495},0,0,{13,13,13,13},{0,0,0}};
+    DATABASE data = {{0,4503599627370495},0,0,{13,13,13,13},{0,0,0}};
     int c = 0;
     char input[100];
     fgets(input, 100, stdin);
@@ -349,6 +350,8 @@ int main() {
         if (input[3] == 'A') {
             data.passar++;
             c = (c+1)%4;
+            printf("PASSO\n");
         }
+    }
     return 0;
 }
