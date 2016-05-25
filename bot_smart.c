@@ -7,6 +7,7 @@ struct database{
     MAO last_play;
     int nc; //número de cartas da ronda
     int passar;
+    int nm[4];
     int combination[3];
 };
 
