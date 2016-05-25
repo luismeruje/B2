@@ -220,7 +220,6 @@ int calcontrold (MAO mao, MAO restantes) {
     int rank2[13] = {0};
     separa_val(mao, rank1);
     separa_val(restantes, rank2);
-
     while (rank2[p]<2 && i>-1) p--;
     while (rank1[i]<2 && i>-1) i--;
     while (i >= p) {
@@ -232,35 +231,26 @@ int calcontrold (MAO mao, MAO restantes) {
 }
 
 int calcontrols (MAO mao, MAO restantes){
-    int rank[13]={0};
-    int i,m,mn,mv,n,v;
-    int r=0;
-    m= maior_carta_mao (restantes);
-    mn= m / 13;
-    mv= m % 13;
-
-    for(i=12,n=3; (i>mv || (i==mv && n>mn));){
-        if n<0{ 
-            n=3;
-            i--;
-        }
-        if(carta_existe(mao,n,i)) r+=1;
+    int rank[13] = {0};
+    int i, m, mn, mv, n, v;
+    int r = 0;
+    m = maior_carta_mao (restantes);
+    mn = m / 13;
+    mv = m % 13;
+    for(i=12, n=3; (i>mv || (i==mv && n>mn));) {
+        n = (n < 0)? (3) : (n);
+        i -= (n < 0)? (1) : (0);
+        if (carta_existe(mao,n,i)) r += 1;
         n--;
     }
-    if n<0 {
-        n=3;
-        i--;
+    n = (n < 0)? (3) : (n-1);
+    i -= (n < 0)? (1) : (0);
+    while (carta_existe(mao,n,i)) { 
+        n = (n < 0)? (3) : (n-1);
+        i -= (n < 0)? (1) : (0);
+        if (carta_existe(mao,n,i)) r += 1;
     }
-    else n---
-    while (carta_existe(mao,n,i)){   //da para meter isto mais jeitoso ta um bocado meeeeeeeeh 
-        if n=0{
-            n=3;
-            i--;
-        }
-        else n--;
-        if (carta_existe(mao,n,i)) r+=1;
-
-    }
+    return r;
 }
 
 MAO converte_s_m (char * s) {
