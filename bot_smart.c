@@ -197,22 +197,19 @@ for (i=0; i<5 ; i++)
 }
 
 int calcontrolt (MAO mao, MAO restantes){
- int rank1[13]=rank2={0};
- int r=0,i,z;
- separa_val(mao,rank1);
- for (i=12; i>=0;i--){
-    if rank1[i]>=3 break;
- }
-    if (i!= -1) {
-        separa_val(restantes,rank2);
-        for (z=12; z>0; z--){
-            if rank2[z]>=3 break;
-        }
+    int rank1[13] = {0};
+    int rank2[13] = {0};
+    int r = 0, i, z;
+    separa_val(mao, rank1);
+    for (i=12; i>=0; i--) if (rank1[i] >= 3) break;
+    if (i != -1) {
+        separa_val(restantes, rank2);
+        for (z=12; z>0; z--) if (rank2[z] >= 3) break;
     }
-    if i>z r++;
-    while (i>z){
-        i--
-        if rank[i]>= 3 r++;
+    if (i > z) r++;
+    while (i > z) {
+        i--;
+        if (rank1[i] >= 3) r++;
     }
     return r;
 }
