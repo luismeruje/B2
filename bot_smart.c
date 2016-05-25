@@ -217,6 +217,23 @@ int calcontrolt (MAO mao, MAO restantes){
     return r;
 }
 
+int calcontrold (MAO mao, MAO restantes) {
+    int i = 12, p = 12, r = 0;
+    int rank1[13] = {0};
+    int rank2[13] = {0};
+    separa_val(mao, rank1);
+    separa_val(restantes, rank2);
+
+    while (rank2[p]<2 && i>-1) p--;
+    while (rank1[i]<2 && i>-1) i--;
+    while (i >= p) {
+        while (rank1[i]<2) i--;
+        r += (i > p || (i == p && carta_existe(mao, 3, i))) ? (1) : (0);
+        i--;
+    }
+    return r;
+}
+
 int calcontrols (MAO mao, MAO restantes){
     int rank[13]={0};
     int i,m,mn,mv,n,v;
