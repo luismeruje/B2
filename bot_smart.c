@@ -1,10 +1,10 @@
-
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 typedef long long int MAO;
 struct database{
     MAO mao[2];
-    MAO last_play;
     int nc; //número de cartas da ronda
     int passar;
     int nm[4];
@@ -148,21 +148,71 @@ int tipo_comb_five(MAO mao) {
     return r;
 }
 
+void atualizastraight(MAO mao, int y[3]) { //modifica talvez o data.last_play... pode influenciar
+    int ind = 0, i;
+    int v[13] = {0};
+    separa_val(mao, v);
+    if (v[11] != 0 && v[12] != 0){ //temos um ás e é o primeiro da sequência, pq existe um 2
+        y[1] = 3; //5 de alguma coisa é obrigatoriamente a carta mais alta
+        for(i = 0; i < 4; i++)
+            if(carta_existe(mao, i, 2)){ //Determina o naipe do 5
+                y[2] = i;
+                break;
+            }
+    }
+    else {
+        for(i = 0; i < 4; i++)
+            if(carta_existe(mao,i, 12))
+                mao = rem_carta(mao, i, 12); //remove os 2's
+        ind = maior_carta_mao(mao);
+        y[1] = (ind % 13) + 1;
+        y[2] = ind / 13;
+    }
+}
+
+void preenchejogada (MAO mao, int y[3], int nc){
+    int m, i, ind;
+    if (nc == 5) {
+        int rank[13] = {0};
+        m = tipo_comb_five(mao);
+        y[0] = m;
+        if (m == 1 || m == 5) atualizastraight(mao, y);
+        else  if (m == 2) {
+                ind = maior_carta_mao(mao);
+                y[1] = ind % 13;
+                y[2] = ind / 13;
+              }
+              else {
+                separa_val(mao, rank);
+                for(i=0; i<13; i++) if (rank[i] >= 3) break;
+                y[1] = i;
+                y[2] = 0;
+              }       
+    }
+    else {
+        y[0] = 0;
+        ind = maior_carta_mao(mao);
+        y[1] = ind % 13;
+        y[2] = ind / 13;
+    }
+}
+
 int naipe (char c) {
 	int r;
-	switch c {
+	switch (c) {
 		case 68: r = 0;
 		case 67: r = 1;
 		case 72: r = 2;
 		case 83: r = 3;
 	}
+    return r;
 }
 
 int valor (char c) {
 	int r;
 	if(c>50 && c<58) r = c-51;
 	else
-		switch c {
+		switch (c) {
 			case 84: r = 7;
 			case 74: r = 8;
 			case 81: r = 9;
@@ -254,22 +304,51 @@ int calcontrols (MAO mao, MAO restantes){
     return r;
 }
 
-MAO converte_s_m (char * s) {
-	MAO r = 0;
-	int i,n,v;
-	if (s[0]=='M') {
-        data.mao[0]=0;add_carta
-		for(i=4; i<41; i+=3){
-            v= valor(s[i]);
-            n= naipe(s[i+1]);
-            add_carta(r,n,v);
-            rem_carta (data->mao[1],n,v);
-        }
-	}
+void conv_jog (char * s, database * data, int c) {
+    int i;
+    MAO last_play = 0;
+    data->nc = 0;
+    for(i=6; s[i] != \0; i += 3) {
+        v = valor(s[i]);
+        n = naipe(s[i+1]);
+        last_play = add_carta(last_play, n, v);
+        data->mao[1] = rem_carta(data->mao[1], n, v);
+        data->nm[c]--;
+        data->nc++;
+    }
+    preenchejogada(last_play, data->combination, data->nc);
+}
 
-    return r;
+void converte_s_m (char * s, database * data) {
+	int i, n, v;
+	for(i=4; i<41; i+=3){
+        v = valor(s[i]);
+        n = naipe(s[i+1]);
+        data->mao[0] = add_carta(data->mao[0], n, v);
+        data->mao[1] = rem_carta(data->mao[1], n, v);
+    }
 }
 
 int main() {
-
+    database data = {{0,4503599627370495},0,0,{13,13,13,13},{0,0,0}};
+    int c = 0;
+    char input[100];
+    fgets(input, 100, stdin);
+    converte_s_m(input, &data);
+    while(input[0] != 'A') {
+        fgets(input, 100, stdin);
+        if (input[0] == 'P') {
+            data.passar++;
+            c = (c+1)%4;
+        }
+        if (input[4] == 'U') {
+            data.passar = 0;
+            c = (c+1)%4;
+            conv_jog(input, &data, c);
+        }
+        if (input[3] == 'A') {
+            data.passar++;
+            c = (c+1)%4;
+        }
+    return 0;
 }
