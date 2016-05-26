@@ -5,6 +5,7 @@
 typedef long long int MAO;
 struct database{
     MAO mao[2];
+    MAO last_play;
     int nc; //número de cartas da ronda
     int passar;
     int nm[4];
@@ -223,39 +224,40 @@ int valor (char c) {
 	return r;
 }
 
-int calculalixosdt (MAO mao, MAO restantes){
+int calculalixosdt (MAO mao){
     int i,n,v, z,r=0;
     int rank[13]={0};
-    separa_val(mao,rank);
+    separa_val(mao, rank);
     for (i=0; i<5 ; i++)
-        if (rank[i] ==1) r+=1;
-        if (rank[i] ==2) {
+        if (rank[i] == 1) r += 1;
+        if (rank[i] == 2) {
             for (z = 0; z<13; z++)
                 if (rank[z] >= 3) break;
             if (z == 13) r += 2;
         }
         if (rank[i] == 3)
         {
-            for (z = 0; z<13;z++)
+            for (z = 0; z<13; z++)
                 if ((rank [z] >= 2) && (z !=i)) break;
             if (z == 13) r += 3;
         }
-        if (rank[i]==4) {
+        if (rank[i] == 4) {
             for (z = 0; z<13;z++)
-                if ((rank [z] !=0) && (z !=i)) break;
+                if ((rank [z] != 0) && (z !=i)) break;
             if (z == 13) r += 4;
         }
     return r;
 }
 
-int calcontrolt (MAO mao, MAO restantes){
+int calcontrolt (MAO mao, MAO restantes, MAO last_play){
+    MAO outras = restantes + last_play;
     int rank1[13] = {0};
     int rank2[13] = {0};
     int r = 0, i, z;
     separa_val(mao, rank1);
     for (i=12; i>=0; i--) if (rank1[i] >= 3) break;
     if (i != -1) {
-        separa_val(restantes, rank2);
+        separa_val(outras, rank2);
         for (z=12; z>0; z--) if (rank2[z] >= 3) break;
     }
     if (i > z) r++;
@@ -266,12 +268,13 @@ int calcontrolt (MAO mao, MAO restantes){
     return r;
 }
 
-int calcontrold (MAO mao, MAO restantes) {
+int calcontrold (MAO mao, MAO restantes, MAO last_play) {
+    MAO outras = restantes + last_play;
     int i = 12, p = 12, r = 0;
     int rank1[13] = {0};
     int rank2[13] = {0};
     separa_val(mao, rank1);
-    separa_val(restantes, rank2);
+    separa_val(outras, rank2);
     while (rank2[p]<2 && i>-1) p--;
     while (rank1[i]<2 && i>-1) i--;
     while (i >= p) {
@@ -282,11 +285,12 @@ int calcontrold (MAO mao, MAO restantes) {
     return r;
 }
 
-int calcontrols (MAO mao, MAO restantes){
+int calcontrols (MAO mao, MAO restantes, MAO last_play){
+    MAO outras = restantes + last_play;
     int rank[13] = {0};
     int i, m, mn, mv, n, v;
     int r = 0;
-    m = maior_carta_mao (restantes);
+    m = maior_carta_mao(outras);
     mn = m / 13;
     mv = m % 13;
     for(i=12, n=3; (i>mv || (i==mv && n>mn));) {
@@ -309,15 +313,15 @@ void conv_jog (char * s, DATABASE * data, int c) {
     int i, n, v;
     MAO last_play = 0;
     data->nc = 0;
-    for(i=6; s[i] != '\0'; i += 3) { //para no \0?
+    for(i=6; s[i-1] != '\0'; i += 3) {
         v = valor(s[i]);
         n = naipe(s[i+1]);
-        last_play = add_carta(last_play, n, v);
+        data->last_play = add_carta(data->last_play, n, v);
         data->mao[1] = rem_carta(data->mao[1], n, v);
         data->nm[c]--;
         data->nc++;
     }
-    preenchejogada(last_play, data->combination, data->nc);
+    preenchejogada(data->last_play, data->combination, data->nc);
 }
 
 void converte_s_m (char * s, DATABASE * data) {
@@ -330,8 +334,169 @@ void converte_s_m (char * s, DATABASE * data) {
     }
 }
 
+MAO jogsinglecard (DATABASE * data, int control, int c) {
+    int rank[13] = {0};
+    int i, a, p;
+    separa_val(data->mao[0], rank);
+    int ncp[4];
+    for (i=0; i<4; i++) {
+        ncp[i] = data->nm[c];
+        c = (c+1)%4);
+    }
+    MAO temp = 0;
+    if(control > 0) { // falta considerar quando algum jogador estiver a acabar
+        p = calculalixosdt(data->mao[0]);
+        if (p > 2) { // talvez ter em conta os pares ou trios
+            a = maior_carta_mao(data->mao[0]);
+            temp = add_carta(temp, a/13, a%13);
+        }
+        else {
+            i = data->combination[1];
+            for (v=i; v<13; v++) {
+                if (rank[v] > 0) {
+                    if (v > i)
+                        for(n=0; n<4; n++) 
+                            if(carta_existe, n, v) {
+                                temp = add_carta(temp, n, v);
+                                break;
+                            }
+                    else
+                        for(n=data->combination[2]; n<4; n++)
+                            if(carta_existe, n, v) {
+                                temp = add_carta(temp, n, v);
+                                break;
+                            }
+                }
+            }
+        } 
+    }
+    else {
+        i = data->combination[1];
+        for (int p = 1; p < 4; p++) if(ncp[p] < 3) break;
+        if (p < 3) a = maior_carta_mao(data->mao[0]);
+        if (p == 3) 
+            for (v=i; v<13; v++) {
+                if (rank[v] > 0) {
+                    if (v > i)
+                        for(n=0; n<4; n++) 
+                            if(carta_existe, n, v) {
+                                temp = add_carta(temp, n, v);
+                                break;
+                            }
+                    else
+                        for(n=data->combination[2]; n<4; n++)
+                            if(carta_existe, n, v) {
+                                temp = add_carta(temp, n, v);
+                                break;
+                            }
+                }
+            }
+    }
+    return temp;
+}
+
+MAO jogdoublecard (DATABASE * data, int control, int c) {
+    MAO temp = 0;
+    int p;
+    p = calculalixosdt(data->mao[0]);
+    int rank1[13] = {0};
+    separa_val(data->mao[0], rank1);
+    if(control > 0 && p > 2) {
+        for(p=13; p>=0; p--)
+            if(rank1[p]>1) {
+                for(v=0, count=0; (v<4 && count<2); v++)
+                    if(carta_existe(data->mao[0], v, p)) {
+                        temp = add_carta(temp, v, p);
+                        count++;
+                    }
+            }
+    }
+    else {
+        int rank2[13] = {0};
+        separa_val(data->mao[1], rank2);
+        i = data->combination[1];
+        int ncp[4];
+        for (i=0; i<4; i++) {
+            ncp[i] = data->nm[c];
+            c = (c+1)%4);
+        }
+        for (p = 1; p < 4; p++) if(ncp[p] < 4) break;
+        p = (p!=4) ? (13) : (12);
+        a = (data->combination==3) ? (i+1) : (i); // caso a carta de espadas esteja na last_play não vale a pena testar se temos duplo nesse rank
+        for(; a<p; a++) {
+            if(rank1[a] > 1) {
+                for(v=0, count=0; (v<4 && count<2); v++) 
+                    if(carta_existe(data->mao[0], v, a)) {
+                        temp = add_carta(temp, v, a);
+                        count++;
+                    }
+            }
+        }
+    }
+    return temp;
+}
+
+MAO jogtriplecard (DATABASE * data, int control, int c) {
+    MAO temp = 0;
+    int p;
+    int rank1[13] = {0};
+    int rank2[13] = {0};
+    separa_val(data->mao[0], rank1);
+    separa_val(data->mao[1], rank2);
+    if(control > 0 && p > 2) {
+        for(p=13; p>=0; p--)
+            if(rank1[p]>2)
+                for(v=0, count=0; (v<4 && count<3); v++)
+                    if(carta_existe(data->mao[0], v, p)) {
+                        temp = add_carta(temp, v, p);
+                        count++
+                    }
+    }
+    else {
+        i = data->combination[1];
+        int ncp[4];
+        for (i=0; i<4; i++) {
+            ncp[i] = data->nm[c];
+            c = (c+1)%4);
+        }
+        for (p = 1; p < 4; p++) if(ncp[p] < 5) break;
+        p = (p!=4) ? (13) : (12);
+        for(a=i+1; a<p; a++) {
+            if(rank1[a] > 2) {
+                for(v=0, count=0; (v<4 && count<3); v++) 
+                    if(carta_existe(data->mao[0], v, a)) {
+                        temp = add_carta(temp, v, a);
+                        count++;
+                    }
+            }
+        }
+    }
+    return temp;
+}
+
+MAO analisa_jog (DATABASE * data, int c) {
+    int control;
+    if (data->passar == 3) {
+
+    }
+    else {
+        nc = data->nc;
+        switch(nc) {
+            case 1 {
+                control = calcontrols(data->mao[0], data->mao[1], data->last_play);
+            }
+            case 2 {
+                control = calcontrold(data->mao[0], data->mao[1], data->last_play);
+            }
+            case 3 {
+                control = calcontrolt(data->mao[0], data->mao[1], data->last_play);
+            }
+        }
+    }
+}
+
 int main() {
-    DATABASE data = {{0,4503599627370495},0,0,{13,13,13,13},{0,0,0}};
+    DATABASE data = {{0,4503599627370495},0,0,0,{13,13,13,13},{0,0,0}};
     int c = 0;
     char input[100];
     fgets(input, 100, stdin);
@@ -351,6 +516,7 @@ int main() {
             data.passar++;
             c = (c+1)%4;
             printf("PASSO\n"); //retirar a nm[c] quantidade de cartas jogadas
+        // opçao OK para remover as cartas da minha MAO!
         }
     }
     return 0;
