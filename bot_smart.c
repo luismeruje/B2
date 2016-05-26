@@ -309,7 +309,7 @@ void conv_jog (char * s, DATABASE * data, int c) {
     int i, n, v;
     MAO last_play = 0;
     data->nc = 0;
-    for(i=6; s[i] != '\0'; i += 3) {
+    for(i=6; s[i] != '\0'; i += 3) { //para no \0?
         v = valor(s[i]);
         n = naipe(s[i+1]);
         last_play = add_carta(last_play, n, v);
@@ -350,7 +350,7 @@ int main() {
         if (input[3] == 'A') {
             data.passar++;
             c = (c+1)%4;
-            printf("PASSO\n");
+            printf("PASSO\n"); //retirar a nm[c] quantidade de cartas jogadas
         }
     }
     return 0;
