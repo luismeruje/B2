@@ -592,7 +592,7 @@ int joga5 (DATABASE * data, int m) {
  @param m       Jogador a jogar
  */
 void pmjgfourofakind (DATABASE * data, int m) {
-    int ind, n, v, count = 0;
+    int ind, n, v;
     int rank[13] = {0};
     separa_val(data->mao[m],rank);
     MAO temp = 0;
@@ -627,7 +627,7 @@ void pmjgfourofakind (DATABASE * data, int m) {
  @param m       Jogador a jogar
  */
 void pmjgfullhouse (DATABASE * data, int m) {
-    int ind, n, v, count = 0;
+    int n, v, count = 0;
     int rank[13] = {0};
     separa_val(data->mao[m],rank);
     MAO temp = 0;
@@ -670,11 +670,11 @@ void pmjgfullhouse (DATABASE * data, int m) {
  @param m       Jogador a jogar
  */
 void pmjgflush (DATABASE * data, int m) {
-    int n, v, count = 0;
+    int valor, count = 0;
     MAO temp = 0;
-    for(v = 0; v < 13 && count < 5; v++)
-        if(carta_existe(data->mao[m],0,v)){
-            temp = add_carta(temp, 0, v);
+    for(valor = 0; valor < 13 && count < 5; valor++)
+        if(carta_existe(data->mao[m],0, valor)){
+            temp = add_carta(temp, 0, valor);
             count++;
         }
     if(count==5) data->jogadas[m] = temp;
@@ -713,10 +713,11 @@ void primeira_jogada(DATABASE * data, int m){
     }
 }
 
-/** \brief Calcula uma jogada com o 3 de ouros da mão do jogador m
+/** \brief Testa se uma jogada entre 1 a 3 cartas é válida
  
  @param data    Estrutura atual
- @param m       Jogador a jogar
+ @param cartas  Array com os indices das cartas
+ @return        Devolve: 1 caso a jogada seja válida; 0 caso não seja
  */
 int check_basico(DATABASE * data, int cartas[]){
     int max = maior_carta_jogada(data);
@@ -900,7 +901,7 @@ void imprime_jogadas(DATABASE data){
     }
 }
 
-/** \brief Imprime Maos dos jogadores
+/** \brief Imprime Mãos dos jogadores
  
  @param data    Estrutura atual
 */
@@ -975,7 +976,7 @@ void botao_ordenar (DATABASE data){
     }
 }
 
-/** \brief Imprime Botão Help que ao clicar seleciona possivel jogada
+/** \brief Imprime Botão Help que ao clicar seleciona possível jogada
  
  @param data    Estrutura atual
 */
@@ -1057,18 +1058,16 @@ void botao_passar (DATABASE data){
  @param data    Estrutura atual
 */
 void botao_play (DATABASE data){
-    int n,v;
-    int ind;
+    int n, v, ind;
     int y[3];
     char script [1000];
-    data.jogadas[0]=0;
+    data.jogadas[0] = 0;
     if(data.passar == 3){
         data.nc = 0;
         for(ind=0;ind<52;ind++){
             n=ind/13;
             v=ind%13;
-            if(carta_existe(data.selected,n,v))
-                data.nc ++;
+            if(carta_existe(data.selected,n,v)) data.nc ++;
         }
     }
     if(data.nc < 6 && check_jogada(&data,0)){
@@ -1088,11 +1087,8 @@ void botao_play (DATABASE data){
             data.combination[1] = y[1];
             data.combination[2] = y[2];
         }
-        if(data.mao[0] == 0)
-            data.play = 4; //4 -> fim do jogo
-        else
-            data.play = 2; //2 -> jogo normal
-        
+        if(data.mao[0] == 0) data.play = 4; //4 -> fim do jogo
+        else data.play = 2; //2 -> jogo normal
         DATA2STR(script, data);
         printf("<a xlink:href = \"cartas?%s\"><image x = \"775\" y = \"510\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_play.svg\" /></a>\n", script, BARALHO);
     }
@@ -1167,7 +1163,7 @@ void botao_start(DATABASE data){
     printf("<a xlink:href = \"cartas?%s\"><image x = \"510\" y = \"300\" height = \"60\" width = \"180\" xlink:href = \"%s/botao_start.svg\" /></a>\n", script, BARALHO);
 }
 
-/** \brief Imprime Comeco de Jogo (Mesa, Chão...)
+/** \brief Imprime Começo de Jogo (Mesa, Chão...)
  
  @param data    Estrutura atual
 */
@@ -1270,10 +1266,10 @@ void bot_continua(DATABASE *data,int m){
         data->play = 4;
 }
 
-/** \brief Bot a comecar uma jogada
+/** \brief Bot a começar uma jogada
  
  @param data    Estrutura atual
- @param m       Jogador a comecar
+ @param m       Jogador a começar
 */
 void bot_comeca(DATABASE *data,int m){
     int total = 0, i; //total => número total de jogadas possíveis
@@ -1337,7 +1333,7 @@ void bot_comeca(DATABASE *data,int m){
         data->play = 4;
 }
 
-/** \brief Responsavel Pela Jogada dos Bots
+/** \brief Responsável Pela Jogada dos Bots
  
  @param data    Estrutura atual
  @param m       Jogador a continuar
@@ -1403,7 +1399,10 @@ void Game_Lobby(DATABASE data){
     }
 }
 
-
+/** \brief Consoante a query do jogo, decide o consequente estado do jogo
+ 
+ @param query   Query atual
+*/
 void parse (char * query) {
     DATABASE data = {{0},0,{0},0,0,0,0,{0},{0}};
     
