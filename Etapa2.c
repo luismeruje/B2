@@ -809,16 +809,36 @@ int jogadas_possiveis(DATABASE *data, int jog, int jogadas[][5]){
                                                 ##############################--FUNCOES_PARA_IMPRIMIR--##################################
  */
 
+/** \brief Imprime Carta como imagem
+ 
+ @param x       Coordenada x
+ @param y       Coordenada y
+ @param n       Naipe
+ @param v       Valor
+*/
 void imprime_carta_imagem(int x, int y,int n,int v){
     char *suit = NAIPES;
     char *rank = VALORES;
     printf("<image x = \"%d\" y = \"%d\" height = \"95\" width = \"70\" xlink:href = \"%s/%c%c.svg\" />\n", x, y, BARALHO, rank[v], suit[n]);
 }
 
+/** \brief Imprime Parte de trás da Carta como imagem
+ 
+ @param x       Coordenada x
+ @param y       Coordenada y
+*/
 void imprime_carta_back(int x, int y){
     printf("<image x = \"%d\" y = \"%d\" height = \"110\" width = \"80\" xlink:href = \"%s/card_back.svg\" />\n", x, y, BARALHO);
 }
 
+/** \brief Imprime Carta como link
+ 
+ @param x       Coordenada x
+ @param y       Coordenada y
+ @param data    Estrutura Atual
+ @param n       Naipe
+ @param v       Valor
+*/
 void imprime_carta_link(int x, int y,DATABASE data,int n,int v){
     char *suit = NAIPES;
     char *rank = VALORES;
@@ -833,6 +853,10 @@ void imprime_carta_link(int x, int y,DATABASE data,int n,int v){
     printf("<a xlink:href = \"cartas?%s\"><image x = \"%d\" y = \"%d\" height = \"110\" width = \"80\" xlink:href = \"%s/%c%c.svg\" /></a>\n", script, x, y, BARALHO, rank[v], suit[n]);
 }
 
+/** \brief Imprime Cartas Jogadas
+ 
+ @param data    Estrutura atual
+*/
 void imprime_jogadas(DATABASE data){
     int x,y;
     int n,v;
@@ -876,7 +900,10 @@ void imprime_jogadas(DATABASE data){
     }
 }
 
-
+/** \brief Imprime Maos dos jogadores
+ 
+ @param data    Estrutura atual
+*/
 void imprime_maos (DATABASE data){
     int n,v,b,i;
     int x,y;
@@ -928,7 +955,10 @@ void imprime_maos (DATABASE data){
     
 }
 
-
+/** \brief Imprime Botão Ordenar
+ 
+ @param data    Estrutura atual
+*/
 void botao_ordenar (DATABASE data){
     char script [1000];
     if (data.ordenar==0) {
@@ -945,6 +975,10 @@ void botao_ordenar (DATABASE data){
     }
 }
 
+/** \brief Imprime Botão Help que ao clicar seleciona possivel jogada
+ 
+ @param data    Estrutura atual
+*/
 void botao_help(DATABASE * data){
     char script[1000];
     int jogadas[13][5];
@@ -1001,6 +1035,10 @@ void botao_help(DATABASE * data){
     printf("<a xlink:href = \"cartas?%s\"><image x = \"370\" y = \"560\" height = \"40\" width = \"40\" xlink:href = \"%s/botao_help.svg\" /></a>\n", script, BARALHO);
 }
 
+/** \brief Imprime Botão Passar
+ 
+ @param data    Estrutura atual
+*/
 void botao_passar (DATABASE data){
     char script[1000];
     if(data.passar!=3) {
@@ -1014,6 +1052,10 @@ void botao_passar (DATABASE data){
     else printf("<image x = \"775\" y = \"550\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_pass_cinza.svg\" />\n", BARALHO);
 }
 
+/** \brief Imprime Botão Play
+ 
+ @param data    Estrutura atual
+*/
 void botao_play (DATABASE data){
     int n,v;
     int ind;
@@ -1058,7 +1100,10 @@ void botao_play (DATABASE data){
         printf("<image x = \"775\" y = \"510\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_play_cinza.svg\" />\n", BARALHO);
 }
 
-
+/** \brief Imprime Botão Continuar
+ 
+ @param data    Estrutura atual
+*/
 void botao_continuar(DATABASE * data) {
     int i;
     char script[1000];
@@ -1072,11 +1117,19 @@ void botao_continuar(DATABASE * data) {
     printf("<a xlink:href = \"cartas?%s\"><image x = \"380\" y = \"500\" height = \"60\" width = \"170\" xlink:href = \"%s/botao_continuar.svg\" /></a>\n", script, BARALHO);
 }
 
+/** \brief Imprime Botão Novo Jogo
+ 
+ @param data    Estrutura atual
+*/
 void botao_novojogo() {
     printf("<a xlink:href = \"cartas\"><image x = \"630\" y = \"500\" height = \"60\" width = \"170\" xlink:href = \"%s/botao_novo_jogo.svg\" /></a>\n", BARALHO);
 }
 
 
+/** \brief Imprime Botão FIM
+ 
+ @param data    Estrutura atual
+*/
 void imprime_fim (DATABASE *data){
     printf("<svg height = \"680\" width = \"1200\">\n");
     printf("<image x = \"-155\" y = \"0\" height = \"900\" width = \"1500\" xlink:href = \"%s/floor.svg\" />\n", BARALHO);
@@ -1103,6 +1156,10 @@ void imprime_fim (DATABASE *data){
     printf("</svg>");
 }
 
+/** \brief Imprime Botão Start
+ 
+ @param data    Estrutura atual
+*/
 void botao_start(DATABASE data){
     char script[1000];
     
@@ -1110,6 +1167,10 @@ void botao_start(DATABASE data){
     printf("<a xlink:href = \"cartas?%s\"><image x = \"510\" y = \"300\" height = \"60\" width = \"180\" xlink:href = \"%s/botao_start.svg\" /></a>\n", script, BARALHO);
 }
 
+/** \brief Imprime Comeco de Jogo (Mesa, Chão...)
+ 
+ @param data    Estrutura atual
+*/
 void imprime_start(DATABASE data){
     int y, x,p,ind;
     
@@ -1134,6 +1195,10 @@ void imprime_start(DATABASE data){
     printf("</svg>\n");
 }
 
+/** \brief Imprime Jogo
+ 
+ @param data    Estrutura atual
+*/
 void imprime (DATABASE data){
     printf("<svg height = \"680\" width = \"1200\">\n");
     printf("<image x = \"-155\" y = \"0\" height = \"900\" width = \"1500\" xlink:href = \"%s/floor.svg\" />\n", BARALHO);
@@ -1157,6 +1222,11 @@ void imprime (DATABASE data){
  												#################################--FUNCOES_DOS_BOTS--####################################
  */
 
+/** \brief Bot a continuar uma jogada
+ 
+ @param data    Estrutura atual
+ @param m       Jogador a continuar
+*/
 void bot_continua(DATABASE *data,int m){
     int draw, total, i, n, v;
     int jogadas[15][5]; //Primeiro elemento do array => número da jogada_possível; o 15 em vez de 13 é só por segurança. Segundo elemento do array => carta da jogada_possível. Exemplo: jogadas[0][0] e jogadas[0][1] dão o par da jogada possível nr. 1.
@@ -1200,7 +1270,11 @@ void bot_continua(DATABASE *data,int m){
         data->play = 4;
 }
 
-
+/** \brief Bot a comecar uma jogada
+ 
+ @param data    Estrutura atual
+ @param m       Jogador a comecar
+*/
 void bot_comeca(DATABASE *data,int m){
     int total = 0, i; //total => número total de jogadas possíveis
     int jogadas[15][5];
@@ -1263,6 +1337,11 @@ void bot_comeca(DATABASE *data,int m){
         data->play = 4;
 }
 
+/** \brief Responsavel Pela Jogada dos Bots
+ 
+ @param data    Estrutura atual
+ @param m       Jogador a continuar
+*/
 void joga_bots(DATABASE *data,int m){
     if(data->passar < 3)
         bot_continua(data,m);
@@ -1270,7 +1349,10 @@ void joga_bots(DATABASE *data,int m){
         bot_comeca(data,m);
 }
 
-
+/** \brief Responsável pelo jogo em geral
+ 
+ @param data    Estrutura atual
+*/
 void jogo(DATABASE *data){
     int jog;
     if(data->play != 3)
@@ -1296,6 +1378,10 @@ void jogo(DATABASE *data){
  											    ##################################--FUNCOES_DOS_BOTS_FIM--##############################
  */
 
+/** \brief Game Lobby a imprimir
+ 
+ @param data    Estrutura atual
+*/
 void Game_Lobby(DATABASE data){
     switch (data.play) {
         case 0:
