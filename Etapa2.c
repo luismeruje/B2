@@ -24,12 +24,26 @@
 #define DATA "%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d"
 
 typedef long long int MAO;
+
+/**
+ Estrutura de dados:
+ 
+ mao[4]            Mao de cada jogador
+ selected          Cartas selecionadas
+ jogadas[4]        Cartas da ultima jogada de cada jogador
+ play              Identificador do tipo de jogo: 1 ->Começar;  2 ->Jogo normal; 3 ->Inicio do jogo; 4 ->Fim do jogo.
+ nc;               Número de cartas da ronda
+ passar;           Contagem de passos
+ ordenar;          Identificador do tipo de ordenamento de cartas
+ score[4];         Pontuação de cada jogador
+ combination[3];   Posição 0: Tipo de combinação de 5 cartas. Posição 1: Valor da maior carta. Posição 2: Naipe da maior carta.
+ */
 struct database{
     MAO mao[4];
     MAO selected;
     MAO jogadas[4];
     int play;
-    int nc; //número de cartas da ronda
+    int nc;
     int passar;
     int ordenar;
     int score[4]; 
@@ -42,12 +56,22 @@ typedef struct database DATABASE;
                                                     ##################################--AUXILIARES--#####################################
 */
 
+/** \brief Converte a query para a estrutura de dados
+ 
+ @param str     Query
+ @return        Estrutura de dados
+ */
 DATABASE STR2DATA(char * str){
     DATABASE data;
     sscanf(str, DATA,&(data.mao[0]),&(data.mao[1]),&(data.mao[2]),&(data.mao[3]),&(data.selected),&(data.jogadas[0]),&(data.jogadas[1]),&(data.jogadas[2]),&(data.jogadas[3]),&data.play,&data.nc,&data.passar,&data.ordenar,&data.score[0],&data.score[1],&data.score[2],&data.score[3],&data.combination[0],&data.combination[1],&data.combination[2]);
     return data;
 }
 
+/** \brief Converte a estrutura de dados para query
+ 
+ @param str     Estrutura de dados
+ @return        Query
+ */
 void DATA2STR(char * str,DATABASE data){
     sprintf(str,DATA,data.mao[0],data.mao[1],data.mao[2],data.mao[3],data.selected,data.jogadas[0],data.jogadas[1],data.jogadas[2],data.jogadas[3],data.play,data.nc,data.passar,data.ordenar,data.score[0],data.score[1],data.score[2],data.score[3],data.combination[0],data.combination[1],data.combination[2]);
 }
@@ -89,12 +113,16 @@ int carta_existe(MAO ESTADO, int naipe, int valor) {
     return (ESTADO >> idx) & 1;
 }
 
+/** \brief Distribui cartas pelas 4 mãos
+ 
+ @param data    Estrutura atual
+ */
 void distribui(DATABASE * data){
-    int maoCount[4]={0};
+    int maoCount[4] = {0};
     int n,v,j;
-    for(n=0;n<4;n++){
+    for(n = 0; n < 4; n++){
         v = 0;
-        while(v<13){
+        while(v < 13){
             j = rand()%4;
             if (maoCount[j]<13){
                 data->mao[j] = add_carta(data->mao[j],n,v);
@@ -105,6 +133,11 @@ void distribui(DATABASE * data){
     }
 }
 
+/** \brief Calcula a pontuação de uma MAO
+ 
+ @param mao     A mão com as cartas do jogador
+ @return        A pontuação
+ */
 int calcula_score(MAO mao){
     int ind;
     int n,v;
@@ -125,11 +158,15 @@ int calcula_score(MAO mao){
     return -r;
 }
 
+/** \brief Calcula a maior carta de uma MAO
+ 
+ @param mao     A mão com as cartas do jogador
+ @return        O índice da maior carta
+ */
 int maior_carta_mao(MAO mao){
     int ind;
     int max=-1;
     int n,v;
-    
     for(ind=0;ind<52;ind++){
         n=ind/13;
         v=ind%13;
@@ -141,12 +178,16 @@ int maior_carta_mao(MAO mao){
     return max;
 }
 
+/** \brief Calcula a maior carta jogada
+ 
+ @param data    Estrutura atual
+ @return        O índice da maior carta jogada
+ */
 int maior_carta_jogada(DATABASE * data){
     int jog;
     int n,v;
     int temp;
     int max = -1;
-    
     for(jog=0;jog<4;jog++){
         temp = maior_carta_mao(data->jogadas[jog]);
         n = temp/13;
@@ -157,6 +198,11 @@ int maior_carta_jogada(DATABASE * data){
     return max;
 }
 
+/** \brief Calcula o primeiro jogador a começar
+ 
+ @param data    Estrutura atual
+ @return        O primeiro jogador a começar
+ */
 int quem_comeca(DATABASE * data){
     int jog;
     for(jog=0;;jog++)
@@ -165,28 +211,43 @@ int quem_comeca(DATABASE * data){
     return jog;
 }
 
-void separa_val (MAO mao, int y[13]){
+/** \brief Transforma um array para que tenha o número de ocorrências de cada valor numa mão
+ 
+ @param mao     A mão com as cartas do jogador
+ @param rank    Array a ser modificado
+ */
+void separa_val (MAO mao, int rank[13]){
     int i,n,v;
     for(i=0;i<52;i++){
         n = i/13;
         v = i%13;
         if(carta_existe(mao,n,v)){
-            y[v]++;
+            rank[v]++;
         }
     }
 }
 
-void separa_nap (MAO mao, int y[4]){
+/** \brief Transforma um array para que tenha o número de ocorrências de cada naipe numa mão
+ 
+ @param mao     A mão com as cartas do jogador
+ @param naipe   Array a ser modificado
+ */
+void separa_nap (MAO mao, int naipe[4]){
     int i,n,v;
     for(i=0;i<52;i++){
         n = i/13;
         v = i%13;
         if(carta_existe(mao,n,v)){
-            y[n]++;
+            naipe[n]++;
         }
     }
 }
 
+/** \brief Testa se uma mão de 5 cartas é um straiht
+ 
+ @param v       Array com o número de ocorrências de cada valor
+ @return        Um int com valor 1 se verdadeiro ou 0 se falso
+ */
 int teste_straight(int v[13]){
     int r = 0, i = 0, count = 0, flag = 0;
     
@@ -202,6 +263,11 @@ int teste_straight(int v[13]){
     return r;
 }
 
+/** \brief Testa se uma mão de 5 cartas é um flush
+ 
+ @param naipe   Array com o número de ocorrências de cada naipe
+ @return        Um int com valor 1 se verdadeiro ou 0 se falso
+ */
 int teste_flush(int naipe[4]) {
     int r = 0, n;
     for (n=0; n<4; n++) {
@@ -213,6 +279,11 @@ int teste_flush(int naipe[4]) {
     return r;
 }
 
+/** \brief Testa se uma mão de 5 cartas é um full house
+ 
+ @param v       Array com o número de ocorrências de cada valor
+ @return        Um int com valor 1 se verdadeiro ou 0 se falso
+ */
 int teste_fullhouse(int rank[13]) {
     int r = 1, v;
     for (v=0; v<13; v++) {
@@ -221,6 +292,11 @@ int teste_fullhouse(int rank[13]) {
     return r;
 }
 
+/** \brief Testa se uma mão de 5 cartas é um four of a kind
+ 
+ @param v       Array com o número de ocorrências de cada valor
+ @return        Um int com valor 1 se verdadeiro ou 0 se falso
+ */
 int teste_fourofakind(int rank[13]) {
     int r = 0, v;
     for (v=0; v<13; v++) {
@@ -229,7 +305,11 @@ int teste_fourofakind(int rank[13]) {
     return r;
 }
 
-//r: 1 => straight; 2 => flush; 3 => fullhouse; 4 => fourofakind; 5 => straightflush
+/** \brief Devolve o tipo de combinação de uma mão de 5 cartas
+ 
+ @param mao     A mão com as cartas
+ @return        Um int com valor: 0 caso não seja nenhuma combinação; 1 caso straight; 2 caso flush; 3 caso full house; 4 caso four of a kind; 5 caso straight flush.
+ */
 int tipo_comb_five(MAO mao) {
     int r = 0;
     int n[4]={0};
@@ -248,6 +328,11 @@ int tipo_comb_five(MAO mao) {
     return r;
 } 
 
+/** \brief Atualiza o array da combination consoante o straight da mão
+ 
+ @param mao     A mão com as cartas
+ @param y       Array correspondente ao combination
+ */
 //Soma-se um aos v's de cada carta, assim se o ás for última carta tem o maior v. Tbm conta com se o ás for a primeira carta
 void atualizastraight(MAO mao, int y[3]) {
     int ind = 0, i;
@@ -271,6 +356,11 @@ void atualizastraight(MAO mao, int y[3]) {
     }
 }
 
+/** \brief Atualiza o array da combination consoante a combinação da mão
+ 
+ @param mao     A mão com as cartas
+ @param y       Array correspondente ao combination
+ */
 void preenchejogada (MAO mao, int y[3]){
   int m, i,ind;
   int rank[13] = {0};
@@ -294,6 +384,12 @@ void preenchejogada (MAO mao, int y[3]){
   }
 }
 
+/** \brief Compara a combinação de 5 cartas da mão com o array combination da estrutura
+ 
+ @param mao     A mão com as cartas
+ @param y       Array correspondente ao combination
+ @return        1 caso seja maior a combinação ou 0 caso não seja
+ */
 int cmpplay (MAO mao, int y[3]){
   int r=0;
   int t[3];
@@ -316,7 +412,12 @@ int cmpplay (MAO mao, int y[3]){
   return r;
 }
 
-long long int straightpos (MAO mao) {
+/** \brief Calcula uma combinação straight apartir de uma mão
+ 
+ @param mao     A mão com as cartas
+ @return        Uma mão com a combinação straight possível
+ */
+MAO straightpos (MAO mao) {
     int c=0, n, v;
   	MAO max = 0;
   	int rank[13] = {0};
@@ -344,18 +445,20 @@ long long int straightpos (MAO mao) {
   	return max;
 }
 
-long long int flushpos (MAO mao) {
+/** \brief Calcula uma combinação flush apartir de uma mão
+ 
+ @param mao     A mão com as cartas
+ @return        Uma mão com a combinação flush possível
+ */
+MAO flushpos (MAO mao) {
   MAO max = 0;
   int i;
   int naipe[4] = {0};
   separa_nap(mao, naipe);
-  for (i=3; i>=0; i--) {
-    if(naipe[i]>4) break;
-  }
+  for (i=3; i>=0; i--) if(naipe[i]>4) break;
   if(i != -1) {
-    int v = 12;
-    int c = 0;
-    while(c<5) {
+    int v = 12, c = 0;
+    while (c < 5) {
     	if(carta_existe(mao, i, v)) {
         	max = add_carta(max, i, v);
         	c+=1;
@@ -366,15 +469,18 @@ long long int flushpos (MAO mao) {
   return max;
 }
 
-long long int fullhousepos (MAO mao) {
+/** \brief Calcula uma combinação full house apartir de uma mão
+ 
+ @param mao     A mão com as cartas
+ @return        Uma mão com a combinação full house possível
+ */
+MAO fullhousepos (MAO mao) {
   MAO max = 0;
   int rank[13] = {0};
-  int i, p=0;
-    
+  int i, p = 0;
   separa_val(mao, rank);
-  for (i=12; i>=0; i--)
-    if (rank[i]>=3) break;
-  if(i==0) p=1;
+  for (i=12; i>=0; i--) if (rank[i]>=3) break;
+  if (i == 0) p = 1;
   for (; p<13; p++) {
     if (rank[p]>=2) break;
     if ((p+1)==i) p = p+1;
@@ -391,7 +497,7 @@ long long int fullhousepos (MAO mao) {
     }
     n=0;
     c=0;
-    while(c<2) {
+    while(c < 2) {
       if(carta_existe(mao, n, p)) {
         max = add_carta(max, n ,p);
         c++;
@@ -402,23 +508,27 @@ long long int fullhousepos (MAO mao) {
   return max;
 }
 
-long long int fourofakindpos (MAO mao) {
+/** \brief Calcula uma combinação four of a kind apartir de uma mão
+ 
+ @param mao     A mão com as cartas
+ @return        Uma mão com a combinação four of a kind possível
+ */
+MAO fourofakindpos (MAO mao) {
   MAO max = 0;
   int i;
   int rank[13] = {0};
   separa_val(mao, rank);
-  for(i=12; i>=0; i--)
-    if(rank[i]==4) break;
+  for(i=12; i>=0; i--) if(rank[i]==4) break;
   if(i!=-1) {
     int c=0, n=0, p;
-    while(n<4) {
+    while(n < 4) {
       max = add_carta(max, n, i);
       n++;
     }
     for(n=0; n<52; n++) {
-      c = n/13;
-      p = n%13;
-      if(carta_existe(mao, c, p) && p!=i) {
+      c = n / 13;
+      p = n % 13;
+      if(carta_existe(mao, c, p) && p != i) {
         max = add_carta(max, c, p);
         break;
       }
@@ -428,7 +538,12 @@ long long int fourofakindpos (MAO mao) {
   return max;
 }
 
-long long int straightflushpos (MAO mao) {
+/** \brief Calcula uma combinação straight flush apartir de uma mão
+ 
+ @param mao     A mão com as cartas
+ @return        Uma mão com a combinação straight flush possível
+ */
+MAO straightflushpos (MAO mao) {
   MAO max = 0, temp = 0;
   int n=3;
   int naipe[4] = {0};
@@ -451,6 +566,12 @@ long long int straightflushpos (MAO mao) {
   return max;
 }
 
+/** \brief Calcula uma jogada de 5 cartas da mão do jogador m
+ 
+ @param data    Estrutura atual
+ @param m       Jogador a jogar
+ @return        Devolve: 1 caso encontre jogada; 0 caso não encontre
+ */
 int joga5 (DATABASE * data, int m) {
     int r = 1;
     if (cmpplay(straightflushpos(data->mao[m]),data->combination)) data->jogadas[m] = straightflushpos(data->mao[m]);
@@ -465,101 +586,123 @@ int joga5 (DATABASE * data, int m) {
     return r;
 }
 
+/** \brief Calcula uma jogada four of a kind com o 3 de ouros da mão do jogador m
+ 
+ @param data    Estrutura atual
+ @param m       Jogador a jogar
+ */
+void pmjgfourofakind (DATABASE * data, int m) {
+    int ind, n, v, count = 0;
+    int rank[13] = {0};
+    separa_val(data->mao[m],rank);
+    MAO temp = 0;
+    if(rank[0]==4) {
+        for(n = 0; n < 4; n++)
+            if(carta_existe(data->mao[m],n,0))
+                temp = add_carta(temp,n,0);
+        for(ind = 0; ind < 52; ind++){
+            n = ind / 13;
+            v = ind % 13;
+            if(carta_existe(data->mao[m],n,v) && v != 0){
+                temp = add_carta(temp,n,v);
+                break;
+            }
+        }
+    }
+    else {
+        for(v=1; v<13; v++) if(rank[v]==4) break;
+        if (v != 13) {
+            for(n = 0; n < 4; n++)
+                if(carta_existe(data->mao[m],n,v))
+                    temp = add_carta(temp,n,v);
+            temp = add_carta(temp, 0, 0);
+        }
+    }
+    data->jogadas[m] = fourofakindpos(temp);
+}
+
+/** \brief Calcula uma jogada full house com o 3 de ouros da mão do jogador m
+ 
+ @param data    Estrutura atual
+ @param m       Jogador a jogar
+ */
+void pmjgfullhouse (DATABASE * data, int m) {
+    int ind, n, v, count = 0;
+    int rank[13] = {0};
+    separa_val(data->mao[m],rank);
+    MAO temp = 0;
+    if(rank[0]==3) {
+        for(n = 0; n < 4; n++)
+            if(carta_existe(data->mao[m],n,0))
+                temp = add_carta(temp,n,0);
+        for(v = 1; v < 13; v++)
+            if(rank[v] >= 2){
+                for(n = 0; n < 4 && count < 2; n++)
+                    if(carta_existe(data->mao[m],n,v)){
+                        temp = add_carta(temp,n,v);
+                        count++ ;
+                    }
+                break;
+            }
+        if(count == 2) data->jogadas[m] = temp;
+    }
+    else if(rank[0]==2) {
+        for(n = 0; n < 4; n++)
+            if(carta_existe(data->mao[m],n,0)){
+                temp = add_carta(temp,n,0);
+            }
+        for(v = 1; v < 13; v++)
+            if(rank[v] >= 3){
+                for(n = 0; n < 4 && count < 3; n++)
+                    if(carta_existe(data->mao[m],n,v)){
+                        temp = add_carta(temp,n,v);
+                        count++ ;
+                    }
+                break;
+            }
+        if(count == 3) data->jogadas[m] = temp;
+    }
+}
+
+/** \brief Calcula uma jogada flush com o 3 de ouros da mão do jogador m
+ 
+ @param data    Estrutura atual
+ @param m       Jogador a jogar
+ */
+void pmjgflush (DATABASE * data, int m) {
+    int n, v, count = 0;
+    MAO temp = 0;
+    for(v = 0; v < 13 && count < 5; v++)
+        if(carta_existe(data->mao[m],0,v)){
+            temp = add_carta(temp, 0, v);
+            count++;
+        }
+    if(count==5) data->jogadas[m] = temp;
+}
+
+/** \brief Calcula uma jogada com o 3 de ouros da mão do jogador m
+ 
+ @param data    Estrutura atual
+ @param m       Jogador a jogar
+ */
 void primeira_jogada(DATABASE * data, int m){
     long long int temp = data->mao[m];
-    int ind;
-    int n, v;
-    int count = 0;
+    int ind, n, v, count = 0;
     int rank[13] = {0};
     separa_val(data->mao[m],rank);
     data->nc = 5;
     //eliminar todas as cartas que não podem estar num straight com 3 de ouros, incluindo outros 3, que não sejam o de ouros
     for(ind = 0; ind < 52; ind++){
         n = ind / 13;
-        v = ind %13;
+        v = ind % 13;
         if(carta_existe(temp, n, v) && ((v > 4 && v < 11) || (v == 0 && n != 0)))
             temp = rem_carta(temp, n, v);
     }
     data->jogadas[m] = straightflushpos(temp);
-    if(data->jogadas[m] == 0){
-        data->jogadas[m] = straightpos(temp);
-    }
-    if(data->jogadas[m] == 0){ //FOUR OF A KIND
-        temp = 0;
-        if(rank[0]==4) {
-            for(n = 0; n < 4; n++)
-                if(carta_existe(data->mao[m],n,0))
-                    temp = add_carta(temp,n,0);
-            for(ind = 0; ind < 52; ind++){
-                n = ind / 13;
-                v = ind % 13;
-                if(carta_existe(data->mao[m],n,v) && v != 0){
-                    temp = add_carta(temp,n,v);
-                	break;
-                }
-            }
-        }
-        else {
-            for(v=1; v<13; v++) {
-                if(rank[v]==4) break;
-            }
-            if(v!=13) {
-                for(n = 0; n < 4; n++)
-                    if(carta_existe(data->mao[m],n,v))
-                        temp = add_carta(temp,n,v);
-                temp = add_carta(temp, 0, 0);
-            }
-        }
-        data->jogadas[m] = fourofakindpos(temp);
-    }
-    if(data->jogadas[m] == 0){ // FULLHOUSE
-        temp = 0;
-        if(rank[0]==3) {
-            for(n = 0; n < 4; n++)
-                if(carta_existe(data->mao[m],n,0)){
-                    temp = add_carta(temp,n,0);
-                }
-            for(v = 1; v < 13; v++)
-                if(rank[v] >= 2){
-                    for(n = 0; n < 4 && count < 2; n++)
-                        if(carta_existe(data->mao[m],n,v)){
-                            temp = add_carta(temp,n,v);
-                            count++ ;
-                        }
-                    break;
-                }
-            if(count == 2)
-                data->jogadas[m] = temp;
-        }
-        else if(rank[0]==2) {
-            for(n = 0; n < 4; n++)
-                if(carta_existe(data->mao[m],n,0)){
-                    temp = add_carta(temp,n,0);
-                }
-            for(v = 1; v < 13; v++)
-                if(rank[v] >= 3){
-                    for(n = 0; n < 4 && count < 3; n++)
-                        if(carta_existe(data->mao[m],n,v)){
-                            temp = add_carta(temp,n,v);
-                            count++ ;
-                        }
-                    break;
-                }
-            if(count == 3)
-                data->jogadas[m] = temp;
-        }
-    }
-    if(data->jogadas[m] == 0){ // e a flush tbm
-        count = 0;
-        temp = 0;
-        for(v = 0; v < 13 && count < 5; v++){
-            if(carta_existe(data->mao[m],0,v)){
-                temp = add_carta(temp, 0, v);
-                count++;
-            }
-        }
-        if(count==5) data->jogadas[m] = temp;
-    }
+    if(data->jogadas[m] == 0) data->jogadas[m] = straightpos(temp);
+    if(data->jogadas[m] == 0) pmjgfourofakind(data, m);
+    if(data->jogadas[m] == 0) pmjgfullhouse(data, m);
+    if(data->jogadas[m] == 0) pmjgflush(data, m);
     if(data->jogadas[m] == 0){
         for(n=0, count=0; n<4; n++)
             if(carta_existe(data->mao[m], n, 0)) {
@@ -570,6 +713,11 @@ void primeira_jogada(DATABASE * data, int m){
     }
 }
 
+/** \brief Calcula uma jogada com o 3 de ouros da mão do jogador m
+ 
+ @param data    Estrutura atual
+ @param m       Jogador a jogar
+ */
 int check_basico(DATABASE * data, int cartas[]){
     int max = maior_carta_jogada(data);
     int i, r = 0;
@@ -589,7 +737,12 @@ int check_basico(DATABASE * data, int cartas[]){
     return r;
 }
 
-
+/** \brief Testa se uma jogada do jogador jog é válida
+ 
+ @param data    Estrutura atual
+ @param jog     Jogador a jogar
+ @return        Devolve: 1 caso a jogada seja válida; 0 caso não seja
+ */
 int check_jogada(DATABASE *data, int jog){
     int ind, r = 0, count = 0;
     int n, v;
@@ -614,8 +767,7 @@ int check_jogada(DATABASE *data, int jog){
             if (data->passar==3 && tipo_comb_five(jogada) >0) r=1;
             else if(tipo_comb_five(jogada)>0  && cmpplay(jogada, data->combination)==1) r=1;
         if(data->play==3) {
-            if(carta_existe(jogada, 0, 0)) r=1;
-            else r = 0;
+            if(!(carta_existe(jogada, 0, 0))) r=0;
         }
     }
     else
@@ -623,7 +775,12 @@ int check_jogada(DATABASE *data, int jog){
     return r;
 }
 
-// Determina jogadas com entre 1 a 3 cartas
+/** \brief Testa se uma jogada do jogador jog é válida
+ 
+ @param data    Estrutura atual
+ @param jog     Jogador a jogar
+ @return        Determina jogadas com entre 1 a 3 cartas
+ */
 int jogadas_possiveis(DATABASE *data, int jog, int jogadas[][5]){
     int n, v, i, temp_naipe[4], count = 0, a;
     int max = maior_carta_jogada(data);

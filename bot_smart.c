@@ -199,29 +199,29 @@ void preenchejogada (MAO mao, int y[3], int nc){
 }
 
 int naipe (char c) {
-	int r;
-	switch (c) {
-		case 68: r = 0;
-		case 67: r = 1;
-		case 72: r = 2;
-		case 83: r = 3;
-	}
+    int r;
+    switch (c) {
+        case 68: r = 0; break;
+        case 67: r = 1; break;
+        case 72: r = 2; break;
+        case 83: r = 3;
+    }
     return r;
 }
 
 int valor (char c) {
-	int r;
-	if(c>50 && c<58) r = c-51;
-	else
-		switch (c) {
-			case 84: r = 7;
-			case 74: r = 8;
-			case 81: r = 9;
-			case 75: r = 10;
-			case 50: r = 11;
-			case 65: r = 12;
-	}
-	return r;
+    int r;
+    if(c>50 && c<58) r = c-51;
+    else
+        switch (c) {
+            case 84: r = 7; break;
+            case 74: r = 8; break;
+            case 81: r = 9; break;
+            case 75: r = 10; break;
+            case 65: r = 11; break;
+            case 50: r = 12;
+    }
+    return r;
 }
 
 int calculalixosdt (MAO mao){
@@ -347,12 +347,12 @@ void convertejogstr(MAO mao, char * output){
             i +=3;
         }
     }
-    output [i-1]= '\0';
+    output[i-1] = '\0';
 }
 
 void conv_jog (char * s, DATABASE * data, int c) {
     int i, n, v;
-    MAO last_play = 0;
+    data->last_play = 0;
     data->nc = 0;
     for(i=6; s[i-1] != '\0'; i += 3) {
         v = valor(s[i]);
@@ -567,6 +567,7 @@ int main() {
             data.passar = 0;
             c = (c+1)%4;
             conv_jog(input, &data, c);
+            printf("%lld\n", data.last_play);
         }
         if (input[3] == 'A') {
             jogada = analisa_jog(&data, c);
@@ -577,11 +578,12 @@ int main() {
             else {
                 convertejogstr(jogada, output);
                 printf("%s", output);
+                data.passar = 0;
             }
             c = (c+1)%4;
-            if (input[0] == 'O') {
-                data.mao[0] -= jogada;
-            }
+        }
+        if (input[0] == 'O') {
+            data.mao[0] -= jogada;
         }
     }
     return 0;
