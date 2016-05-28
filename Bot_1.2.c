@@ -471,7 +471,7 @@ int fullhousepos (DATABASE * simulacao, int jog, int sametype, MAO jogadas[40], 
         if(rank[i] > 2){
             for(n = 0; n < 4; n++)
                 if(carta_existe(mao, n, i)){
-                    add_carta(temp,n,i);
+                    temp = add_carta(temp,n,i);
             		c++;
                     if(c == 3){
                         c = 0;
@@ -480,10 +480,10 @@ int fullhousepos (DATABASE * simulacao, int jog, int sametype, MAO jogadas[40], 
                 }
             for(v = 0; v < 13; v++)
                 if(rank[v] > 1 && v != i){
-                    jogadas[count] = 0;
+                    jogadas[count] = temp;
                     for(n = 0; n<4; n++)
                         if(carta_existe(mao,n,v)){
-                            add_carta(jogadas[count],n,v);
+                            jogadas[count] = add_carta(jogadas[count],n,v);
                             c++;
                             if(c == 2){
                                 c = 0;
@@ -749,7 +749,7 @@ void add_jogadas(MCtree tree, int counter[4]){
 
 
 
-
+//TODO: nem todas as jogadas estão a cehgar a nodos, ver com o exemplo que está no chrome
 // em vez de guardar estado nos nodos, guarda jogadas, senão estouramos com a memória pretty quickly e depois n tem onde meter mais nodos, para além de que os t's ficam quase todos a 0
 MCtree treePolicy(MCtree tree, DATABASE * simulacao, int * flag2){
     int counter[4] = {0};
@@ -758,6 +758,7 @@ MCtree treePolicy(MCtree tree, DATABASE * simulacao, int * flag2){
     int index = 0;
     int count1 = 0, count2 = 0;
     int nc = (simulacao ->nc) - 1;
+    int wi = 0, ni = 0, t = 0;
     MAO jogadas[4][40];
     MAO jogada_max = 0;
     memset(jogadas,0,8 * 4 * 40);
@@ -783,7 +784,10 @@ MCtree treePolicy(MCtree tree, DATABASE * simulacao, int * flag2){
                     return tree->nextN[nc][count2];
                 }
                 else if((jogadas[nc][count1]) == ((tree->nextN[nc][count2])->estado)){
-                	UCT_value = (float)(((tree->nextN[nc][count2])->r) / ((float)(tree->nextN[nc][count2])->t)) + 1.4142136 * (sqrt(log(tree->t) / ((tree->nextN[nc][count2])->t)));
+                    wi = (tree->nextN[nc][count2])->r;
+                    ni = (tree->nextN[nc][count2])->t;
+                    t = tree->t;
+                	UCT_value = (float)(((wi) / (float)(ni)) + (1.4142136 * (sqrt(log(t) / (ni))))); //TODO:verificar isto, com o teste2.c, determinar r e tot e t em separado
                     count1++;
                     if(UCT_value > max){
                         max = UCT_value;
@@ -811,7 +815,10 @@ MCtree treePolicy(MCtree tree, DATABASE * simulacao, int * flag2){
                             return tree->nextN[nc][count2];
                         }
                         else if((jogadas[nc][count1])== ((tree->nextN[nc][count2])->estado)){
-                            UCT_value = (float)(((tree->nextN[nc][count2])->r) / ((float)(tree->nextN[nc][count2])->t)) + (float)(1.4142136 * (sqrt(log(tree->t) / ((tree->nextN[nc][count2])->t))));
+                            wi = (tree->nextN[nc][count2])->r;
+                            ni = (tree->nextN[nc][count2])->t;
+                            t = tree->t;
+                            UCT_value = (float)(((wi) / (float)(ni)) + (1.4142136 * (sqrt(log(t) / (ni)))));
                             count1++;
                             if(UCT_value > max){
                                 max = UCT_value;
@@ -844,7 +851,7 @@ MCtree treePolicy(MCtree tree, DATABASE * simulacao, int * flag2){
 }
 
 
-//TODO: fazer outro Bot, mais inteligente, para usar aqui em vez disto tudo eeee ver das que já existem quais são compatíveis em vex de calcular possiveis againk
+
 int defaultPolicy(MCtree node, DATABASE * simulacao, int * flag2){
     int jogo = 0, counter[4] = {0}, flag = 0, j = 0; //TODO: implementar o passar para ver se se mete o nc = 0 e testar se estamos num nodo que é para simular até ao fim ou só um passo
     MAO jogadas[4][40];//TODO: tentar baixar o 40, tbm ºda para pôr a 0's com {{0}}
@@ -991,7 +998,7 @@ int main(){
                     free_nodes(tree,temp);
                     tree = temp;
                     tree->prev = NULL;
-                    data.usadas[0] = data.usadas[0] | (tree-> estado ^ data.mao[0]);
+                    data.usadas[0] = data.usadas[0] | tree-> estado; //escolher melhor win rate com mais de 30 sim. em função à parte
                     printf("Jogar: %lld\n t: %ld\n r: %f\n", tree-> estado,tree->t, tree->r); //xor pode dar muitos 1's de fora das posições que iteressam
                     data.mao[0] = (data.mao[0]) ^ (tree->estado);
                 }
@@ -1041,13 +1048,13 @@ int main(){
                         data.usadas[jog] = add_carta(data.usadas[jog],n,v);
                         mao_temp = add_carta(mao_temp,n,v);
                     }
+                    jog = (jog + 1) % 4;
+                    data.jogada = mao_temp;
+                    data.nc = i;
+                    if(data.nc == 5)
+                        data.nc = 4;
+                    data.passar = 0;
                 }
-                jog = (jog + 1) % 4;
-                data.jogada = mao_temp;
-                data.nc = i;
-                if(data.nc == 5)
-                    data.nc = 4;
-                data.passar = 0;
                 break;
             case 'P':
                 data.passar++;
@@ -1100,7 +1107,6 @@ int main(){
                     }
                     data.mao[0] = add_carta(data.mao[0],n,v);
                 }
-                jog = 1;
                 tree = createTree(data.mao[0]);
                 printf("%p\n",tree);
                 temp = tree;
