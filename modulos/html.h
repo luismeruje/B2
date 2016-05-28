@@ -1,0 +1,13 @@
+void imprime_carta_link(int , int ,DATABASE ,int ,int );
+void imprime_jogadas(DATABASE );
+void imprime_maos (DATABASE );
+void botao_ordenar (DATABASE );
+void botao_help(DATABASE * );
+void botao_passar (DATABASE );
+void botao_play (DATABASE );
+void botao_continuar(DATABASE * );
+void botao_novojogo();
+void imprime_fim (DATABASE *);
+void botao_start(DATABASE );
+void imprime_start(DATABASE );
+void imprime (DATABASE );
