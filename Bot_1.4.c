@@ -469,7 +469,8 @@ int fullhousepos (DATABASE * simulacao, int jog, int sametype, MAO jogadas[40], 
                 break;
             }
     }
-    for(; i < 13; i++)
+    for(; i < 13; i++){
+        temp = 0;
         if(rank[i] > 2){
             for(n = 0; n < 4; n++)
                 if(carta_existe(mao, n, i)){
@@ -495,6 +496,7 @@ int fullhousepos (DATABASE * simulacao, int jog, int sametype, MAO jogadas[40], 
                         }
                 }
         }
+    }
     return count;
 }
 
@@ -1047,6 +1049,18 @@ void clean_pass(MCtree tree, int pass_counter){
         }
 }
 
+void checkFirst(MCtree tree, DATABASE * data){
+    int counter_tree, nc;
+    for(nc = 0; nc < 4; nc+= 1){
+        for(counter_tree = 0; (tree->nextN[nc][counter_tree] != NULL) && (counter_tree < 40); counter_tree++)
+            if((tree->nextN[nc][counter_tree]->estado == 0) || (carta_existe(tree->nextN[nc][counter_tree]->estado,0,0) == 0)){
+                    tree->nextN[nc][counter_tree]->t = 0;
+                    tree->nextN[nc][counter_tree]->r = 0;
+            }
+	}
+    data->firstplay = 2;
+}
+
 //NOTA:para acabar stdin, ctrl + D
 //TODO: determinar quem é quem e a quem adicionar nas usadas, quando n somos nós a começar, estou a fazer manualmente
 //WARNING: dá mal: http://127.0.0.1/cgi-bin/cartas?972965347343_6597608369744_3852706269888640_643322783764768_0_0_0_0_0_3_0_3_0_0_0_0_0_0_0_0
@@ -1097,6 +1111,8 @@ int main(){
                         flag = 0;
                     }
                     jog = 1;
+                    if(data.firstplay != 2)
+                        checkFirst(tree, &data);
                     temp = choosePlay(tree,&data);
                     convertejogstr(temp->estado,output);
                     printf("%s\n t: %ld\n r: %f\n", output,tree->t, tree->r);
