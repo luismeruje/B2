@@ -1,6 +1,8 @@
 var searchData=
 [
-  ['main',['main',['../main_8c.html#ae66f6b31b5ad750f1fe042a706a4e3d4',1,'main.c']]],
-  ['maior_5fcarta_5fjogada',['maior_carta_jogada',['../auxiliares_8c.html#a112abccf1cb680c6e139db357cf2e1c5',1,'auxiliares.c']]],
-  ['maior_5fcarta_5fmao',['maior_carta_mao',['../auxiliares_8c.html#afca06d744ca2d64fb43c879cddbb916b',1,'auxiliares.c']]]
+  ['pmjgflush',['pmjgflush',['../auxiliares_8c.html#a7a402c58b9666d07d854a69604b10396',1,'auxiliares.c']]],
+  ['pmjgfourofakind',['pmjgfourofakind',['../auxiliares_8c.html#ae6c7e178c574dadb431e0271dc79709d',1,'auxiliares.c']]],
+  ['pmjgfullhouse',['pmjgfullhouse',['../auxiliares_8c.html#a99c4c1214494f2320dd24d9bfd839edd',1,'auxiliares.c']]],
+  ['preenchejogada',['preenchejogada',['../auxiliares_8c.html#ae9bf36a9125af60245d6cfd10e127a9c',1,'auxiliares.c']]],
+  ['primeira_5fjogada',['primeira_jogada',['../auxiliares_8c.html#a44105c066a1511ad12649874e1e79cc1',1,'auxiliares.c']]]
 ];

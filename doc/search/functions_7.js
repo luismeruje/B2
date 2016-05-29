@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['joga5',['joga5',['../auxiliares_8c.html#ab713bcca8792007b57ac60e342c34627',1,'auxiliares.c']]],
-  ['joga_5fbots',['joga_bots',['../bots_8c.html#a121cde9c654b25d202a76725a93192d4',1,'bots.c']]],
-  ['jogadas_5fpossiveis',['jogadas_possiveis',['../auxiliares_8c.html#ae4d447f090f6af0a4c424892b8ac2cab',1,'auxiliares.c']]],
-  ['jogo',['jogo',['../bots_8c.html#a714655ec62d2fb4f507632fe4461eb2a',1,'bots.c']]]
+  ['maior_5fcarta_5fjogada',['maior_carta_jogada',['../auxiliares_8c.html#a112abccf1cb680c6e139db357cf2e1c5',1,'auxiliares.c']]],
+  ['maior_5fcarta_5fmao',['maior_carta_mao',['../auxiliares_8c.html#afca06d744ca2d64fb43c879cddbb916b',1,'auxiliares.c']]]
 ];

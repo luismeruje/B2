@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.11"/>
-<title>bigtwo: stuff/auxiliares.c File Reference</title>
+<title>bigtwo: stuff/auxiliares.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -87,115 +87,107 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">auxiliares.c File Reference</div>  </div>
+<div class="title">auxiliares.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;estrutura.h&quot;</code><br />
-</div><table class="memberdecls">
+
+<p><a href="auxiliares_8h_source.html">Go to the source code of this file.</a></p>
+<table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ae8679929b45f17a3fe613751010532d4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="estrutura_8c.html#aa87f82e2715f3279bc8cb6fc2c13142d">DATABASE</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8c.html#ae8679929b45f17a3fe613751010532d4">STR2DATA</a> (char *str)</td></tr>
-<tr class="memdesc:ae8679929b45f17a3fe613751010532d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converte a query para a estrutura de dados.  <a href="#ae8679929b45f17a3fe613751010532d4">More...</a><br /></td></tr>
-<tr class="separator:ae8679929b45f17a3fe613751010532d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1a29ed523e2067f68f960fa532c0c967"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8c.html#a1a29ed523e2067f68f960fa532c0c967">DATA2STR</a> (char *str, <a class="el" href="estrutura_8c.html#aa87f82e2715f3279bc8cb6fc2c13142d">DATABASE</a> data)</td></tr>
-<tr class="memdesc:a1a29ed523e2067f68f960fa532c0c967"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converte a estrutura de dados para query.  <a href="#a1a29ed523e2067f68f960fa532c0c967">More...</a><br /></td></tr>
-<tr class="separator:a1a29ed523e2067f68f960fa532c0c967"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afdc1d6d9f09d22e93efd34ed545fc84d"><td class="memItemLeft" align="right" valign="top">long long int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8c.html#afdc1d6d9f09d22e93efd34ed545fc84d">add_carta</a> (<a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a> ESTADO, int naipe, int valor)</td></tr>
-<tr class="memdesc:afdc1d6d9f09d22e93efd34ed545fc84d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adiciona uma carta a um dos estados.  <a href="#afdc1d6d9f09d22e93efd34ed545fc84d">More...</a><br /></td></tr>
-<tr class="separator:afdc1d6d9f09d22e93efd34ed545fc84d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8f5758cfc35fb5f3926d12ceaf3ddbad"><td class="memItemLeft" align="right" valign="top">long long int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8c.html#a8f5758cfc35fb5f3926d12ceaf3ddbad">rem_carta</a> (<a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a> ESTADO, int naipe, int valor)</td></tr>
-<tr class="memdesc:a8f5758cfc35fb5f3926d12ceaf3ddbad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove uma carta a um dos estados.  <a href="#a8f5758cfc35fb5f3926d12ceaf3ddbad">More...</a><br /></td></tr>
-<tr class="separator:a8f5758cfc35fb5f3926d12ceaf3ddbad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af821c9c516762b5efbe4b1323ed26bfb"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8c.html#af821c9c516762b5efbe4b1323ed26bfb">carta_existe</a> (<a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a> ESTADO, int naipe, int valor)</td></tr>
-<tr class="memdesc:af821c9c516762b5efbe4b1323ed26bfb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Verifica se uma carta pertence a um dos estados.  <a href="#af821c9c516762b5efbe4b1323ed26bfb">More...</a><br /></td></tr>
-<tr class="separator:af821c9c516762b5efbe4b1323ed26bfb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9820b2a12310cd6e9a6a17c64ad86e61"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8c.html#a9820b2a12310cd6e9a6a17c64ad86e61">distribui</a> (<a class="el" href="estrutura_8c.html#aa87f82e2715f3279bc8cb6fc2c13142d">DATABASE</a> *data)</td></tr>
-<tr class="memdesc:a9820b2a12310cd6e9a6a17c64ad86e61"><td class="mdescLeft">&#160;</td><td class="mdescRight">Distribui cartas pelas 4 mãos.  <a href="#a9820b2a12310cd6e9a6a17c64ad86e61">More...</a><br /></td></tr>
-<tr class="separator:a9820b2a12310cd6e9a6a17c64ad86e61"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab9c58294c1ac32a34fa7b9b9afef228f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8c.html#ab9c58294c1ac32a34fa7b9b9afef228f">calcula_score</a> (<a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a> mao)</td></tr>
-<tr class="memdesc:ab9c58294c1ac32a34fa7b9b9afef228f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calcula a pontuação de uma MAO.  <a href="#ab9c58294c1ac32a34fa7b9b9afef228f">More...</a><br /></td></tr>
-<tr class="separator:ab9c58294c1ac32a34fa7b9b9afef228f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afca06d744ca2d64fb43c879cddbb916b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8c.html#afca06d744ca2d64fb43c879cddbb916b">maior_carta_mao</a> (<a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a> mao)</td></tr>
-<tr class="memdesc:afca06d744ca2d64fb43c879cddbb916b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calcula a maior carta de uma MAO.  <a href="#afca06d744ca2d64fb43c879cddbb916b">More...</a><br /></td></tr>
-<tr class="separator:afca06d744ca2d64fb43c879cddbb916b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a112abccf1cb680c6e139db357cf2e1c5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8c.html#a112abccf1cb680c6e139db357cf2e1c5">maior_carta_jogada</a> (<a class="el" href="estrutura_8c.html#aa87f82e2715f3279bc8cb6fc2c13142d">DATABASE</a> *data)</td></tr>
-<tr class="memdesc:a112abccf1cb680c6e139db357cf2e1c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calcula a maior carta jogada, de entre as mãos do parâmetro "jogadas" da estrutura.  <a href="#a112abccf1cb680c6e139db357cf2e1c5">More...</a><br /></td></tr>
-<tr class="separator:a112abccf1cb680c6e139db357cf2e1c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8a0682ff1a0a31a364c5692ae1eba555"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8c.html#a8a0682ff1a0a31a364c5692ae1eba555">quem_comeca</a> (<a class="el" href="estrutura_8c.html#aa87f82e2715f3279bc8cb6fc2c13142d">DATABASE</a> *data)</td></tr>
-<tr class="memdesc:a8a0682ff1a0a31a364c5692ae1eba555"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determina quem começa o jogo.  <a href="#a8a0682ff1a0a31a364c5692ae1eba555">More...</a><br /></td></tr>
-<tr class="separator:a8a0682ff1a0a31a364c5692ae1eba555"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5ac587cf67bcf78e5c17c8c117bbcd20"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8c.html#a5ac587cf67bcf78e5c17c8c117bbcd20">separa_val</a> (<a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a> mao, int rank[13])</td></tr>
-<tr class="memdesc:a5ac587cf67bcf78e5c17c8c117bbcd20"><td class="mdescLeft">&#160;</td><td class="mdescRight">Transforma um array para que tenha o número de ocorrências de cada valor numa mão.  <a href="#a5ac587cf67bcf78e5c17c8c117bbcd20">More...</a><br /></td></tr>
-<tr class="separator:a5ac587cf67bcf78e5c17c8c117bbcd20"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6e2280e527ceebadfb3d9245ae082580"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8c.html#a6e2280e527ceebadfb3d9245ae082580">separa_nap</a> (<a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a> mao, int naipe[4])</td></tr>
-<tr class="memdesc:a6e2280e527ceebadfb3d9245ae082580"><td class="mdescLeft">&#160;</td><td class="mdescRight">Transforma um array para que tenha o número de ocorrências de cada naipe numa mão.  <a href="#a6e2280e527ceebadfb3d9245ae082580">More...</a><br /></td></tr>
-<tr class="separator:a6e2280e527ceebadfb3d9245ae082580"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a03d1a3e42fd72ca532361240dd8a1fba"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8c.html#a03d1a3e42fd72ca532361240dd8a1fba">teste_straight</a> (int v[13])</td></tr>
-<tr class="memdesc:a03d1a3e42fd72ca532361240dd8a1fba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Testa se uma mão de 5 cartas é um straight.  <a href="#a03d1a3e42fd72ca532361240dd8a1fba">More...</a><br /></td></tr>
-<tr class="separator:a03d1a3e42fd72ca532361240dd8a1fba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a67da41dd6d65761bd2ec7ea6edbbd94a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8c.html#a67da41dd6d65761bd2ec7ea6edbbd94a">teste_flush</a> (int naipe[4])</td></tr>
-<tr class="memdesc:a67da41dd6d65761bd2ec7ea6edbbd94a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Testa se uma mão de 5 cartas é um flush.  <a href="#a67da41dd6d65761bd2ec7ea6edbbd94a">More...</a><br /></td></tr>
-<tr class="separator:a67da41dd6d65761bd2ec7ea6edbbd94a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6ae70d0504df7835f081215997b8bac1"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8c.html#a6ae70d0504df7835f081215997b8bac1">teste_fullhouse</a> (int rank[13])</td></tr>
-<tr class="memdesc:a6ae70d0504df7835f081215997b8bac1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Testa se uma mão de 5 cartas é um full house.  <a href="#a6ae70d0504df7835f081215997b8bac1">More...</a><br /></td></tr>
-<tr class="separator:a6ae70d0504df7835f081215997b8bac1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a28329d6bce2a79ae07da47c0c7191c76"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8c.html#a28329d6bce2a79ae07da47c0c7191c76">teste_fourofakind</a> (int rank[13])</td></tr>
-<tr class="memdesc:a28329d6bce2a79ae07da47c0c7191c76"><td class="mdescLeft">&#160;</td><td class="mdescRight">Testa se uma mão de 5 cartas é um four of a kind.  <a href="#a28329d6bce2a79ae07da47c0c7191c76">More...</a><br /></td></tr>
-<tr class="separator:a28329d6bce2a79ae07da47c0c7191c76"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac24cf15eb16b2ce5d47d3f125d1aa95c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8c.html#ac24cf15eb16b2ce5d47d3f125d1aa95c">tipo_comb_five</a> (<a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a> mao)</td></tr>
-<tr class="memdesc:ac24cf15eb16b2ce5d47d3f125d1aa95c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Devolve o tipo de combinação de uma mão de 5 cartas.  <a href="#ac24cf15eb16b2ce5d47d3f125d1aa95c">More...</a><br /></td></tr>
-<tr class="separator:ac24cf15eb16b2ce5d47d3f125d1aa95c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1a71fa09e5bf3f9fabcfb15550838c40"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8c.html#a1a71fa09e5bf3f9fabcfb15550838c40">atualizastraight</a> (<a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a> mao, int y[3])</td></tr>
-<tr class="memdesc:a1a71fa09e5bf3f9fabcfb15550838c40"><td class="mdescLeft">&#160;</td><td class="mdescRight">Atualiza o array que vai preencher o parâmetro combinations consoante o straight da mão.  <a href="#a1a71fa09e5bf3f9fabcfb15550838c40">More...</a><br /></td></tr>
-<tr class="separator:a1a71fa09e5bf3f9fabcfb15550838c40"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae9bf36a9125af60245d6cfd10e127a9c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8c.html#ae9bf36a9125af60245d6cfd10e127a9c">preenchejogada</a> (<a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a> mao, int y[3])</td></tr>
-<tr class="memdesc:ae9bf36a9125af60245d6cfd10e127a9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Atualiza o array da combination consoante a combinação da mão.  <a href="#ae9bf36a9125af60245d6cfd10e127a9c">More...</a><br /></td></tr>
-<tr class="separator:ae9bf36a9125af60245d6cfd10e127a9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a40fc8628dbd64fd746016ad74a77399e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8c.html#a40fc8628dbd64fd746016ad74a77399e">cmpplay</a> (<a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a> mao, int y[3])</td></tr>
-<tr class="memdesc:a40fc8628dbd64fd746016ad74a77399e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compara a combinação de 5 cartas da mão com o array combination da estrutura.  <a href="#a40fc8628dbd64fd746016ad74a77399e">More...</a><br /></td></tr>
-<tr class="separator:a40fc8628dbd64fd746016ad74a77399e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad415e29c79169cd8e188ab0cbdc68cee"><td class="memItemLeft" align="right" valign="top"><a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8c.html#ad415e29c79169cd8e188ab0cbdc68cee">straightpos</a> (<a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a> mao)</td></tr>
-<tr class="memdesc:ad415e29c79169cd8e188ab0cbdc68cee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calcula uma combinação straight a partir de uma mão.  <a href="#ad415e29c79169cd8e188ab0cbdc68cee">More...</a><br /></td></tr>
-<tr class="separator:ad415e29c79169cd8e188ab0cbdc68cee"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a077a93a806cfc0ec8d35431c490b00f2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8c.html#a077a93a806cfc0ec8d35431c490b00f2">flushpos</a> (<a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a> mao)</td></tr>
-<tr class="memdesc:a077a93a806cfc0ec8d35431c490b00f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calcula uma combinação flush apartir de uma mão.  <a href="#a077a93a806cfc0ec8d35431c490b00f2">More...</a><br /></td></tr>
-<tr class="separator:a077a93a806cfc0ec8d35431c490b00f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aea89de509b9c787e5e8a6e6943be3b81"><td class="memItemLeft" align="right" valign="top"><a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8c.html#aea89de509b9c787e5e8a6e6943be3b81">fullhousepos</a> (<a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a> mao)</td></tr>
-<tr class="memdesc:aea89de509b9c787e5e8a6e6943be3b81"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calcula uma combinação full house apartir de uma mão.  <a href="#aea89de509b9c787e5e8a6e6943be3b81">More...</a><br /></td></tr>
-<tr class="separator:aea89de509b9c787e5e8a6e6943be3b81"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5c8181efbf0f1cb57c79de081803fe1e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8c.html#a5c8181efbf0f1cb57c79de081803fe1e">fourofakindpos</a> (<a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a> mao)</td></tr>
-<tr class="memdesc:a5c8181efbf0f1cb57c79de081803fe1e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calcula uma combinação four of a kind apartir de uma mão.  <a href="#a5c8181efbf0f1cb57c79de081803fe1e">More...</a><br /></td></tr>
-<tr class="separator:a5c8181efbf0f1cb57c79de081803fe1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aab856087b5118bede53d8d6abb72a8fa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8c.html#aab856087b5118bede53d8d6abb72a8fa">straightflushpos</a> (<a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a> mao)</td></tr>
-<tr class="memdesc:aab856087b5118bede53d8d6abb72a8fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calcula uma combinação straight flush apartir de uma mão.  <a href="#aab856087b5118bede53d8d6abb72a8fa">More...</a><br /></td></tr>
-<tr class="separator:aab856087b5118bede53d8d6abb72a8fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab713bcca8792007b57ac60e342c34627"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8c.html#ab713bcca8792007b57ac60e342c34627">joga5</a> (<a class="el" href="estrutura_8c.html#aa87f82e2715f3279bc8cb6fc2c13142d">DATABASE</a> *data, int m)</td></tr>
-<tr class="memdesc:ab713bcca8792007b57ac60e342c34627"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calcula uma jogada de 5 cartas da mão do jogador m.  <a href="#ab713bcca8792007b57ac60e342c34627">More...</a><br /></td></tr>
-<tr class="separator:ab713bcca8792007b57ac60e342c34627"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae6c7e178c574dadb431e0271dc79709d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8c.html#ae6c7e178c574dadb431e0271dc79709d">pmjgfourofakind</a> (<a class="el" href="estrutura_8c.html#aa87f82e2715f3279bc8cb6fc2c13142d">DATABASE</a> *data, int m)</td></tr>
-<tr class="memdesc:ae6c7e178c574dadb431e0271dc79709d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calcula uma jogada four of a kind com o 3 de ouros da mão do jogador m.  <a href="#ae6c7e178c574dadb431e0271dc79709d">More...</a><br /></td></tr>
-<tr class="separator:ae6c7e178c574dadb431e0271dc79709d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a99c4c1214494f2320dd24d9bfd839edd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8c.html#a99c4c1214494f2320dd24d9bfd839edd">pmjgfullhouse</a> (<a class="el" href="estrutura_8c.html#aa87f82e2715f3279bc8cb6fc2c13142d">DATABASE</a> *data, int m)</td></tr>
-<tr class="memdesc:a99c4c1214494f2320dd24d9bfd839edd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calcula uma jogada full house com o 3 de ouros da mão do jogador m.  <a href="#a99c4c1214494f2320dd24d9bfd839edd">More...</a><br /></td></tr>
-<tr class="separator:a99c4c1214494f2320dd24d9bfd839edd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7a402c58b9666d07d854a69604b10396"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8c.html#a7a402c58b9666d07d854a69604b10396">pmjgflush</a> (<a class="el" href="estrutura_8c.html#aa87f82e2715f3279bc8cb6fc2c13142d">DATABASE</a> *data, int m)</td></tr>
-<tr class="memdesc:a7a402c58b9666d07d854a69604b10396"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calcula uma jogada flush com o 3 de ouros da mão do jogador m.  <a href="#a7a402c58b9666d07d854a69604b10396">More...</a><br /></td></tr>
-<tr class="separator:a7a402c58b9666d07d854a69604b10396"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a44105c066a1511ad12649874e1e79cc1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8c.html#a44105c066a1511ad12649874e1e79cc1">primeira_jogada</a> (<a class="el" href="estrutura_8c.html#aa87f82e2715f3279bc8cb6fc2c13142d">DATABASE</a> *data, int m)</td></tr>
-<tr class="memdesc:a44105c066a1511ad12649874e1e79cc1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calcula uma jogada com o 3 de ouros da mão do jogador m.  <a href="#a44105c066a1511ad12649874e1e79cc1">More...</a><br /></td></tr>
-<tr class="separator:a44105c066a1511ad12649874e1e79cc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acc8c068ab96de1e0dc1f9a0a18774966"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8c.html#acc8c068ab96de1e0dc1f9a0a18774966">check_basico</a> (<a class="el" href="estrutura_8c.html#aa87f82e2715f3279bc8cb6fc2c13142d">DATABASE</a> *data, int cartas[])</td></tr>
-<tr class="memdesc:acc8c068ab96de1e0dc1f9a0a18774966"><td class="mdescLeft">&#160;</td><td class="mdescRight">Testa se uma jogada entre 1 a 3 cartas é válida.  <a href="#acc8c068ab96de1e0dc1f9a0a18774966">More...</a><br /></td></tr>
-<tr class="separator:acc8c068ab96de1e0dc1f9a0a18774966"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae37b654c9606dfea930ed9d4d23f0352"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8c.html#ae37b654c9606dfea930ed9d4d23f0352">check_jogada</a> (<a class="el" href="estrutura_8c.html#aa87f82e2715f3279bc8cb6fc2c13142d">DATABASE</a> *data, int jog)</td></tr>
-<tr class="memdesc:ae37b654c9606dfea930ed9d4d23f0352"><td class="mdescLeft">&#160;</td><td class="mdescRight">Testa se uma jogada do jogador jog é válida.  <a href="#ae37b654c9606dfea930ed9d4d23f0352">More...</a><br /></td></tr>
-<tr class="separator:ae37b654c9606dfea930ed9d4d23f0352"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae4d447f090f6af0a4c424892b8ac2cab"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8c.html#ae4d447f090f6af0a4c424892b8ac2cab">jogadas_possiveis</a> (<a class="el" href="estrutura_8c.html#aa87f82e2715f3279bc8cb6fc2c13142d">DATABASE</a> *data, int jog, int jogadas[][5])</td></tr>
-<tr class="memdesc:ae4d447f090f6af0a4c424892b8ac2cab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Testa se uma jogada do jogador jog é válida.  <a href="#ae4d447f090f6af0a4c424892b8ac2cab">More...</a><br /></td></tr>
-<tr class="separator:ae4d447f090f6af0a4c424892b8ac2cab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa35d0a3552451113790156dba0308156"><td class="memItemLeft" align="right" valign="top"><a class="el" href="estrutura_8c.html#aa87f82e2715f3279bc8cb6fc2c13142d">DATABASE</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8h.html#aa35d0a3552451113790156dba0308156">STR2DATA</a> (char *)</td></tr>
+<tr class="memdesc:aa35d0a3552451113790156dba0308156"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converte a query para a estrutura de dados.  <a href="#aa35d0a3552451113790156dba0308156">More...</a><br /></td></tr>
+<tr class="separator:aa35d0a3552451113790156dba0308156"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee40ff61adbf2d3d15ed531d2c95662e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8h.html#aee40ff61adbf2d3d15ed531d2c95662e">DATA2STR</a> (char *, <a class="el" href="estrutura_8c.html#aa87f82e2715f3279bc8cb6fc2c13142d">DATABASE</a>)</td></tr>
+<tr class="memdesc:aee40ff61adbf2d3d15ed531d2c95662e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converte a estrutura de dados para query.  <a href="#aee40ff61adbf2d3d15ed531d2c95662e">More...</a><br /></td></tr>
+<tr class="separator:aee40ff61adbf2d3d15ed531d2c95662e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1037939239c8d597191de5ce4d254926"><td class="memItemLeft" align="right" valign="top">long long int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8h.html#a1037939239c8d597191de5ce4d254926">add_carta</a> (<a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a>, int, int)</td></tr>
+<tr class="memdesc:a1037939239c8d597191de5ce4d254926"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adiciona uma carta a um dos estados.  <a href="#a1037939239c8d597191de5ce4d254926">More...</a><br /></td></tr>
+<tr class="separator:a1037939239c8d597191de5ce4d254926"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a799987b686b0b622e27de4259c2e7a3e"><td class="memItemLeft" align="right" valign="top">long long int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8h.html#a799987b686b0b622e27de4259c2e7a3e">rem_carta</a> (<a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a>, int, int)</td></tr>
+<tr class="memdesc:a799987b686b0b622e27de4259c2e7a3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove uma carta a um dos estados.  <a href="#a799987b686b0b622e27de4259c2e7a3e">More...</a><br /></td></tr>
+<tr class="separator:a799987b686b0b622e27de4259c2e7a3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0dbef33ec898e30f00fbecda70a10200"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8h.html#a0dbef33ec898e30f00fbecda70a10200">carta_existe</a> (<a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a>, int, int)</td></tr>
+<tr class="memdesc:a0dbef33ec898e30f00fbecda70a10200"><td class="mdescLeft">&#160;</td><td class="mdescRight">Verifica se uma carta pertence a um dos estados.  <a href="#a0dbef33ec898e30f00fbecda70a10200">More...</a><br /></td></tr>
+<tr class="separator:a0dbef33ec898e30f00fbecda70a10200"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a69258e7f7a74b1f25f47236f155da2d0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8h.html#a69258e7f7a74b1f25f47236f155da2d0">distribui</a> (<a class="el" href="estrutura_8c.html#aa87f82e2715f3279bc8cb6fc2c13142d">DATABASE</a> *)</td></tr>
+<tr class="memdesc:a69258e7f7a74b1f25f47236f155da2d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Distribui cartas pelas 4 mãos.  <a href="#a69258e7f7a74b1f25f47236f155da2d0">More...</a><br /></td></tr>
+<tr class="separator:a69258e7f7a74b1f25f47236f155da2d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af9bc4d2e19d1b3f69822d5cf923ddea4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8h.html#af9bc4d2e19d1b3f69822d5cf923ddea4">calcula_score</a> (<a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a>)</td></tr>
+<tr class="memdesc:af9bc4d2e19d1b3f69822d5cf923ddea4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calcula a pontuação de uma MAO.  <a href="#af9bc4d2e19d1b3f69822d5cf923ddea4">More...</a><br /></td></tr>
+<tr class="separator:af9bc4d2e19d1b3f69822d5cf923ddea4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa214139ba9de3be4b80ac9af6116b96d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8h.html#aa214139ba9de3be4b80ac9af6116b96d">maior_carta_mao</a> (<a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a>)</td></tr>
+<tr class="memdesc:aa214139ba9de3be4b80ac9af6116b96d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calcula a maior carta de uma MAO.  <a href="#aa214139ba9de3be4b80ac9af6116b96d">More...</a><br /></td></tr>
+<tr class="separator:aa214139ba9de3be4b80ac9af6116b96d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad4dc559e716369d7d841dc744ffad0d1"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8h.html#ad4dc559e716369d7d841dc744ffad0d1">maior_carta_jogada</a> (<a class="el" href="estrutura_8c.html#aa87f82e2715f3279bc8cb6fc2c13142d">DATABASE</a> *)</td></tr>
+<tr class="memdesc:ad4dc559e716369d7d841dc744ffad0d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calcula a maior carta jogada, de entre as mãos do parâmetro "jogadas" da estrutura.  <a href="#ad4dc559e716369d7d841dc744ffad0d1">More...</a><br /></td></tr>
+<tr class="separator:ad4dc559e716369d7d841dc744ffad0d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33ddee7f716e483d26e9c40a9e52bb69"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8h.html#a33ddee7f716e483d26e9c40a9e52bb69">quem_comeca</a> (<a class="el" href="estrutura_8c.html#aa87f82e2715f3279bc8cb6fc2c13142d">DATABASE</a> *)</td></tr>
+<tr class="memdesc:a33ddee7f716e483d26e9c40a9e52bb69"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determina quem começa o jogo.  <a href="#a33ddee7f716e483d26e9c40a9e52bb69">More...</a><br /></td></tr>
+<tr class="separator:a33ddee7f716e483d26e9c40a9e52bb69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aecf493830b3fb131448da32a3b52abfc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8h.html#aecf493830b3fb131448da32a3b52abfc">separa_val</a> (<a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a>, int)</td></tr>
+<tr class="separator:aecf493830b3fb131448da32a3b52abfc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4cdf799da768c485cfcd6605bd0cd998"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8h.html#a4cdf799da768c485cfcd6605bd0cd998">separa_nap</a> (<a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a>, int)</td></tr>
+<tr class="separator:a4cdf799da768c485cfcd6605bd0cd998"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a306fe55353777f345ccb9c647e7778"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8h.html#a4a306fe55353777f345ccb9c647e7778">teste_straight</a> (int)</td></tr>
+<tr class="separator:a4a306fe55353777f345ccb9c647e7778"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a119801c5b4878fed1e747a9e2da9895e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8h.html#a119801c5b4878fed1e747a9e2da9895e">teste_flush</a> (int)</td></tr>
+<tr class="separator:a119801c5b4878fed1e747a9e2da9895e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf1290b3e6b0d3172639973ff8e6220a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8h.html#abf1290b3e6b0d3172639973ff8e6220a">teste_fullhouse</a> (int)</td></tr>
+<tr class="separator:abf1290b3e6b0d3172639973ff8e6220a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a80eb8294cf7b762451ec485027e64d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8h.html#a9a80eb8294cf7b762451ec485027e64d">teste_fourofakind</a> (int)</td></tr>
+<tr class="separator:a9a80eb8294cf7b762451ec485027e64d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a718bcf6ae7eb53acc1c1f6bf081005b7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8h.html#a718bcf6ae7eb53acc1c1f6bf081005b7">tipo_comb_five</a> (<a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a>)</td></tr>
+<tr class="memdesc:a718bcf6ae7eb53acc1c1f6bf081005b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Devolve o tipo de combinação de uma mão de 5 cartas.  <a href="#a718bcf6ae7eb53acc1c1f6bf081005b7">More...</a><br /></td></tr>
+<tr class="separator:a718bcf6ae7eb53acc1c1f6bf081005b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f8e25568bc731f0173784fc5d7bd365"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8h.html#a2f8e25568bc731f0173784fc5d7bd365">atualizastraight</a> (<a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a>, int)</td></tr>
+<tr class="separator:a2f8e25568bc731f0173784fc5d7bd365"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1dfcb3b748191d87c9a286c4b571b6d0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8h.html#a1dfcb3b748191d87c9a286c4b571b6d0">preenchejogada</a> (<a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a>, int[3])</td></tr>
+<tr class="memdesc:a1dfcb3b748191d87c9a286c4b571b6d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Atualiza o array da combination consoante a combinação da mão.  <a href="#a1dfcb3b748191d87c9a286c4b571b6d0">More...</a><br /></td></tr>
+<tr class="separator:a1dfcb3b748191d87c9a286c4b571b6d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a918782108c7982c597ca6db7b0fdfbe5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8h.html#a918782108c7982c597ca6db7b0fdfbe5">cmpplay</a> (<a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a>, int)</td></tr>
+<tr class="separator:a918782108c7982c597ca6db7b0fdfbe5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca9784de5a290fda5dae424ae8806952"><td class="memItemLeft" align="right" valign="top"><a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8h.html#aca9784de5a290fda5dae424ae8806952">straightpos</a> (<a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a>)</td></tr>
+<tr class="memdesc:aca9784de5a290fda5dae424ae8806952"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calcula uma combinação straight a partir de uma mão.  <a href="#aca9784de5a290fda5dae424ae8806952">More...</a><br /></td></tr>
+<tr class="separator:aca9784de5a290fda5dae424ae8806952"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40b7794dd49f0e3767deafd92a63c3cc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8h.html#a40b7794dd49f0e3767deafd92a63c3cc">flushpos</a> (<a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a>)</td></tr>
+<tr class="memdesc:a40b7794dd49f0e3767deafd92a63c3cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calcula uma combinação flush apartir de uma mão.  <a href="#a40b7794dd49f0e3767deafd92a63c3cc">More...</a><br /></td></tr>
+<tr class="separator:a40b7794dd49f0e3767deafd92a63c3cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25456f3efb963339922cbf6ced147a28"><td class="memItemLeft" align="right" valign="top"><a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8h.html#a25456f3efb963339922cbf6ced147a28">fullhousepos</a> (<a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a>)</td></tr>
+<tr class="memdesc:a25456f3efb963339922cbf6ced147a28"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calcula uma combinação full house apartir de uma mão.  <a href="#a25456f3efb963339922cbf6ced147a28">More...</a><br /></td></tr>
+<tr class="separator:a25456f3efb963339922cbf6ced147a28"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7629e1c7840159338b82ed7596b74b7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8h.html#ae7629e1c7840159338b82ed7596b74b7">fourofakindpos</a> (<a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a>)</td></tr>
+<tr class="memdesc:ae7629e1c7840159338b82ed7596b74b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calcula uma combinação four of a kind apartir de uma mão.  <a href="#ae7629e1c7840159338b82ed7596b74b7">More...</a><br /></td></tr>
+<tr class="separator:ae7629e1c7840159338b82ed7596b74b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeccb6720b146abb06c8fa64f9b800721"><td class="memItemLeft" align="right" valign="top"><a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8h.html#aeccb6720b146abb06c8fa64f9b800721">straightflushpos</a> (<a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a>)</td></tr>
+<tr class="memdesc:aeccb6720b146abb06c8fa64f9b800721"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calcula uma combinação straight flush apartir de uma mão.  <a href="#aeccb6720b146abb06c8fa64f9b800721">More...</a><br /></td></tr>
+<tr class="separator:aeccb6720b146abb06c8fa64f9b800721"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aacc4c3c9a90ccb8c64987850df28f2fd"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8h.html#aacc4c3c9a90ccb8c64987850df28f2fd">joga5</a> (<a class="el" href="estrutura_8c.html#aa87f82e2715f3279bc8cb6fc2c13142d">DATABASE</a> *, int)</td></tr>
+<tr class="memdesc:aacc4c3c9a90ccb8c64987850df28f2fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calcula uma jogada de 5 cartas da mão do jogador m.  <a href="#aacc4c3c9a90ccb8c64987850df28f2fd">More...</a><br /></td></tr>
+<tr class="separator:aacc4c3c9a90ccb8c64987850df28f2fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5454450c9bcd0353d194ebe5f44f1793"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8h.html#a5454450c9bcd0353d194ebe5f44f1793">pmjgfourofakind</a> (<a class="el" href="estrutura_8c.html#aa87f82e2715f3279bc8cb6fc2c13142d">DATABASE</a> *, int)</td></tr>
+<tr class="memdesc:a5454450c9bcd0353d194ebe5f44f1793"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calcula uma jogada four of a kind com o 3 de ouros da mão do jogador m.  <a href="#a5454450c9bcd0353d194ebe5f44f1793">More...</a><br /></td></tr>
+<tr class="separator:a5454450c9bcd0353d194ebe5f44f1793"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab7109fcb7ff92ce658b2c9a86a78adf2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8h.html#ab7109fcb7ff92ce658b2c9a86a78adf2">pmjgfullhouse</a> (<a class="el" href="estrutura_8c.html#aa87f82e2715f3279bc8cb6fc2c13142d">DATABASE</a> *, int)</td></tr>
+<tr class="memdesc:ab7109fcb7ff92ce658b2c9a86a78adf2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calcula uma jogada full house com o 3 de ouros da mão do jogador m.  <a href="#ab7109fcb7ff92ce658b2c9a86a78adf2">More...</a><br /></td></tr>
+<tr class="separator:ab7109fcb7ff92ce658b2c9a86a78adf2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8b3dd49c37a4f13ff365e57fe99aeb9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8h.html#ab8b3dd49c37a4f13ff365e57fe99aeb9">pmjgflush</a> (<a class="el" href="estrutura_8c.html#aa87f82e2715f3279bc8cb6fc2c13142d">DATABASE</a> *, int)</td></tr>
+<tr class="memdesc:ab8b3dd49c37a4f13ff365e57fe99aeb9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calcula uma jogada flush com o 3 de ouros da mão do jogador m.  <a href="#ab8b3dd49c37a4f13ff365e57fe99aeb9">More...</a><br /></td></tr>
+<tr class="separator:ab8b3dd49c37a4f13ff365e57fe99aeb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab512fda912ce7a328dd8ba8c0eacf51a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8h.html#ab512fda912ce7a328dd8ba8c0eacf51a">primeira_jogada</a> (<a class="el" href="estrutura_8c.html#aa87f82e2715f3279bc8cb6fc2c13142d">DATABASE</a> *, int)</td></tr>
+<tr class="memdesc:ab512fda912ce7a328dd8ba8c0eacf51a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calcula uma jogada com o 3 de ouros da mão do jogador m.  <a href="#ab512fda912ce7a328dd8ba8c0eacf51a">More...</a><br /></td></tr>
+<tr class="separator:ab512fda912ce7a328dd8ba8c0eacf51a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2eb64f2fb38bb8aea81a2c1a02a3bb64"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8h.html#a2eb64f2fb38bb8aea81a2c1a02a3bb64">check_basico</a> (<a class="el" href="estrutura_8c.html#aa87f82e2715f3279bc8cb6fc2c13142d">DATABASE</a> *, int)</td></tr>
+<tr class="separator:a2eb64f2fb38bb8aea81a2c1a02a3bb64"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f75967ab52cfee4801948d3977193c9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8h.html#a0f75967ab52cfee4801948d3977193c9">check_jogada</a> (<a class="el" href="estrutura_8c.html#aa87f82e2715f3279bc8cb6fc2c13142d">DATABASE</a> *, int)</td></tr>
+<tr class="memdesc:a0f75967ab52cfee4801948d3977193c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Testa se uma jogada do jogador jog é válida.  <a href="#a0f75967ab52cfee4801948d3977193c9">More...</a><br /></td></tr>
+<tr class="separator:a0f75967ab52cfee4801948d3977193c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a173a64efdde4d97f7f9b828a58231586"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="auxiliares_8h.html#a173a64efdde4d97f7f9b828a58231586">jogadas_possiveis</a> (<a class="el" href="estrutura_8c.html#aa87f82e2715f3279bc8cb6fc2c13142d">DATABASE</a> *, int, int[][5])</td></tr>
+<tr class="memdesc:a173a64efdde4d97f7f9b828a58231586"><td class="mdescLeft">&#160;</td><td class="mdescRight">Testa se uma jogada do jogador jog é válida.  <a href="#a173a64efdde4d97f7f9b828a58231586">More...</a><br /></td></tr>
+<tr class="separator:a173a64efdde4d97f7f9b828a58231586"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a class="anchor" id="afdc1d6d9f09d22e93efd34ed545fc84d"></a>
+<a class="anchor" id="a1037939239c8d597191de5ce4d254926"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -238,7 +230,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a1a71fa09e5bf3f9fabcfb15550838c40"></a>
+<a class="anchor" id="a2f8e25568bc731f0173784fc5d7bd365"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -246,13 +238,13 @@ Functions</h2></td></tr>
           <td class="memname">void atualizastraight </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a>&#160;</td>
-          <td class="paramname"><em>mao</em>, </td>
+          <td class="paramname">, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>y</em>[3]&#160;</td>
+          <td class="paramname">&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -262,18 +254,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Atualiza o array que vai preencher o parâmetro combinations consoante o straight da mão. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">mao</td><td>A mão com as cartas </td></tr>
-    <tr><td class="paramname">y</td><td>Array correspondente ao combination </td></tr>
-  </table>
-  </dd>
-</dl>
-
 </div>
 </div>
-<a class="anchor" id="ab9c58294c1ac32a34fa7b9b9afef228f"></a>
+<a class="anchor" id="af9bc4d2e19d1b3f69822d5cf923ddea4"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -298,7 +281,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="af821c9c516762b5efbe4b1323ed26bfb"></a>
+<a class="anchor" id="a0dbef33ec898e30f00fbecda70a10200"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -341,7 +324,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="acc8c068ab96de1e0dc1f9a0a18774966"></a>
+<a class="anchor" id="a2eb64f2fb38bb8aea81a2c1a02a3bb64"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -349,13 +332,13 @@ Functions</h2></td></tr>
           <td class="memname">int check_basico </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="estrutura_8c.html#aa87f82e2715f3279bc8cb6fc2c13142d">DATABASE</a> *&#160;</td>
-          <td class="paramname"><em>data</em>, </td>
+          <td class="paramname">, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>cartas</em>[]&#160;</td>
+          <td class="paramname">&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -365,19 +348,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Testa se uma jogada entre 1 a 3 cartas é válida. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">data</td><td>Estrutura atual </td></tr>
-    <tr><td class="paramname">cartas</td><td>Array com os indices das cartas </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Devolve: 1 caso a jogada seja válida; 0 caso não seja </dd></dl>
-
 </div>
 </div>
-<a class="anchor" id="ae37b654c9606dfea930ed9d4d23f0352"></a>
+<a class="anchor" id="a0f75967ab52cfee4801948d3977193c9"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -413,7 +386,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a40fc8628dbd64fd746016ad74a77399e"></a>
+<a class="anchor" id="a918782108c7982c597ca6db7b0fdfbe5"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -421,13 +394,13 @@ Functions</h2></td></tr>
           <td class="memname">int cmpplay </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a>&#160;</td>
-          <td class="paramname"><em>mao</em>, </td>
+          <td class="paramname">, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>y</em>[3]&#160;</td>
+          <td class="paramname">&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -437,19 +410,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Compara a combinação de 5 cartas da mão com o array combination da estrutura. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">mao</td><td>A mão com as cartas </td></tr>
-    <tr><td class="paramname">y</td><td>Array correspondente ao combination </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>1 caso seja maior a combinação ou 0 caso não seja </dd></dl>
-
 </div>
 </div>
-<a class="anchor" id="a1a29ed523e2067f68f960fa532c0c967"></a>
+<a class="anchor" id="aee40ff61adbf2d3d15ed531d2c95662e"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -484,7 +447,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a9820b2a12310cd6e9a6a17c64ad86e61"></a>
+<a class="anchor" id="a69258e7f7a74b1f25f47236f155da2d0"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -508,7 +471,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a077a93a806cfc0ec8d35431c490b00f2"></a>
+<a class="anchor" id="a40b7794dd49f0e3767deafd92a63c3cc"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -533,7 +496,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a5c8181efbf0f1cb57c79de081803fe1e"></a>
+<a class="anchor" id="ae7629e1c7840159338b82ed7596b74b7"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -558,7 +521,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="aea89de509b9c787e5e8a6e6943be3b81"></a>
+<a class="anchor" id="a25456f3efb963339922cbf6ced147a28"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -583,7 +546,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ab713bcca8792007b57ac60e342c34627"></a>
+<a class="anchor" id="aacc4c3c9a90ccb8c64987850df28f2fd"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -619,7 +582,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ae4d447f090f6af0a4c424892b8ac2cab"></a>
+<a class="anchor" id="a173a64efdde4d97f7f9b828a58231586"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -661,7 +624,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a112abccf1cb680c6e139db357cf2e1c5"></a>
+<a class="anchor" id="ad4dc559e716369d7d841dc744ffad0d1"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -686,7 +649,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="afca06d744ca2d64fb43c879cddbb916b"></a>
+<a class="anchor" id="aa214139ba9de3be4b80ac9af6116b96d"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -711,7 +674,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a7a402c58b9666d07d854a69604b10396"></a>
+<a class="anchor" id="ab8b3dd49c37a4f13ff365e57fe99aeb9"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -746,7 +709,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ae6c7e178c574dadb431e0271dc79709d"></a>
+<a class="anchor" id="a5454450c9bcd0353d194ebe5f44f1793"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -781,7 +744,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a99c4c1214494f2320dd24d9bfd839edd"></a>
+<a class="anchor" id="ab7109fcb7ff92ce658b2c9a86a78adf2"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -816,7 +779,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ae9bf36a9125af60245d6cfd10e127a9c"></a>
+<a class="anchor" id="a1dfcb3b748191d87c9a286c4b571b6d0"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -851,7 +814,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a44105c066a1511ad12649874e1e79cc1"></a>
+<a class="anchor" id="ab512fda912ce7a328dd8ba8c0eacf51a"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -886,7 +849,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a8a0682ff1a0a31a364c5692ae1eba555"></a>
+<a class="anchor" id="a33ddee7f716e483d26e9c40a9e52bb69"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -911,7 +874,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a8f5758cfc35fb5f3926d12ceaf3ddbad"></a>
+<a class="anchor" id="a799987b686b0b622e27de4259c2e7a3e"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -954,7 +917,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a6e2280e527ceebadfb3d9245ae082580"></a>
+<a class="anchor" id="a4cdf799da768c485cfcd6605bd0cd998"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -962,13 +925,13 @@ Functions</h2></td></tr>
           <td class="memname">void separa_nap </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a>&#160;</td>
-          <td class="paramname"><em>mao</em>, </td>
+          <td class="paramname">, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>naipe</em>[4]&#160;</td>
+          <td class="paramname">&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -978,18 +941,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Transforma um array para que tenha o número de ocorrências de cada naipe numa mão. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">mao</td><td>A mão com as cartas do jogador </td></tr>
-    <tr><td class="paramname">naipe</td><td>Array a ser modificado </td></tr>
-  </table>
-  </dd>
-</dl>
-
 </div>
 </div>
-<a class="anchor" id="a5ac587cf67bcf78e5c17c8c117bbcd20"></a>
+<a class="anchor" id="aecf493830b3fb131448da32a3b52abfc"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -997,13 +951,13 @@ Functions</h2></td></tr>
           <td class="memname">void separa_val </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="estrutura_8c.html#a525a5fe381e0742a211c7dbcfd4e2419">MAO</a>&#160;</td>
-          <td class="paramname"><em>mao</em>, </td>
+          <td class="paramname">, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>rank</em>[13]&#160;</td>
+          <td class="paramname">&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1013,18 +967,9 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Transforma um array para que tenha o número de ocorrências de cada valor numa mão. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">mao</td><td>A mão com as cartas do jogador </td></tr>
-    <tr><td class="paramname">rank</td><td>Array a ser modificado </td></tr>
-  </table>
-  </dd>
-</dl>
-
 </div>
 </div>
-<a class="anchor" id="ae8679929b45f17a3fe613751010532d4"></a>
+<a class="anchor" id="aa35d0a3552451113790156dba0308156"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -1049,7 +994,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="aab856087b5118bede53d8d6abb72a8fa"></a>
+<a class="anchor" id="aeccb6720b146abb06c8fa64f9b800721"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -1074,7 +1019,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ad415e29c79169cd8e188ab0cbdc68cee"></a>
+<a class="anchor" id="aca9784de5a290fda5dae424ae8806952"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -1099,7 +1044,7 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a67da41dd6d65761bd2ec7ea6edbbd94a"></a>
+<a class="anchor" id="a119801c5b4878fed1e747a9e2da9895e"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -1107,24 +1052,15 @@ Functions</h2></td></tr>
           <td class="memname">int teste_flush </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>naipe</em>[4]</td><td>)</td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Testa se uma mão de 5 cartas é um flush. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">naipe</td><td>Array com o número de ocorrências de cada naipe </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Um int com valor 1 se verdadeiro ou 0 se falso </dd></dl>
-
 </div>
 </div>
-<a class="anchor" id="a28329d6bce2a79ae07da47c0c7191c76"></a>
+<a class="anchor" id="a9a80eb8294cf7b762451ec485027e64d"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -1132,24 +1068,15 @@ Functions</h2></td></tr>
           <td class="memname">int teste_fourofakind </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>rank</em>[13]</td><td>)</td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Testa se uma mão de 5 cartas é um four of a kind. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">v</td><td>Array com o número de ocorrências de cada valor </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Um int com valor 1 se verdadeiro ou 0 se falso </dd></dl>
-
 </div>
 </div>
-<a class="anchor" id="a6ae70d0504df7835f081215997b8bac1"></a>
+<a class="anchor" id="abf1290b3e6b0d3172639973ff8e6220a"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -1157,24 +1084,15 @@ Functions</h2></td></tr>
           <td class="memname">int teste_fullhouse </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>rank</em>[13]</td><td>)</td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Testa se uma mão de 5 cartas é um full house. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">v</td><td>Array com o número de ocorrências de cada valor </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Um int com valor 1 se verdadeiro ou 0 se falso </dd></dl>
-
 </div>
 </div>
-<a class="anchor" id="a03d1a3e42fd72ca532361240dd8a1fba"></a>
+<a class="anchor" id="a4a306fe55353777f345ccb9c647e7778"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -1182,24 +1100,15 @@ Functions</h2></td></tr>
           <td class="memname">int teste_straight </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>v</em>[13]</td><td>)</td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Testa se uma mão de 5 cartas é um straight. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">v</td><td>Array com o número de ocorrências de cada valor </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Um int com valor 1 se for straight ou 0 se não for </dd></dl>
-
 </div>
 </div>
-<a class="anchor" id="ac24cf15eb16b2ce5d47d3f125d1aa95c"></a>
+<a class="anchor" id="a718bcf6ae7eb53acc1c1f6bf081005b7"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">

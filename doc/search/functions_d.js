@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['teste_5fflush',['teste_flush',['../auxiliares_8c.html#a67da41dd6d65761bd2ec7ea6edbbd94a',1,'auxiliares.c']]],
-  ['teste_5ffourofakind',['teste_fourofakind',['../auxiliares_8c.html#a28329d6bce2a79ae07da47c0c7191c76',1,'auxiliares.c']]],
-  ['teste_5ffullhouse',['teste_fullhouse',['../auxiliares_8c.html#a6ae70d0504df7835f081215997b8bac1',1,'auxiliares.c']]],
-  ['teste_5fstraight',['teste_straight',['../auxiliares_8c.html#a03d1a3e42fd72ca532361240dd8a1fba',1,'auxiliares.c']]],
-  ['tipo_5fcomb_5ffive',['tipo_comb_five',['../auxiliares_8c.html#ac24cf15eb16b2ce5d47d3f125d1aa95c',1,'auxiliares.c']]]
+  ['teste_5fflush',['teste_flush',['../auxiliares_8c.html#a67da41dd6d65761bd2ec7ea6edbbd94a',1,'teste_flush(int naipe[4]):&#160;auxiliares.c'],['../auxiliares_8h.html#a119801c5b4878fed1e747a9e2da9895e',1,'teste_flush(int):&#160;auxiliares.h'],['../_etapa2_8c.html#a67da41dd6d65761bd2ec7ea6edbbd94a',1,'teste_flush(int naipe[4]):&#160;Etapa2.c']]],
+  ['teste_5ffourofakind',['teste_fourofakind',['../auxiliares_8c.html#a28329d6bce2a79ae07da47c0c7191c76',1,'teste_fourofakind(int rank[13]):&#160;auxiliares.c'],['../auxiliares_8h.html#a9a80eb8294cf7b762451ec485027e64d',1,'teste_fourofakind(int):&#160;auxiliares.h'],['../_etapa2_8c.html#a28329d6bce2a79ae07da47c0c7191c76',1,'teste_fourofakind(int rank[13]):&#160;Etapa2.c']]],
+  ['teste_5ffullhouse',['teste_fullhouse',['../auxiliares_8c.html#a6ae70d0504df7835f081215997b8bac1',1,'teste_fullhouse(int rank[13]):&#160;auxiliares.c'],['../auxiliares_8h.html#abf1290b3e6b0d3172639973ff8e6220a',1,'teste_fullhouse(int):&#160;auxiliares.h'],['../_etapa2_8c.html#a6ae70d0504df7835f081215997b8bac1',1,'teste_fullhouse(int rank[13]):&#160;Etapa2.c']]],
+  ['teste_5fstraight',['teste_straight',['../auxiliares_8c.html#a03d1a3e42fd72ca532361240dd8a1fba',1,'teste_straight(int v[13]):&#160;auxiliares.c'],['../auxiliares_8h.html#a4a306fe55353777f345ccb9c647e7778',1,'teste_straight(int):&#160;auxiliares.h'],['../_etapa2_8c.html#a03d1a3e42fd72ca532361240dd8a1fba',1,'teste_straight(int v[13]):&#160;Etapa2.c']]],
+  ['tipo_5fcomb_5ffive',['tipo_comb_five',['../auxiliares_8c.html#ac24cf15eb16b2ce5d47d3f125d1aa95c',1,'tipo_comb_five(MAO mao):&#160;auxiliares.c'],['../auxiliares_8h.html#a718bcf6ae7eb53acc1c1f6bf081005b7',1,'tipo_comb_five(MAO):&#160;auxiliares.c'],['../_etapa2_8c.html#ac24cf15eb16b2ce5d47d3f125d1aa95c',1,'tipo_comb_five(MAO mao):&#160;Etapa2.c']]]
 ];
