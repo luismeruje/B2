@@ -1,8 +1,11 @@
 var searchData=
 [
-  ['joga5',['joga5',['../_etapa2_8c.html#ab713bcca8792007b57ac60e342c34627',1,'Etapa2.c']]],
-  ['joga_5fbots',['joga_bots',['../_etapa2_8c.html#a121cde9c654b25d202a76725a93192d4',1,'Etapa2.c']]],
-  ['jogadas',['jogadas',['../structdatabase.html#a86035bf8c2800279864f45465bb1406f',1,'database']]],
-  ['jogadas_5fpossiveis',['jogadas_possiveis',['../_etapa2_8c.html#ae4d447f090f6af0a4c424892b8ac2cab',1,'Etapa2.c']]],
-  ['jogo',['jogo',['../_etapa2_8c.html#a714655ec62d2fb4f507632fe4461eb2a',1,'Etapa2.c']]]
+  ['imprime',['imprime',['../html_8c.html#a90ab2b7f8122cf02a0dadd497d1b6106',1,'html.c']]],
+  ['imprime_5fcarta_5fback',['imprime_carta_back',['../html_8c.html#afe0e71d25358385c066b2a87dcfba488',1,'html.c']]],
+  ['imprime_5fcarta_5fimagem',['imprime_carta_imagem',['../html_8c.html#aaaad2a19a288d7c85c25d387bc14d7f7',1,'html.c']]],
+  ['imprime_5fcarta_5flink',['imprime_carta_link',['../html_8c.html#a183d4e9229de895c4ba99baca8b03744',1,'html.c']]],
+  ['imprime_5ffim',['imprime_fim',['../html_8c.html#a115924eefe91155d826fbd178ff885a1',1,'html.c']]],
+  ['imprime_5fjogadas',['imprime_jogadas',['../html_8c.html#a0e368b192040256d84e2cb8282ed4b6a',1,'html.c']]],
+  ['imprime_5fmaos',['imprime_maos',['../html_8c.html#a158043c9bee7377db59e27cd61be5cf3',1,'html.c']]],
+  ['imprime_5fstart',['imprime_start',['../html_8c.html#ade1b59c759bd44138eee408b8457ce50',1,'html.c']]]
 ];

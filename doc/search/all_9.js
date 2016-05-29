@@ -1,7 +1,8 @@
 var searchData=
 [
-  ['main',['main',['../_etapa2_8c.html#ae66f6b31b5ad750f1fe042a706a4e3d4',1,'Etapa2.c']]],
-  ['maior_5fcarta_5fjogada',['maior_carta_jogada',['../_etapa2_8c.html#a112abccf1cb680c6e139db357cf2e1c5',1,'Etapa2.c']]],
-  ['maior_5fcarta_5fmao',['maior_carta_mao',['../_etapa2_8c.html#afca06d744ca2d64fb43c879cddbb916b',1,'Etapa2.c']]],
-  ['mao',['mao',['../structdatabase.html#ac2bbb8ba2bde67b665474910269c136d',1,'database::mao()'],['../_etapa2_8c.html#a525a5fe381e0742a211c7dbcfd4e2419',1,'MAO():&#160;Etapa2.c']]]
+  ['joga5',['joga5',['../auxiliares_8c.html#ab713bcca8792007b57ac60e342c34627',1,'auxiliares.c']]],
+  ['joga_5fbots',['joga_bots',['../bots_8c.html#a121cde9c654b25d202a76725a93192d4',1,'bots.c']]],
+  ['jogadas',['jogadas',['../structdatabase.html#a86035bf8c2800279864f45465bb1406f',1,'database']]],
+  ['jogadas_5fpossiveis',['jogadas_possiveis',['../auxiliares_8c.html#ae4d447f090f6af0a4c424892b8ac2cab',1,'auxiliares.c']]],
+  ['jogo',['jogo',['../bots_8c.html#a714655ec62d2fb4f507632fe4461eb2a',1,'bots.c']]]
 ];
