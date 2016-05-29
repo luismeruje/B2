@@ -996,7 +996,7 @@ MCtree choosePlay(MCtree tree, DATABASE * data, int nc_counter[4]){
     MCtree play;
     int nc_t = -1, nc_r = -1;
     int counter[4] = {0};
-    int i = 0;
+    int i= 0;
     
     jogadas_possiveis(data,counter,0,jogadas);
     play_t = NULL;
@@ -1086,6 +1086,7 @@ int main(){
     char input[100];
     int flag = 0, i;
     int flag2[1] = {0};
+    int flag3 = 0;
     char output[100];
     int n, v;
     int io_count = 0;
@@ -1095,7 +1096,6 @@ int main(){
     int a = 0;
     int pass_counter = 0;
     int nc_counter[4] = {0};
-    int flag3 = 0;
     MAO mao_temp = 0;
     MAO usadas_temp[3] = {0};
     MCtree temp;
@@ -1113,41 +1113,37 @@ int main(){
         switch(input[0]){
             case 'J':
                 if(input[3] == 'A'){
-                    start = clock();
-                    if(data.firstplay == 0){
-                        data.firstplay = 1;
-                        for(jog_temp = jog_temp -1, counter = 0; counter <= jog_temp; counter++)
-                            data.usadas[counter +(3-jog_temp)] = usadas_temp[counter];
-                        if(usadas_temp[0] != 0)
-                            data.firstplay = 2;
-                    }
-                    clean_plays(tree, pass_counter, nc_counter);
-                    while(((clock()-start)/CLOCKS_PER_SEC) < 1.7){
-                        simulacao = data;
-                        while(flag == 0){
-                            temp = treePolicy(tree, &simulacao, flag2);
-                            flag = defaultPolicy(temp, &simulacao, flag2);
-                            flag2[0] = 0;
-                            a++;
+                    if((flag3 != 0 )|| (carta_existe(data.mao[0],0,0))){
+                        start = clock();
+                        if(data.firstplay == 0){
+                            data.firstplay = 1;
+                            for(jog_temp = jog_temp -1, counter = 0; counter <= jog_temp; counter++)
+                                data.usadas[counter +(3-jog_temp)] = usadas_temp[counter];
+                            if(usadas_temp[0] != 0)
+                                data.firstplay = 2;
                         }
-                        flag = 0;
-                    }
-                    jog = 1;
-                    if(data.firstplay != 2)
-                        checkFirst(tree, &data);
-                    temp = choosePlay(tree,&data, nc_counter);
-                    if(temp != NULL){
-                    	convertejogstr(temp->estado,output);
-                        flag3 = 1;
+                        clean_plays(tree, pass_counter, nc_counter);
+                        while(((clock()-start)/CLOCKS_PER_SEC) < 1.7){
+                            simulacao = data;
+                            while(flag == 0){
+                                temp = treePolicy(tree, &simulacao, flag2);
+                                flag = defaultPolicy(temp, &simulacao, flag2);
+                                flag2[0] = 0;
+                                a++;
+                            }
+                            flag = 0;
+                        }
+                        jog = 1;
+                        if(data.firstplay != 2)
+                            checkFirst(tree, &data);
+                        temp = choosePlay(tree,&data, nc_counter);
+                        if(temp != NULL)
+                            convertejogstr(temp->estado,output);
+                        else{
+                            strcpy(output, "PASSO");
+                            data.firstplay = 0;
+                        }
                         printf("%s\n", output);
-                    }
-                    else{
-                        strcpy(output, "PASSO");
-                        data.firstplay = 0;
-                        jog_temp = 0;
-                        data.passar = 0;
-                    }
-                    if(flag3 != 0){
                         if(output[0] != 'P')
                             fgets(input, 100, stdin);
                         else
@@ -1187,6 +1183,9 @@ int main(){
                                 data.jogada = 0;
                             }
                         }
+                    }
+                    else{
+                        printf("PASSO\n");
                     }
                 }
                 else{
@@ -1250,17 +1249,19 @@ int main(){
                 }
                 break;
             case 'P':
-                data.passar++;
-                if(data.firstplay == 0){
-                    if(jog_temp != 0)
-                    	jog_temp++;
-                }
-                else{
-                    jog = (jog + 1) % 4;
-                }
-                if(data.passar == 3){
-                    data.nc = 0;
-                    data.jogada = 0;
+                if(flag3 == 1){
+                    data.passar++;
+                    if(data.firstplay == 0){
+                        if(jog_temp != 0)
+                            jog_temp++;
+                    }
+                    else{
+                        jog = (jog + 1) % 4;
+                    }
+                    if(data.passar == 3){
+                        data.nc = 0;
+                        data.jogada = 0;
+                    }
                 }
                 break;
             case 'M':
@@ -1308,6 +1309,7 @@ int main(){
                 }
                 tree = createTree(data.mao[0]);
                 temp = tree;
+                flag3 = 0;
                 break;
             
         }
