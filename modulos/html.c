@@ -1,4 +1,5 @@
 #include "estrutura.h"
+#include "auxiliares.h"
 /** \brief Imprime Carta como imagem
  
  @param x       Coordenada x
