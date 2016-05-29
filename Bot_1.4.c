@@ -984,7 +984,7 @@ void convertejogstr(MAO mao, char * output){
     
 }
 
-MCtree choosePlay(MCtree tree, DATABASE * data){
+MCtree choosePlay(MCtree tree, DATABASE * data, int nc_counter[4]){
     int nc;
     int max_t = 0;
     float max_r = 0.0;
@@ -994,6 +994,7 @@ MCtree choosePlay(MCtree tree, DATABASE * data){
     MCtree play_t;
     MCtree play_r;
     MCtree play;
+    int nc_t = -1, nc_r = -1;
     int counter[4] = {0};
     
     jogadas_possiveis(data,counter,0,jogadas);
@@ -1009,26 +1010,35 @@ MCtree choosePlay(MCtree tree, DATABASE * data){
                     if ((tree->nextN[nc][counter_tree]->t) > max_t){
                         max_t =tree->nextN[nc][counter_tree]->t;
                         play_t = tree->nextN[nc][counter_tree];
+                        nc_t = nc;
                     }
                     if((tree->nextN[nc][counter_tree]->r) > max_r){
                         max_r = tree->nextN[nc][counter_tree]->r;
                         play_r = tree->nextN[nc][counter_tree];
+                        nc_r = nc;
                     }
                     counter_jogadas++;
                     if(counter_jogadas == counter[nc])
                         nc++;
                 }
     }
-    if(play_r == play_t)
+    if(play_r == play_t){
         play = play_r;
-    else if((play_r != NULL) && (play_r->t) > 1000)
+        nc_counter[nc_t]++;
+    }
+    else if((play_r != NULL) && (play_r->t) > 1000){
         play = play_r;
-    else
+        nc_counter[nc_r]++;
+    }
+    else{
         play = play_t;
+        if(play != NULL)
+            nc_counter[nc_t]++;
+    }
     return play;
 }
 
-void clean_pass(MCtree tree, int pass_counter){
+void clean_plays(MCtree tree, int pass_counter,int nc_counter[4]){
     int counter_tree, nc;
     if(pass_counter > 0)
         for(nc = 0; nc < 4; nc+= 1){
@@ -1038,6 +1048,13 @@ void clean_pass(MCtree tree, int pass_counter){
                     tree->nextN[nc][counter_tree] -> r = 0;
                 }
         }
+    for(nc = 0; nc < 4; nc+= 1){
+        if(nc_counter[nc]>1)
+            for(counter_tree = 0; (tree->nextN[nc][counter_tree] != NULL) && (counter_tree < 40); counter_tree++){
+                tree->nextN[nc][counter_tree] -> t = 0;
+                tree->nextN[nc][counter_tree] -> r = 0;
+            }
+    }
 }
 
 void checkFirst(MCtree tree, DATABASE * data){
@@ -1053,8 +1070,6 @@ void checkFirst(MCtree tree, DATABASE * data){
 }
 
 
-/*WARNING: dá mal: http://127.0.0.1/cgi-bin/cartas?972965347343_6597608369744_3852706269888640_643322783764768_0_0_0_0_0_3_0_3_0_0_0_0_0_0_0_0
- */
 int main(){
     char input[100];
     int flag = 0, i;
@@ -1067,6 +1082,7 @@ int main(){
     int jog_temp = 0;
     int a = 0;
     int pass_counter = 0;
+    int nc_counter[4] = {0};
     MAO mao_temp = 0;
     MAO usadas_temp[3] = {0};
     MCtree temp;
@@ -1074,7 +1090,7 @@ int main(){
     DATABASE data = {{0},0,0,0,{0},0};
     DATABASE simulacao;
     MCtree tree = NULL;
-    clock_t start;//start2;
+    clock_t start;
     
     
     memset(mao,0,26);
@@ -1085,7 +1101,6 @@ int main(){
             case 'J':
                 if(input[3] == 'A'){
                     start = clock();
-                    //start2 = clock();
                     if(data.firstplay == 0){
                         data.firstplay = 1;
                         for(jog_temp = jog_temp -1, counter = 0; counter <= jog_temp; counter++)
@@ -1093,8 +1108,8 @@ int main(){
                         if(usadas_temp[0] != 0)
                             data.firstplay = 2;
                     }
-                    clean_pass(tree, pass_counter);
-                    while(((clock()-start)/CLOCKS_PER_SEC) < 2.0){
+                    clean_plays(tree, pass_counter, nc_counter);
+                    while(((clock()-start)/CLOCKS_PER_SEC) < 1.7){
                         simulacao = data;
                         while(flag == 0){
                             temp = treePolicy(tree, &simulacao, flag2);
@@ -1107,10 +1122,14 @@ int main(){
                     jog = 1;
                     if(data.firstplay != 2)
                         checkFirst(tree, &data);
-                    temp = choosePlay(tree,&data);
-                    convertejogstr(temp->estado,output);
+                    temp = choosePlay(tree,&data, nc_counter);
+                    if(temp != NULL)
+                    	convertejogstr(temp->estado,output);
+                    else{
+                        strcpy(output, "PASSO");
+                        data.firstplay = 0;
+                    }
                     printf("%s\n", output);
-                    //printf("%lu\n", (clock()-start2)/CLOCKS_PER_SEC);
                     if(output[0] != 'P')
                     	fgets(input, 100, stdin);
                     else
@@ -1212,10 +1231,13 @@ int main(){
                 break;
             case 'P':
                 data.passar++;
-                if(data.firstplay == 0)
-                    jog_temp++;
-                else
-                	jog = (jog + 1) % 4;
+                if(data.firstplay == 0){
+                    if(jog_temp != 0)
+                    	jog_temp++;
+                }
+                else{
+                    jog = (jog + 1) % 4;
+                }
                 if(data.passar == 3){
                     data.nc = 0;
                     data.jogada = 0;
