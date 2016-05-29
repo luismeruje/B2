@@ -34,28 +34,18 @@ Tipo para a mão de um jogador
 typedef long long int MAO;
 
 /**
- Estrutura de dados:
- 
- mao[4]            Mao de cada jogador
- selected          Cartas selecionadas
- jogadas[4]        Cartas da ultima jogada de cada jogador
- play              Identificador do tipo de jogo: 1 ->Começar;  2 ->Jogo normal; 3 ->Inicio do jogo; 4 ->Fim do jogo.
- nc;               Número de cartas da ronda
- passar;           Contagem de passos
- ordenar;          Identificador do tipo de ordenamento de cartas
- score[4];         Pontuação de cada jogador
- combination[3];   Posição 0: Tipo de combinação de 5 cartas. Posição 1: Valor da maior carta. Posição 2: Naipe da maior carta.
+ @brief Estrutura de dados com as informações do estado do jogo atual.
  */
 struct database{
-    MAO mao[4];
-    MAO selected;
-    MAO jogadas[4];
-    int play;
-    int nc;
-    int passar;
-    int ordenar;
-    int score[4]; 
-    int combination[3];
+    MAO mao[4];         /**< Mao de cada jogador */
+    MAO selected;       /**< Cartas selecionadas */
+    MAO jogadas[4];     /**< Cartas da ultima jogada de cada jogador */
+    int play;           /**< Identificador do tipo de jogo: 1 ->Começar;  2 ->Jogo normal; 3 ->Inicio do jogo; 4 ->Fim do jogo */
+    int nc;             /**< Número de cartas da ronda */
+    int passar;         /**< Contagem de passos */
+    int ordenar;        /**< Identificador do tipo de ordenamento de cartas */
+    int score[4];       /**< Pontuação de cada jogador */
+    int combination[3]; /**< Posição 0: Tipo de combinação de 5 cartas. Posição 1: Valor da maior carta. Posição 2: Naipe da maior carta */
 };
 
 /**
