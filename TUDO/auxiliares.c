@@ -537,10 +537,10 @@ int joga5 (DATABASE * data, int m) {
  @param m       Jogador a jogar
  */
 void pmjgfourofakind (DATABASE * data, int m) {
+    long long int temp = 0;
     int ind, n, v;
     int rank[13] = {0};
     separa_val(data->mao[m],rank);
-    long long int temp = 0;
     if(rank[0]==4) {
         for(n = 0; n < 4; n++)
             if(carta_existe(data->mao[m],n,0))
@@ -572,10 +572,10 @@ void pmjgfourofakind (DATABASE * data, int m) {
  @param m       Jogador a jogar
  */
 void pmjgfullhouse (DATABASE * data, int m) {
+    long long int temp = 0;
     int n, v, count = 0;
     int rank[13] = {0};
     separa_val(data->mao[m],rank);
-    long long int temp = 0;
     if(rank[0]==3) {
         for(n = 0; n < 4; n++)
             if(carta_existe(data->mao[m],n,0))
@@ -736,7 +736,7 @@ int jogadas_possiveis(DATABASE *data, int jog, int jogadas[][5]){
         for(n = 0; n < 4; n++)
             if(carta_existe(data->mao[jog],n,v)){
                 temp_naipe[i] =n;
-                i++; 
+                i++;
             }
         if(i >= data->nc && (v > max % 13 || temp_naipe[i - 1] > max / 13)){
             for(a = 0, i = i -1; a < data->nc; i--, a++)
