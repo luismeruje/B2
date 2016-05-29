@@ -3,7 +3,7 @@ OBJS = $(main.c, estrutura.c, auxiliares.c, html.c, bots.c)
 EXEC = cartas
 
 instalar: $(EXEC)
-	sudo cp $(EXEC) /usr/lib/cgi-bin	
+	sudo cp $(EXEC) /usr/lib/cgi-bin/	
 	sudo cp -r ./cards/* /var/www/html/cards/
 	touch instalar
 
