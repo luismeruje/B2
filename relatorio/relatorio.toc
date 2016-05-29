@@ -1,0 +1,4 @@
+\select@language {portuges}
+\contentsline {section}{\numberline {1}Introdu\IeC {\c c}\IeC {\~a}o}{1}
+\contentsline {section}{\numberline {2}Funcionamento}{1}
+\contentsline {section}{\numberline {3}Optimiza\IeC {\c c}\IeC {\~o}es}{1}
