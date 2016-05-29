@@ -1,4 +1,6 @@
 #include "estrutura.h"
+#include "auxiliares.h"
+#include "html.h"
 /** \brief Bot a continuar uma jogada
  
  @param data    Estrutura atual
