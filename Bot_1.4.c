@@ -996,6 +996,7 @@ MCtree choosePlay(MCtree tree, DATABASE * data, int nc_counter[4]){
     MCtree play;
     int nc_t = -1, nc_r = -1;
     int counter[4] = {0};
+    int i = 0;
     
     jogadas_possiveis(data,counter,0,jogadas);
     play_t = NULL;
@@ -1025,17 +1026,28 @@ MCtree choosePlay(MCtree tree, DATABASE * data, int nc_counter[4]){
     if(play_r == play_t){
         play = play_r;
         nc_counter[nc_t]++;
+        for(i = 0; i< 4; i++)
+            if(i!=nc_r)
+                nc_counter[i] = 0;
     }
     else if((play_r != NULL) && (play_r->t) > 1000){
         play = play_r;
         nc_counter[nc_r]++;
+        for(i = 0; i< 4; i++)
+            if(i!=nc_r)
+                nc_counter[i] = 0;
     }
     else{
         play = play_t;
-        if(play != NULL)
+        if(play != NULL){
             nc_counter[nc_t]++;
+            for(i = 0; i< 4; i++)
+                if(i!=nc_t)
+                    nc_counter[i] = 0;
+        }
     }
     return play;
+
 }
 
 void clean_plays(MCtree tree, int pass_counter,int nc_counter[4]){
@@ -1083,6 +1095,7 @@ int main(){
     int a = 0;
     int pass_counter = 0;
     int nc_counter[4] = {0};
+    int flag3 = 0;
     MAO mao_temp = 0;
     MAO usadas_temp[3] = {0};
     MCtree temp;
@@ -1123,50 +1136,56 @@ int main(){
                     if(data.firstplay != 2)
                         checkFirst(tree, &data);
                     temp = choosePlay(tree,&data, nc_counter);
-                    if(temp != NULL)
+                    if(temp != NULL){
                     	convertejogstr(temp->estado,output);
+                        flag3 = 1;
+                        printf("%s\n", output);
+                    }
                     else{
                         strcpy(output, "PASSO");
                         data.firstplay = 0;
+                        jog_temp = 0;
+                        data.passar = 0;
                     }
-                    printf("%s\n", output);
-                    if(output[0] != 'P')
-                    	fgets(input, 100, stdin);
-                    else
-                        input[0] = 'O';
-                    if(input[0] == 'O'){
-                        if(temp->estado == 0){
+                    if(flag3 != 0){
+                        if(output[0] != 'P')
+                            fgets(input, 100, stdin);
+                        else
+                            input[0] = 'O';
+                        if(input[0] == 'O'){
+                            if(temp->estado == 0){
+                                data.passar++;
+                                pass_counter++;
+                            }
+                            else{
+                                data.passar = 0;
+                                pass_counter = 0;
+                                data.jogada = temp->estado;
+                                data.nc = 0;
+                                for(i = 0; i < 52; i++){
+                                    n = i / 13;
+                                    v = i % 13;
+                                    if(carta_existe(temp->estado,n,v))
+                                        data.nc++;
+                                }
+                            }
+                            if(data.passar == 3){
+                                data.nc = 0;
+                                data.jogada = 0;
+                            }
+                            free_nodes(tree,temp);
+                            tree = temp;
+                            tree->prev = NULL;
+                            data.usadas[0] = data.usadas[0] | tree-> estado;
+                            data.mao[0] = (data.mao[0]) ^ (tree->estado);
+                        }
+                        else if(input[0] == 'N'){
                             data.passar++;
                             pass_counter++;
-                        }
-                        else{
-                            data.passar = 0;
-                            pass_counter = 0;
-                            data.jogada = temp->estado;
-                            data.nc = 0;
-                            for(i = 0; i < 52; i++){
-                                n = i / 13;
-                                v = i % 13;
-                                if(carta_existe(temp->estado,n,v))
-                                    data.nc++;
+                            if(data.passar == 3){
+                                data.nc = 0;
+                                data.jogada = 0;
                             }
-                        }
-                        if(data.passar == 3){
-                            data.nc = 0;
-                            data.jogada = 0;
-                        }
-                        free_nodes(tree,temp);
-                        tree = temp;
-                        tree->prev = NULL;
-                        data.usadas[0] = data.usadas[0] | tree-> estado;
-                        data.mao[0] = (data.mao[0]) ^ (tree->estado);
-                    }
-                    else if(input[0] == 'N'){
-                        data.passar++;
-                        pass_counter++;
-                        if(data.passar == 3){
-                            data.nc = 0;
-                            data.jogada = 0;
                         }
                     }
                 }
@@ -1227,6 +1246,7 @@ int main(){
                     if(data.nc == 5)
                         data.nc = 4;
                     data.passar = 0;
+                    flag3 = 1;
                 }
                 break;
             case 'P':
