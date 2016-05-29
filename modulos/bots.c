@@ -1,14 +1,14 @@
 #include "estrutura.h"
 #include "auxiliares.h"
 #include "html.h"
-/** \brief Bot a continuar uma jogada
+/** \brief Jogada em que o bot não começa a ronda
  
  @param data    Estrutura atual
- @param m       Jogador a continuar
+ @param m       Número do bot que vai jogar
 */
 void bot_continua(DATABASE *data,int m){
     int draw, total, i, n, v;
-    int jogadas[15][5]; //Primeiro elemento do array => número da jogada_possível; o 15 em vez de 13 é só por segurança. Segundo elemento do array => carta da jogada_possível. Exemplo: jogadas[0][0] e jogadas[0][1] dão o par da jogada possível nr. 1.
+    int jogadas[15][5]; //Primeiro elemento do array => número da jogada_possível; o 15 em vez de 13 é só por segurança. Segundo elemento do array => cada uma das cartas da jogada_possível. Exemplo: jogadas[0][0] e jogadas[0][1] dão a primeira jogada possível para uma jogada de duas cartas, jogadas[1][0] e jogadas[1][1] dão a segunda, ...
     int y[3];
     
     data->jogadas[m] = 0;
@@ -49,10 +49,10 @@ void bot_continua(DATABASE *data,int m){
         data->play = 4;
 }
 
-/** \brief Bot a começar uma jogada
+/** \brief Bot a começar uma ronda
  
  @param data    Estrutura atual
- @param m       Jogador a começar
+ @param m       Número do bot que vai jogar
 */
 void bot_comeca(DATABASE *data,int m){
     int total = 0, i; //total => número total de jogadas possíveis
@@ -116,10 +116,10 @@ void bot_comeca(DATABASE *data,int m){
         data->play = 4;
 }
 
-/** \brief Responsável Pela Jogada dos Bots
+/** \brief Responsável pela jogada dos Bots
  
  @param data    Estrutura atual
- @param m       Jogador a continuar
+ @param m       Número do bot que vai jogar
 */
 void joga_bots(DATABASE *data,int m){
     if(data->passar < 3)

@@ -16,13 +16,20 @@
  Ordem dos naipes
  */
 #define NAIPES		"DCHS"
+
 /**
  Ordem das cartas
  */
 #define VALORES		"3456789TJQKA2"
 
+/**
+ Formato da query string
+ */
 #define DATA "%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d"
 
+/**
+ Formato da mão de um jogador
+ */
 typedef long long int MAO;
 
 /**
@@ -49,5 +56,7 @@ struct database{
     int score[4]; 
     int combination[3];
 };
-
+/**
+ Renomeação da estrutura, para simplificar a sua denominação
+ */
 typedef struct database DATABASE;

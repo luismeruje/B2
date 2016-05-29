@@ -7,6 +7,7 @@
  URL da CGI
  */
 #define SCRIPT		"http://127.0.0.1/cgi-bin/cartas"
+
 /**
  URL da pasta com as cartas
  */
@@ -16,13 +17,20 @@
  Ordem dos naipes
  */
 #define NAIPES		"DCHS"
+
 /**
  Ordem das cartas
  */
 #define VALORES		"3456789TJQKA2"
 
+/**
+ Formato da query string
+ */
 #define DATA "%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%lld_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d_%d"
 
+/**
+Tipo para a mão de um jogador
+ */
 typedef long long int MAO;
 
 /**
@@ -50,4 +58,7 @@ struct database{
     int combination[3];
 };
 
+/**
+ Renomeação da estrutura, para simplificar a sua denominação
+ */
 typedef struct database DATABASE;

@@ -1,6 +1,6 @@
 #include "estrutura.h"
 #include "auxiliares.h"
-/** \brief Imprime Carta como imagem
+/** \brief Imprime carta como imagem
  
  @param x       Coordenada x
  @param y       Coordenada y
@@ -13,7 +13,7 @@ void imprime_carta_imagem(int x, int y,int n,int v){
     printf("<image x = \"%d\" y = \"%d\" height = \"95\" width = \"70\" xlink:href = \"%s/%c%c.svg\" />\n", x, y, BARALHO, rank[v], suit[n]);
 }
 
-/** \brief Imprime Parte de trás da Carta como imagem
+/** \brief Imprime parte de trás da carta como imagem
  
  @param x       Coordenada x
  @param y       Coordenada y
@@ -22,7 +22,7 @@ void imprime_carta_back(int x, int y){
     printf("<image x = \"%d\" y = \"%d\" height = \"110\" width = \"80\" xlink:href = \"%s/card_back.svg\" />\n", x, y, BARALHO);
 }
 
-/** \brief Imprime Carta como link
+/** \brief Imprime carta como link
  
  @param x       Coordenada x
  @param y       Coordenada y
@@ -44,7 +44,7 @@ void imprime_carta_link(int x, int y,DATABASE data,int n,int v){
     printf("<a xlink:href = \"cartas?%s\"><image x = \"%d\" y = \"%d\" height = \"110\" width = \"80\" xlink:href = \"%s/%c%c.svg\" /></a>\n", script, x, y, BARALHO, rank[v], suit[n]);
 }
 
-/** \brief Imprime Cartas Jogadas
+/** \brief Imprime cartas jogadas
  
  @param data    Estrutura atual
 */
@@ -91,7 +91,7 @@ void imprime_jogadas(DATABASE data){
     }
 }
 
-/** \brief Imprime Mãos dos jogadores
+/** \brief Imprime mãos dos jogadores
  
  @param data    Estrutura atual
 */
@@ -146,7 +146,7 @@ void imprime_maos (DATABASE data){
     
 }
 
-/** \brief Imprime Botão Ordenar
+/** \brief Imprime botão ordenar
  
  @param data    Estrutura atual
 */
@@ -166,7 +166,7 @@ void botao_ordenar (DATABASE data){
     }
 }
 
-/** \brief Imprime Botão Help que ao clicar seleciona possível jogada
+/** \brief Imprime botão help que ao clicar seleciona possível jogada
  
  @param data    Estrutura atual
 */
@@ -226,7 +226,7 @@ void botao_help(DATABASE * data){
     printf("<a xlink:href = \"cartas?%s\"><image x = \"370\" y = \"560\" height = \"40\" width = \"40\" xlink:href = \"%s/botao_help.svg\" /></a>\n", script, BARALHO);
 }
 
-/** \brief Imprime Botão Passar
+/** \brief Imprime botão passar
  
  @param data    Estrutura atual
 */
@@ -243,7 +243,7 @@ void botao_passar (DATABASE data){
     else printf("<image x = \"775\" y = \"550\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_pass_cinza.svg\" />\n", BARALHO);
 }
 
-/** \brief Imprime Botão Play
+/** \brief Imprime botão play
  
  @param data    Estrutura atual
 */
@@ -286,7 +286,7 @@ void botao_play (DATABASE data){
         printf("<image x = \"775\" y = \"510\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_play_cinza.svg\" />\n", BARALHO);
 }
 
-/** \brief Imprime Botão Continuar
+/** \brief Imprime botão continuar
  
  @param data    Estrutura atual
 */
@@ -303,7 +303,7 @@ void botao_continuar(DATABASE * data) {
     printf("<a xlink:href = \"cartas?%s\"><image x = \"380\" y = \"500\" height = \"60\" width = \"170\" xlink:href = \"%s/botao_continuar.svg\" /></a>\n", script, BARALHO);
 }
 
-/** \brief Imprime Botão Novo Jogo
+/** \brief Imprime botão novo jogo
  
  @param data    Estrutura atual
 */
@@ -312,7 +312,7 @@ void botao_novojogo() {
 }
 
 
-/** \brief Imprime Botão FIM
+/** \brief Imprime botão fIM
  
  @param data    Estrutura atual
 */
@@ -342,7 +342,7 @@ void imprime_fim (DATABASE *data){
     printf("</svg>");
 }
 
-/** \brief Imprime Botão Start
+/** \brief Imprime botão start
  
  @param data    Estrutura atual
 */
@@ -353,7 +353,7 @@ void botao_start(DATABASE data){
     printf("<a xlink:href = \"cartas?%s\"><image x = \"510\" y = \"300\" height = \"60\" width = \"180\" xlink:href = \"%s/botao_start.svg\" /></a>\n", script, BARALHO);
 }
 
-/** \brief Imprime Começo de Jogo (Mesa, Chão...)
+/** \brief Imprime imagem de início de jogo
  
  @param data    Estrutura atual
 */
@@ -381,7 +381,7 @@ void imprime_start(DATABASE data){
     printf("</svg>\n");
 }
 
-/** \brief Imprime Jogo
+/** \brief Imprime todos os elementos do jogo(mesa, cartas jogadas, mãos, ...)
  
  @param data    Estrutura atual
 */

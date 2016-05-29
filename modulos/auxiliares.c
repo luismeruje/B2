@@ -80,8 +80,8 @@ void distribui(DATABASE * data){
 
 /** \brief Calcula a pontuação de uma MAO
  
- @param mao     A mão com as cartas do jogador
- @return        A pontuação
+ @param mao     Mão com as cartas do jogador
+ @return        Pontuação
  */
 int calcula_score(MAO mao){
     int ind;
@@ -105,8 +105,8 @@ int calcula_score(MAO mao){
 
 /** \brief Calcula a maior carta de uma MAO
  
- @param mao     A mão com as cartas do jogador
- @return        O índice da maior carta
+ @param mao     Mão que queremos analisar
+ @return        Índice da maior carta
  */
 int maior_carta_mao(MAO mao){
     int ind;
@@ -123,10 +123,10 @@ int maior_carta_mao(MAO mao){
     return max;
 }
 
-/** \brief Calcula a maior carta jogada
+/** \brief Calcula a maior carta jogada, de entre as mãos do parâmetro "jogadas" da estrutura
  
  @param data    Estrutura atual
- @return        O índice da maior carta jogada
+ @return        Índice da maior carta jogada
  */
 int maior_carta_jogada(DATABASE * data){
     int jog;
@@ -143,10 +143,10 @@ int maior_carta_jogada(DATABASE * data){
     return max;
 }
 
-/** \brief Calcula o primeiro jogador a começar
+/** \brief Determina quem começa o jogo
  
  @param data    Estrutura atual
- @return        O primeiro jogador a começar
+ @return        Jogador que vai começar o jogo
  */
 int quem_comeca(DATABASE * data){
     int jog;
@@ -188,10 +188,10 @@ void separa_nap (MAO mao, int naipe[4]){
     }
 }
 
-/** \brief Testa se uma mão de 5 cartas é um straiht
+/** \brief Testa se uma mão de 5 cartas é um straight
  
  @param v       Array com o número de ocorrências de cada valor
- @return        Um int com valor 1 se verdadeiro ou 0 se falso
+ @return        Um int com valor 1 se for straight ou 0 se não for
  */
 int teste_straight(int v[13]){
     int r = 0, i = 0, count = 0, flag = 0;
@@ -200,7 +200,7 @@ int teste_straight(int v[13]){
     for(;v[i] == 0; i = (i + 1) % 13);
     for(;v[i] != 0; i = (i + 1) % 13){
         count++;
-    	if(i == 11 && count != 1 && count != 5) //testa se o Ás não é o último nem o primeiro da sequencia
+    	if(i == 11 && count != 1 && count != 5) //se houver um Ás e não for o primeiro nem o último elemento da sequência, flag passa a 1
             flag = 1;
     }
     if(count == 5 && flag == 0)
@@ -273,7 +273,7 @@ int tipo_comb_five(MAO mao) {
     return r;
 } 
 
-/** \brief Atualiza o array da combination consoante o straight da mão
+/** \brief Atualiza o array que vai preencher o parâmetro combinations consoante o straight da mão
  
  @param mao     A mão com as cartas
  @param y       Array correspondente ao combination
@@ -357,10 +357,10 @@ int cmpplay (MAO mao, int y[3]){
   return r;
 }
 
-/** \brief Calcula uma combinação straight apartir de uma mão
+/** \brief Calcula uma combinação straight a partir de uma mão
  
- @param mao     A mão com as cartas
- @return        Uma mão com a combinação straight possível
+ @param mao     Mão com as cartas
+ @return        Mão com a combinação straight possível
  */
 MAO straightpos (MAO mao) {
     int c=0, n, v;
@@ -392,8 +392,8 @@ MAO straightpos (MAO mao) {
 
 /** \brief Calcula uma combinação flush apartir de uma mão
  
- @param mao     A mão com as cartas
- @return        Uma mão com a combinação flush possível
+ @param mao     Mão com as cartas
+ @return        Mão com a combinação flush possível
  */
 MAO flushpos (MAO mao) {
   MAO max = 0;
@@ -416,8 +416,8 @@ MAO flushpos (MAO mao) {
 
 /** \brief Calcula uma combinação full house apartir de uma mão
  
- @param mao     A mão com as cartas
- @return        Uma mão com a combinação full house possível
+ @param mao     Mão com as cartas
+ @return        Mão com a combinação full house possível
  */
 MAO fullhousepos (MAO mao) {
   MAO max = 0;
@@ -455,8 +455,8 @@ MAO fullhousepos (MAO mao) {
 
 /** \brief Calcula uma combinação four of a kind apartir de uma mão
  
- @param mao     A mão com as cartas
- @return        Uma mão com a combinação four of a kind possível
+ @param mao     Mão com as cartas
+ @return        Mão com a combinação four of a kind possível
  */
 MAO fourofakindpos (MAO mao) {
   MAO max = 0;
@@ -485,8 +485,8 @@ MAO fourofakindpos (MAO mao) {
 
 /** \brief Calcula uma combinação straight flush apartir de uma mão
  
- @param mao     A mão com as cartas
- @return        Uma mão com a combinação straight flush possível
+ @param mao     Mão com as cartas
+ @return        Mão com a combinação straight flush possível
  */
 MAO straightflushpos (MAO mao) {
   MAO max = 0, temp = 0;
