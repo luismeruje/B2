@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['jogadas',['jogadas',['../structdatabase.html#a0725ca00e51c6f49ec63ab5d4d07c185',1,'database']]]
+  ['jogadas',['jogadas',['../structdatabase.html#a86035bf8c2800279864f45465bb1406f',1,'database']]]
 ];
