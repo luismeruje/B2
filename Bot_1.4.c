@@ -1115,7 +1115,7 @@ int main(){
                         checkFirst(tree, &data);
                     temp = choosePlay(tree,&data);
                     convertejogstr(temp->estado,output);
-                    printf("%s\n t: %ld\n r: %f\n", output,tree->t, tree->r);
+                    printf("%s\n", output);
                     fgets(input, 100, stdin);
                     if(input[0] == 'O'){
                         if(temp->estado == 0){
@@ -1267,7 +1267,6 @@ int main(){
                     data.mao[0] = add_carta(data.mao[0],n,v);
                 }
                 tree = createTree(data.mao[0]);
-                printf("%p\n",tree);
                 temp = tree;
                 break;
             
