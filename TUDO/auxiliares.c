@@ -200,7 +200,7 @@ int teste_straight(int v[13]){
     for(;v[i] == 0; i = (i + 1) % 13);
     for(;v[i] != 0; i = (i + 1) % 13){
         count++;
-    	if(i == 11 && count != 1 && count != 5) //se houver um Ás e não for o primeiro nem o último elemento da sequência, flag passa a 1
+    	if(i == 11 && count != 1 && count != 5) 
             flag = 1;
     }
     if(count == 5 && flag == 0)
@@ -278,15 +278,15 @@ int tipo_comb_five(MAO mao) {
  @param mao     A mão com as cartas
  @param y       Array correspondente ao combination
  */
-//Soma-se um aos v's de cada carta, assim se o ás for última carta tem o maior v. Tbm conta com se o ás for a primeira carta
+
 void atualizastraight(MAO mao, int y[3]) {
     int ind = 0, i;
     int v[13] = {0};
     separa_val(mao, v);
-    if (v[11] != 0 && v[12] != 0){ //temos um ás e é o primeiro da sequência, pq existe um 2
-        y[1] = 3; //5 de alguma coisa é obrigatoriamente a carta mais alta
+    if (v[11] != 0 && v[12] != 0){ 
+        y[1] = 3; 
         for(i = 0; i < 4; i++)
-            if(carta_existe(mao, i, 2)){ //Determina o naipe do 5
+            if(carta_existe(mao, i, 2)){ 
                 y[2] = i;
                 break;
             }
@@ -294,7 +294,7 @@ void atualizastraight(MAO mao, int y[3]) {
 	else {
         for(i = 0; i < 4; i++)
             if(carta_existe(mao,i, 12))
-            	mao = rem_carta(mao, i, 12); //remove os 2's
+            	mao = rem_carta(mao, i, 12); 
         ind = maior_carta_mao(mao);
         y[1] = (ind % 13) + 1;
         y[2] = ind / 13;
@@ -540,7 +540,7 @@ void pmjgfourofakind (DATABASE * data, int m) {
     int ind, n, v;
     int rank[13] = {0};
     separa_val(data->mao[m],rank);
-    MAO temp = 0;
+    long long int temp = 0;
     if(rank[0]==4) {
         for(n = 0; n < 4; n++)
             if(carta_existe(data->mao[m],n,0))
@@ -575,7 +575,7 @@ void pmjgfullhouse (DATABASE * data, int m) {
     int n, v, count = 0;
     int rank[13] = {0};
     separa_val(data->mao[m],rank);
-    MAO temp = 0;
+    long long int temp = 0;
     if(rank[0]==3) {
         for(n = 0; n < 4; n++)
             if(carta_existe(data->mao[m],n,0))
@@ -636,7 +636,6 @@ void primeira_jogada(DATABASE * data, int m){
     int rank[13] = {0};
     separa_val(data->mao[m],rank);
     data->nc = 5;
-    //eliminar todas as cartas que não podem estar num straight com 3 de ouros, incluindo outros 3, que não sejam o de ouros
     for(ind = 0; ind < 52; ind++){
         n = ind / 13;
         v = ind % 13;
@@ -737,7 +736,7 @@ int jogadas_possiveis(DATABASE *data, int jog, int jogadas[][5]){
         for(n = 0; n < 4; n++)
             if(carta_existe(data->mao[jog],n,v)){
                 temp_naipe[i] =n;
-                i++; //meter este incremento em cima
+                i++; 
             }
         if(i >= data->nc && (v > max % 13 || temp_naipe[i - 1] > max / 13)){
             for(a = 0, i = i -1; a < data->nc; i--, a++)

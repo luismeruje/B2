@@ -21,7 +21,7 @@ void Game_Lobby(DATABASE data){
             imprime_fim(&data);
             break;
             
-        default: // data.play == 2 -> jogo normal. data.play == 3 -> primeira ronda do jogo.
+        default:
             jogo(&data);
             if(data.play != 4)
             	imprime(data);

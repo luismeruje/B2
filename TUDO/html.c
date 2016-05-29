@@ -108,13 +108,13 @@ void imprime_maos (DATABASE data){
             n = ind/13;
             v = ind%13;
             if(jog==0){
-                if(carta_existe(data.selected,n,v)==1)//desvia as cartas selecionadas
+                if(carta_existe(data.selected,n,v)==1)
                     y -= 20;
                 if(carta_existe(data.mao[jog],n,v)==1){
                     imprime_carta_link(x,y,data,n,v);
                     x += 20;
                 }
-                if(carta_existe(data.selected,n,v)==1)//anula o desvio, para não ficarem todas levantadas
+                if(carta_existe(data.selected,n,v)==1)
                     y += 20;
             }
             else{
@@ -277,8 +277,8 @@ void botao_play (DATABASE data){
             data.combination[1] = y[1];
             data.combination[2] = y[2];
         }
-        if(data.mao[0] == 0) data.play = 4; //4 -> fim do jogo
-        else data.play = 2; //2 -> jogo normal
+        if(data.mao[0] == 0) data.play = 4; 
+        else data.play = 2; 
         DATA2STR(script, data);
         printf("<a xlink:href = \"cartas?%s\"><image x = \"775\" y = \"510\" height = \"30\" width = \"90\" xlink:href = \"%s/botao_play.svg\" /></a>\n", script, BARALHO);
     }

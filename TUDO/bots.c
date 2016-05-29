@@ -8,7 +8,7 @@
 */
 void bot_continua(DATABASE *data,int m){
     int draw, total, i, n, v;
-    int jogadas[15][5]; //Primeiro elemento do array => número da jogada_possível; o 15 em vez de 13 é só por segurança. Segundo elemento do array => cada uma das cartas da jogada_possível. Exemplo: jogadas[0][0] e jogadas[0][1] dão a primeira jogada possível para uma jogada de duas cartas, jogadas[1][0] e jogadas[1][1] dão a segunda, ...
+    int jogadas[15][5]; 
     int y[3];
     
     data->jogadas[m] = 0;
@@ -55,7 +55,7 @@ void bot_continua(DATABASE *data,int m){
  @param m       Número do bot que vai jogar
 */
 void bot_comeca(DATABASE *data,int m){
-    int total = 0, i; //total => número total de jogadas possíveis
+    int total = 0, i; 
     int jogadas[15][5];
     int draw;
     int n, v;
@@ -63,7 +63,7 @@ void bot_comeca(DATABASE *data,int m){
     
     data->jogadas[m]=0;
     data->passar = 0;
-    data->nc = 5; //para começar a testar combinações de 5 primeiro
+    data->nc = 5; 
     data->combination[0] = 0;
     data->combination[1] = 0;
     data->combination[2] = 0;
@@ -84,7 +84,7 @@ void bot_comeca(DATABASE *data,int m){
              data->nc = 4;
              while(total == 0){
                 data->nc --;
-                total = jogadas_possiveis(data, m, jogadas); //NOTA: já sai com o data->nc certo, é para isso que se tem o outro data->nc antes do while.
+                total = jogadas_possiveis(data, m, jogadas); 
              }
                                     
               draw = rand()%total;
@@ -142,7 +142,7 @@ void jogo(DATABASE *data){
             	break;
             }
         }
-    else{ //só acontece no início do jogo se um dos bots tiver o 3 de ouros
+    else{ 
         jog = quem_comeca(data);
         data -> passar = 3;
         if(jog!=0)
