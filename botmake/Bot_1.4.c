@@ -8,7 +8,7 @@
 #define JOGADA "JOGOU %c%c %c%c %c%c %c%c %c%c %c%c %c%c %c%c %c%c %c%c %c%c %c%c %c%c"
 
 typedef long long int MAO;
-
+//estrutura com informação do jogo(são usadas duas destas, uma que tem a informação do jogo real, as cartas que cacad um já jogou, a nossa mão atual , etc. e outra que vai mudando com as simulações)
 typedef struct database{
     MAO mao[4];
     int nc;
@@ -18,6 +18,7 @@ typedef struct database{
     int firstplay;
 } DATABASE;
 
+//estrutura que tem a árvore com estatísticas para cada jogada possível
 typedef struct searchtree{
     MAO estado;
     long int t;
@@ -70,6 +71,7 @@ int carta_existe(MAO ESTADO, int naipe, int valor) {
     return (ESTADO >> idx) & 1;
 }
 
+//Devolve índice da maior carta na mão
 int maior_carta_mao(MAO mao){
     int ind;
     int max=-1;
@@ -85,6 +87,7 @@ int maior_carta_mao(MAO mao){
     }
     return max;
 }
+
 
 void separa_val (MAO mao, int y[13]){
     int i,n,v;
@@ -170,6 +173,7 @@ int tipo_comb_five(MAO mao) {
     return r;
 }
 
+//talvez tenha alterado, mas faz o mm
 void atualizastraight(int v[13], MAO mao, int y[2]) {
     int ind = 0, i;
     if (v[11] != 0 && v[12] != 0){ /*temos um ás e é o primeiro da sequência, pq existe um 2 */
@@ -190,7 +194,7 @@ void atualizastraight(int v[13], MAO mao, int y[2]) {
     }
 }
 
-
+//dá os straights possíveis, parte do Ás(ind = 11) e vai tentando obter 5 cartas seguidas. Se conseguir 5 cartas seguidas guarda a primeira carta do straight e começa à procura de novo a partir da 2º carta do stright(pq podemos ter A23456, para apnahar as duas tem que voltar ao 2). Mete os straights no array jogadas
 int straightpos (DATABASE * simulacao, int jog, int sametype, MAO jogadas[40], int count) {
     int c=0, n, v = 11, vn[2], i= 0,count2, maxi;
     int straights[15]={-1};
@@ -203,7 +207,7 @@ int straightpos (DATABASE * simulacao, int jog, int sametype, MAO jogadas[40], i
         if(v < 0)
             v = 13 + v;
     }
-    if(v >= 7 && v <11)
+    if(v >= 7 && v < 11)
         v = 11;
     for(; v != 7; v = (v + 1) % 13){
         if(rank[v] > 0)
@@ -277,7 +281,7 @@ int straightpos (DATABASE * simulacao, int jog, int sametype, MAO jogadas[40], i
     return count;
 }
 
-
+//igual ao strightpos mas adaptado para o straightflush e mete no array jogadas
 int straightpos2 (MAO mao, DATABASE * simulacao, int jog, int sametype, MAO jogadas[40], int count) {
     int c=0, n, v = 11, vn[2], i= 0,count2, maxi;
     int straights[15]={-1};
@@ -289,7 +293,7 @@ int straightpos2 (MAO mao, DATABASE * simulacao, int jog, int sametype, MAO joga
         v = vn[0] - 4;
         if(v < 0)
             v = 13 + v;
-    }
+    }//Aqui tbm é diferente(ver próximo comentário)
     for(; v != 7; v = (v + 1) % 13){
         if(rank[v] > 0)
             c++;
@@ -301,7 +305,7 @@ int straightpos2 (MAO mao, DATABASE * simulacao, int jog, int sametype, MAO joga
                     v = v - 4;
                     if(v < 0)
                         v = 13 + v;
-                    straights[i] = v;
+                    straights[i] = v;//A diferença está aqui, mas n me lembro pq é que aqui é assim..
                     i++;
                     c = 0;
                 }
@@ -364,7 +368,7 @@ int straightpos2 (MAO mao, DATABASE * simulacao, int jog, int sametype, MAO joga
 }
 
 
-
+//dá os flushes possíveis e adiciona-os ao array jogadas(dá mais do que um)
 long long int flushpos (DATABASE * simulacao, int jog, int sametype, MAO jogadas[40], int count) {
     int i = 0;
     int naipe[4] = {0};
@@ -520,7 +524,7 @@ int fourofakindpos (DATABASE * simulacao, int jog, int sametype,MAO jogadas[40],
     return count;
 }
 
-
+//same como as outras
 long long int straightflushpos (DATABASE * simulacao, int jog, int sametype,MAO jogadas[40], int count) {
     MAO temp = 0;
     int n=3;
@@ -545,6 +549,7 @@ long long int straightflushpos (DATABASE * simulacao, int jog, int sametype,MAO 
     return count;
 }
 
+//simulas as mãos dos opoenentes, tendo em conta as cartas que já foram jogadas, o número de cartas usados por cada um e as cartas que temos na nossa mão(que obviamente n podem estar nas mãos dos outros)
 void simula_maos(DATABASE * data){
     int ind, jog;
     int i,n,v;
@@ -583,7 +588,7 @@ void simula_maos(DATABASE * data){
     }
 }
 
-
+//Construi o array com as jogadas possíveis de combinações de 5
 int jogadas5(DATABASE * simulacao, int jog, MAO jogadas[40]){
     int r = 0;
     int count = 0;
@@ -625,6 +630,7 @@ int jogadas5(DATABASE * simulacao, int jog, MAO jogadas[40]){
     return count;
 }
 
+//dá as jogadas possíveis com duas ou três cartas
 int jogadasN(DATABASE * simulacao, int jog, MAO jogadas [4][40], int nc){    int n, v = 0, i, temp_naipe[4]={0}, count = 0, a;
     MAO estado = simulacao->mao[jog];
     int max = maior_carta_mao(simulacao->jogada);
@@ -649,6 +655,7 @@ int jogadasN(DATABASE * simulacao, int jog, MAO jogadas [4][40], int nc){    int
     return count;
 }
 
+//dá jogadas de uma carta, acho que está assim pq antes usava a de cima e essa n dá as jogadas todas
 int jogadas1(DATABASE * simulacao, int jog, MAO jogadas[40]){
     int count = 0, n = 0, v,max;
     max = maior_carta_mao(simulacao->jogada);
@@ -674,6 +681,8 @@ int jogadas1(DATABASE * simulacao, int jog, MAO jogadas[40]){
     return count;
 }
 
+//contrui o array jogadas[4][40] com jogadas possíveis usando as funções acima. 1º elemento corresponde ao (número de cartas na jogada, 0->1 cartas 1->2cartas ... 3->5cartas) e o segundo à jogada dentro dessa categoria
+//WARNING: os nc's nas funções todas vão de 0 a 3 equivalente à maneira como é usado no array jogadas, mas na estrutura guarda-se de 0 a 4, sendo que o 0 na estrutura representa o ínicio de uma nova ronda.
 void jogadas_possiveis(DATABASE * simulacao, int counter[4], int jog, MAO jogadas[4][40]){
     int nc;
     if(simulacao->nc == 0){
@@ -698,7 +707,7 @@ void jogadas_possiveis(DATABASE * simulacao, int counter[4], int jog, MAO jogada
 
  */
 
-
+//cria a raiz da àrvore
 MCtree createTree(MAO mao){
     int i, nc;
     MCtree tree = malloc(sizeof(searchTree));
@@ -713,7 +722,7 @@ MCtree createTree(MAO mao){
     tree->prev = NULL;
     return tree;
 }
-
+//adiciona um nodo à arvore
 MCtree addNodo(MAO mao, MCtree previous){
     int i,nc;
     MCtree tree;
@@ -729,7 +738,7 @@ MCtree addNodo(MAO mao, MCtree previous){
     tree->prev = previous;
     return tree;
 }
-
+//calcula a pontuação de uma simulação, tendo em conta o número de cartas na mão. "+"cartas -> "-"pontuação
 void rewardF(MCtree temp, DATABASE * simulacao){
     int i, n, v;
     float count = 0.0;
@@ -753,7 +762,7 @@ void rewardF(MCtree temp, DATABASE * simulacao){
 }
 
 
-
+//Função responsável por selecionar e adicionar novos nodos à árvore
 MCtree treePolicy(MCtree tree, DATABASE * simulacao, int * flag2){
     int counter[4] = {0};
     float UCT_value = 0.0;
@@ -857,7 +866,7 @@ MCtree treePolicy(MCtree tree, DATABASE * simulacao, int * flag2){
 }
 
 
-
+//faz as simulações de jogo. O treePolicy vai escolhendo nodos, até chegar a um que n tenha todos os filhos. Quando tem todos os nodos filhos (nodos com todas as jogadas possíveis), o treePolicy escolhe um nodo dos filhos, o defaultPolicy simula uma ronda e depois volta-se ao treePolicy que escolhe o próximo filho, até se chegar a um nodo que não tem todos os filhos.
 int defaultPolicy(MCtree node, DATABASE * simulacao, int * flag2){
     int jogo = 0, counter[4] = {0}, flag = 0, j = 0;
     MAO jogadas[4][40];
@@ -927,6 +936,7 @@ int defaultPolicy(MCtree node, DATABASE * simulacao, int * flag2){
     return flag;
 }
 
+//ambas libertam os nodos que já n interessam na árvore
 void free_nodes_aux(MCtree tree){
     int nc,i;
     for(nc = 0; nc < 4; nc++)
@@ -946,7 +956,7 @@ void free_nodes(MCtree tree, MCtree new_tree){
     free(tree);
 }
 
-
+//Estas são as vossas
 char naiperev (int c) {
     char r;
     switch (c) {
@@ -992,7 +1002,7 @@ char valorrev (int c) {
         }
     return r;
 }
-
+//tbm ach oque é vossa, com uma alteração no fim para dar o passo.
 void convertejogstr(MAO mao, char * output){
     int ind, v ,n,i=0,flag = 0;
     for (ind=0; ind<52; ind++){
@@ -1012,6 +1022,7 @@ void convertejogstr(MAO mao, char * output){
     
 }
 
+//Decide no fim das simulações qual a jogada a tomar, vê qual é o nodo com mais simulações e o com maior pontuação e depois escolhe. Se o que tem mais pontuação é o mm que o que tem mais simulações, já está, se não for o caso, dá preferência ao que tiver maior pontuação.
 MCtree choosePlay(MCtree tree, DATABASE * data, int nc_counter[4]){
     int nc;
     int max_t = 0;
@@ -1077,7 +1088,7 @@ MCtree choosePlay(MCtree tree, DATABASE * data, int nc_counter[4]){
     return play;
 
 }
-
+//Tinha a ideia que quando passavamos muitas vezes seguidas ele depois passava sempre, por isso pus esta função que faz com que se na jogada anterior o bot passou, então apaga as estatísticas todas dos nodos que correspondem a passar
 void clean_plays(MCtree tree, int pass_counter,int nc_counter[4]){
     int counter_tree, nc;
     if(pass_counter > 0)
@@ -1095,6 +1106,7 @@ void clean_plays(MCtree tree, int pass_counter,int nc_counter[4]){
         }
 }
 
+//sinceramente n percebo o que é que isto está a fazer, acho que está a foder o bot é o que eu acho agora que olho direito para isto, não devia estar aqui, mas agora já foi!
 void checkFirst(MCtree tree, DATABASE * data){
     int counter_tree, nc;
     for(nc = 0; nc < 4; nc+= 1){
@@ -1107,8 +1119,7 @@ void checkFirst(MCtree tree, DATABASE * data){
     data->firstplay = 2;
 }
 
-//se precisa de começar e tem mais 3's pode n ter nenhuma jogada e passa, daí os 4 passos
-//jogadasN, vai sempre com o mm sametype, para1, 2 ou 3 cartas
+//recebe input e faz o que tem que fazer de acordo com isso. o clock() acho que dá a contagem de ciclos num dado momento, por isso é que depois se tem que dividir por CLOCKS_PER_SEC para ficar em segundos.
 int main(){
     char input[100];
     int flag = 0, i;
@@ -1136,10 +1147,10 @@ int main(){
     memset(mao,0,26);
     srand(time(0));
     fgets(input, 100, stdin);
-    while(input[0] != 'A'){
+    while(input[0] != 'A'){ //Se input for ACABOU, termina a main
         switch(input[0]){
             case 'J':
-                if(input[3] == 'A'){
+                if(input[3] == 'A'){//Instrução JOGADA, corre o treePlicy e defaultPolicy e faz update de pontuações durante 2 segundos e depois escolhe uma jogada e faz print dela.
                     if((flag3 != 0 )|| (carta_existe(data.mao[0],0,0))){
                         flag3 = 1;
                         start = clock();
@@ -1175,7 +1186,7 @@ int main(){
                             fgets(input, 100, stdin);
                         else
                             input[0] = 'O';
-                        if(input[0] == 'O'){
+                        if(input[0] == 'O'){//Instrução: OK
                             if(temp == NULL || temp->estado == 0){
                                 data.passar++;
                                 pass_counter++;
@@ -1203,7 +1214,7 @@ int main(){
                             }
                             
                         }
-                        else if(input[0] == 'N'){
+                        else if(input[0] == 'N'){//Instrução: NAO
                             data.passar++;
                             pass_counter++;
                             if(data.passar == 3){
@@ -1216,7 +1227,7 @@ int main(){
                         printf("PASSO\n");
                     }
                 }
-                else{
+                else{//Instrução:JOGOU 3D 4S...(por exemplo). Se já tiver passado a primeira ronda, adiciona à estrutura do jogo as novas usadas, senão guarda essas usadas num array temporário.
                     mao_temp = 0;
                     io_count = sscanf(input, JOGADA, &mao[0][0],&mao[0][1],&mao[1][0],&mao[1][1],&mao[2][0],&mao[2][1],&mao[3][0],&mao[3][1],&mao[4][0],&mao[4][1],&mao[5][0],&mao[5][1],&mao[6][0],&mao[6][1],&mao[7][0],&mao[7][1],&mao[8][0],&mao[8][1],&mao[9][0],&mao[9][1],&mao[10][0],&mao[10][1],&mao[11][0],&mao[11][1],&mao[12][0],&mao[12][1]);
                     for(i = 0; i < io_count/2; i++){
@@ -1276,7 +1287,7 @@ int main(){
                     flag3 = 1;
                 }
                 break;
-            case 'P':
+            case 'P'://Instrução: PASSOU
                 if(flag3 != 0){
                     data.passar++;
                     if(data.firstplay == 0){
@@ -1292,7 +1303,7 @@ int main(){
                     }
                 }
                 break;
-            case 'M':
+            case 'M'://Instrução: MAO 5D 6D...(por exemplo)
                 sscanf(input, MAO_INICIAL, &mao[0][0],&mao[0][1],&mao[1][0],&mao[1][1],&mao[2][0],&mao[2][1],&mao[3][0],&mao[3][1],&mao[4][0],&mao[4][1],&mao[5][0],&mao[5][1],&mao[6][0],&mao[6][1],&mao[7][0],&mao[7][1],&mao[8][0],&mao[8][1],&mao[9][0],&mao[9][1],&mao[10][0],&mao[10][1],&mao[11][0],&mao[11][1],&mao[12][0],&mao[12][1]);
                 for(i = 0; i < 13; i++){
                     if(mao[i][0] >= '3' && mao[i][0] <='9')
