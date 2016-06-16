@@ -1106,7 +1106,7 @@ void clean_plays(MCtree tree, int pass_counter,int nc_counter[4]){
         }
 }
 
-//sinceramente n percebo o que é que isto está a fazer, acho que está a foder o bot é o que eu acho agora que olho direito para isto, não devia estar aqui, mas agora já foi!
+//Afinal serve para pôr jogadas uqe n têm 3 de ouros com tudo a zeros, caso sejamos nós a começar
 void checkFirst(MCtree tree, DATABASE * data){
     int counter_tree, nc;
     for(nc = 0; nc < 4; nc+= 1){
